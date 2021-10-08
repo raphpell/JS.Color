@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>JS.Game - Page</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/page.css">
+	<link rel="stylesheet" type="text/css" href="css/doc.css">
+</head>
+<body>
+
+<page id="ePreload">
+	chargement...
+</page>
+
+<page id="eDoc">
+	<a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
+
+	<h1>Objet Color</h1>
+
+	<div id="eSummary"></div>
+
+	<p>La fonction <var>Color</var> créée un objet Color d'un certain type (Color.hex, Color.rgb,...) pouvant être converti en n'importe quel autre type.</p>
+
+	<h6>Exemples d'utilisation:</h6>
+		<code>
+		let oColor1 = Color( 'FFCC00' )<br>
+		let oColor2 = Color.hex( '#FC0' )<br>
+		let oColor3 = Color.rgb( 255, 127, 0, 0.5 )
+		</code>
+
+	<p>L'argument de la fonction <var>Color</var> est soit :</p>
+	<ul>
+		<li>Une chaine contenant un type de couleur.
+			<ul>
+				<li>L'analyse est insensible à la casse et ignore les espaces.</li>
+				<li>Si plusieurs valeurs se suivent séparés par un espace, seul la première valeur est prise en compte.</li>
+			</ul>
+		</li>
+		<li>Un objet Color, alors il retourne cet objet.</li>
+	</ul>
+	<p>La valeur retournée dépend de l'analyse de la chaîne (<var>Color.hex</var>, <var>Color.rgb</var>,... ).</p>
+
+	<dl>
+		<dt><b>Color.hex</b></dt>
+			<dd>Couleur hexadécimal (RGB).</dd>
+			<dd>Formats supportés : <i>"FC0", "#FC0", "FFCC00", "#FFCC00"</i>.</dd>
+			<dd>Objet créé = Objet String à 6 caractères étendu avec <code>{ mode:'hex' }</code></dd>
+			
+		<dt><b>Color.rgb</b></dt>
+			<dd>Couleur formée des attributs r(rouge), v(vert) et b(bleu); et a(son opacité) en option.</dd>
+			<dd>Format supporté : <i>"rgb(1,12,200)", "rgba(1,12,200,0.5)"</i>, ...</dd>
+			<dd>Objet créé = <code>{ r:0..255, g:0..255, b:0..255, a:(null||1), mode:('rgb'||'rgba') }</code></dd>
+			
+		<dt><b>Color.hsv</b></dt>
+			<dd>Couleur formée des attributs h(hue ou teinte), s(saturation) et v(value ou valeur); et a(son opacité) en option.</dd>
+			<dd>Format supporté :<i>"hsv(300,50,50)", "hsva(300,50,50,0.5)"</i>, ...</dd>
+			<dd>Objet créé = <code>{ h:0..359, s:0..100, v:0..100, a:(null||1), mode:('hsv'||'hsva') }</code></dd>
+			
+		<dt><b>Color.hsl</b></dt>
+			<dd>Couleur formée des attributs h(hue ou teinte), s(saturation) et l(lightness ou lumière); et a(son opacité) en option.</dd>
+			<dd>Format supporté :<i>"hsl(300,50,50)", "hsla(300,50,50,0.5)"</i>, ...</dd>
+			<dd>Objet créé = <code>{ h:0..359, s:0..100, l:0..100, a:(null||1), mode:('hsl'||'hsla') }</code></dd>
+			
+		<dt><b>Color.cmyk</b></dt>
+			<dd>Couleur formée des attributs c(Cyan), m(Magenta), y(Yellow) et k(Gris...).</dd>
+			<dd>Format supporté : <i>"cmyk(50,50,50,50)"</i>, ...</dd>
+			<dd>Objet créé = <code>{ c:0..100, m:0..100, y:0..100, k:0..100, mode:'cmyk' }</code></dd>
+			
+		<dt><b>valeur r, g ou b</b></dt>
+			<dd>Nombre variant de 0 à 255.</dd>
+			
+		<dt><b>valeur h (hue)</b></dt>
+			<dd>Nombre variant de 0 à 359.</dd>
+			
+		<dt><b>valeur s, v, l, c, m, y et k</b></dt>
+			<dd>Nombre variant de 0 à 100.</dd>
+			
+		<dt><b>valeur a (opacité)</b></dt>
+			<dd>Nombre variant de 0 à 1.</dd>
+	</dl>
+	<p>Par défaut, les valeurs devant être comprises entre un certain intervalle sont contrainte dedans.</p>
+
+	<section><h2>Méthodes objet Color</h2>
+		<section><h3>Color.hex ( sHEX )</h3>
+			<p>Crée un objet <var>Color.hex</var> depuis une valeur hexadécimal.</p>
+			<dl>
+				<dt><var>sHEX</var> <i>String</i> - Valeur hexadécimale.</dt>
+			</dl>
+		</section>
+		<section><h3>Color.rgb ( r, g, b [, a ])</h3>
+			<p>Crée un objet <var>Color.rgb</var>.</p>
+			<dl>
+				<dt><var>r</var> <i>Number</i> - Valeur rouge.</dt>
+				<dt><var>g</var> <i>Number</i> - Valeur verte.</dt>
+				<dt><var>b</var> <i>Number</i> - Valeur bleue.</dt>
+				<dt><var>a</var> <i>Number</i> - optionnel - Valeur opacitée.</dt>
+			</dl>
+		</section>
+		<section><h3>Color.hsv ( h, s, v [, a ])</h3>
+			<p>Crée un objet <var>Color.hsv</var>.</p>
+			<dl>
+				<dt><var>h</var> <i>Number</i> - Valeur hue.</dt>
+				<dt><var>s</var> <i>Number</i> - Valeur saturation.</dt>
+				<dt><var>v</var> <i>Number</i> - Valeur value.</dt>
+				<dt><var>a</var> <i>Number</i> - optionnel - Valeur opacitée.</dt>
+			</dl>
+		</section>
+		<section><h3>Color.hsl ( h, s, l [, a ])</h3>
+			<p>Crée un objet <var>Color.hsl</var>.</p>
+			<dl>
+				<dt><var>h</var> <i>Number</i> - Valeur hue.</dt>
+				<dt><var>s</var> <i>Number</i> - Valeur saturation.</dt>
+				<dt><var>l</var> <i>Number</i> - Valeur lightness.</dt>
+				<dt><var>a</var> <i>Number</i> - optionnel - Valeur opacitée.</dt>
+			</dl>
+		</section>
+		<section><h3>Color.cmyk ( c, m, y, k )</h3>
+			<p>Crée un objet <var>Color.cmyk</var>.</p>
+			<dl>
+				<dt><var>c</var> <i>Number</i> - Valeur cyan.</dt>
+				<dt><var>m</var> <i>Number</i> - Valeur magenta.</dt>
+				<dt><var>y</var> <i>Number</i> - Valeur yellow.</dt>
+				<dt><var>k</var> <i>Number</i> - Valeur grises.</dt>
+			</dl>
+		</section>
+		<section><h3>Color.contrast ( oColor1, oColor2 )</h3>
+			<p>Indique si deux couleurs contrastes entre elles.</p>
+			<dl>
+				<dt><var>oColor1</var> <i>Color</i>.</dt>
+				<dt><var>oColor2</var> <i>Color</i>.</dt>
+			</dl>
+			<p>Retourne un <code>true</code> si c'est le cas, <code>false</code> sinon.</p>
+		</section>
+		<section><h3>Color.getWebSafe ( mColor )</h3>
+			<p>Retourne un couleur dit 'WebSafe'.</p>
+			<dl>
+				<dt><var>mColor</var> <i>String</i> ou <i>Color</i>.</dt>
+			</dl>
+			<p>Retourne une valeur hexadecimale format chaîne 'FFCC00'.</p>
+		</section>
+		<section><h3>Color.inRange ( n, s )</h3>
+			<p>Sert à conserver un nombre dans l'intervalle d'un attribut couleur.</p>
+			<dl>
+				<dt><var>n</var> <i>Number</i> - Un nombre.</dt>
+				<dt><var>s</var> <i>String</i> - attribut couleur : r,g,b,h,s,v,l,c,y,m ou k.</dt>
+			</dl>
+			<p>Retourne une valeur comprise dans l'intervalle de l'attribut ou <code>null</code>.</p>
+		</section>
+		<section><h3>Color.visibleColor ( oColor )</h3>
+			<p>Recherche une couleur contrastante avec la couleur <code>oColor</code>.</p>
+			<dl>
+				<dt><var>oColor</var> <i>Color</i>.</dt>
+			</dl>
+			<p>Retourne une couleur hexadécimale de six caractères prefixé avec '#'.</p>
+		</section>
+		<section><h3>Color.visibleColors ( oColor )</h3>
+			<p>Recherche des couleurs contrastantes avec la couleur <code>oColor</code>.</p>
+			<dl>
+				<dt><var>oColor</var> <i>Color</i>.</dt>
+			</dl>
+			<p>Retourne un tableau de couleurs hexadécimales de six caractères prefixé avec '#'.</p>
+		</section>
+	</section>
+	<section><h2>Méthodes des 'instances'</h2>
+			<p>Tous les objets Color différents possèdent ces méthodes. </p>
+			<dl>
+				<section><h3>oColor.toString( [ sType ] )</h2>
+					<p>Transforme l'objet Color en chaine de caractère. </p>
+					<dl>
+						<dt><var>sType</var> <i>String</i> - optionnel - type de couleur : hex, rgb, hsv, hsl ou cmyk.</dt>
+					</dl>
+					<p>Retourne une chaine de caractère. </p>
+				</section>
+				<section><h3>oColor.toWeb()</h2>
+					<p>Retourne une couleur héxadécimale au format "#FFCC00".</p>
+				</section>
+				<section><h3>oColor.toHEX()</h2>
+					<p>Transforme l'objet Color en Color.hex.</p>
+				</section>
+				<section><h3>oColor.toRGB()</h2>
+					<p>Transforme l'objet Color en Color.rgb.</p>
+				</section>
+				<section><h3>oColor.toHSV()</h2>
+					<p>Transforme l'objet Color en Color.hsv.</p>
+				</section>
+				<section><h3>oColor.toHSL()</h2>
+					<p>Transforme l'objet Color en Color.hsl.</p>
+				</section>
+				<section><h3>oColor.toCMYK()</h2>
+					<p>Transforme l'objet Color en Color.cmyk.</p>
+				</section>
+			</dl>
+		</section>
+
+</page>
+<page id="eUnitTest">
+	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
+	<p>...</p>
+</page>
+
+<page id="eBenchmarking">
+	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a>
+	<p>...</p>
+</page>
+
+
+
+<script src="js/page.js"></script>
+<script src="js/doc.js"></script>
+<script>
+/*
+La page est en chargement
+Insérer le code à charger ci-dessous
+*/
+
+layoutDoc( eSummary, {
+	numbers: false,
+	links: true
+	})
+
+/*
+Une fois le code charger, afficher de la page d'accueil !!
+... sans setTimeout SVP !
+*/
+setTimeout( ()=>goTo( eDoc ), 10 )
+</script>
+
+</body>
+</html>

@@ -7,7 +7,7 @@ Color =(function(){
 				return Color[a[i]]( s )
 		throw new Error ('INVALID_COLOR '+ s )
 		}
-		
+
 	, MAX= {r:255,g:255,b:255,h:360,s:100,v:100,l:100,c:100,m:100,y:100,k:100,a:1}
 	
 	// VALIDATIONS
@@ -165,7 +165,7 @@ Color =(function(){
 		, f =function( N ){ return k==1 ? 0 : MAX.c * ( 1 - N - k ) / ( 1 - k ) }
 		return Color.cmyk( f(r), f(g), f(b), k * MAX.k )
 		}
-		
+
 	, toString =function( sMode, X, Y, Z, a ){
 		var s = X+','+Y+','+Z
 		return sMode + ( a!==null ? 'a('+s+','+a+')' : '('+s+')' )
@@ -187,7 +187,6 @@ Color =(function(){
 		return !( Math.abs( brightness(_1) - brightness(_2) ) < 125 || difference() < 500 )
 		}
 	Object.assign( Color, {
-		max: MAX,
 		hex :function( s ){
 			return Object.assign( isHEX( s ), {
 				mode: 'hex',
@@ -272,7 +271,7 @@ Color =(function(){
 				toCMYK :function(){return this }
 				})
 			},
-		
+
 		contrast:contrast,
 		getWebSafe :function( m ){
 			var o = ( m.split ? Color( m ) : m ).toRGB()

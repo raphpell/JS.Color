@@ -1,0 +1,32 @@
+body {
+	font: normal .8em Verdana;
+	}
+
+section {
+	margin: 1em 0 2em 1em;
+	}
+	
+/* Sommaire */
+#eSummary {
+	float: right;
+	height: auto;
+	bottom: 0;
+	}
+#eSummary ol {
+	list-style: none;
+	}
+
+#eTop {
+	position: fixed;
+	top: 0;
+	right: 0;
+	margin: 1em;
+	}
+#eBottom {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	margin: 1em;
+	}
+
+}
