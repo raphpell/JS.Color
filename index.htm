@@ -14,69 +14,63 @@
 
 <page id="eDoc">
 	<a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
-
 	<h1>Objet Color</h1>
 
 	<div id="eSummary"></div>
 
-	<p>La fonction <var>Color</var> créée un objet Color d'un certain type (Color.hex, Color.rgb,...) pouvant être converti en n'importe quel autre type.</p>
+	<section>
+		<p>La fonction <var>Color</var> créée un objet Color d'un certain type (Color.hex, Color.rgb,...) pouvant être converti en n'importe quel autre type.</p>
 
-	<h6>Exemples d'utilisation:</h6>
+		<h6>Exemples d'utilisation:</h6>
 		<code>
-		let oColor1 = Color( 'FFCC00' )<br>
-		let oColor2 = Color.hex( '#FC0' )<br>
-		let oColor3 = Color.rgb( 255, 127, 0, 0.5 )
+			let oColor1 = Color( 'FFCC00' )<br>
+			let oColor2 = Color.hex( '#FC0' )<br>
+			let oColor3 = Color.rgb( 255, 127, 0, 0.5 )
 		</code>
 
-	<p>L'argument de la fonction <var>Color</var> est soit :</p>
-	<ul>
-		<li>Une chaine contenant un type de couleur.
-			<ul>
-				<li>L'analyse est insensible à la casse et ignore les espaces.</li>
-				<li>Si plusieurs valeurs se suivent séparés par un espace, seul la première valeur est prise en compte.</li>
-			</ul>
-		</li>
-		<li>Un objet Color, alors il retourne cet objet.</li>
-	</ul>
-	<p>La valeur retournée dépend de l'analyse de la chaîne (<var>Color.hex</var>, <var>Color.rgb</var>,... ).</p>
+		<p>L'argument de la fonction <var>Color</var> est soit :</p>
+		<ul>
+			<li>Une chaine contenant un type de couleur.
+				<ul>
+					<li>L'analyse est insensible à la casse et ignore les espaces.</li>
+					<li>Si plusieurs valeurs se suivent séparés par un espace, seul la première valeur est prise en compte.</li>
+				</ul>
+			</li>
+			<li>Un objet Color, alors il retourne cet objet.</li>
+		</ul>
+		<p>La valeur retournée dépend de l'analyse de la chaîne (<var>Color.hex</var>, <var>Color.rgb</var>,... ).</p>
 
-	<dl>
-		<dt><b>Color.hex</b></dt>
-			<dd>Formats supportés : <i>"FC0", "#FC0", "FFCC00", "#FFCC00"</i>.</dd>
-			<dd>Couleur hexadécimal (RGB).</dd>
+		<dl>
+			<dt><b>Color.hex</b>
+				<br>Formats supportés : <i>"FC0", "#FC0", "FFCC00", "#FFCC00"</i>.
+				<br>Couleur hexadécimal (RGB).</dt>
+			<dt><b>Color.rgb</b>
+				<br>Format supporté : <i>"rgb(1,12,200)", "rgba(1,12,200,0.5)"</i>, ...
+				<br>Couleur formée des attributs r(rouge), v(vert) et b(bleu); et a(son opacité) en option.</dt>
+			<dt><b>Color.hsv</b>
+				<br>Format supporté :<i>"hsv(300,50,50)", "hsva(300,50,50,0.5)"</i>, ...
+				<br>Couleur formée des attributs h(hue ou teinte), s(saturation) et v(value ou valeur); et a(son opacité) en option.</dt>
+			<dt><b>Color.hsl</b>
+				<br>Format supporté :<i>"hsl(300,50,50)", "hsla(300,50,50,0.5)"</i>, ...
+				<br>Couleur formée des attributs h(hue ou teinte), s(saturation) et l(lightness ou lumière); et a(son opacité) en option.</dt>
+			<dt><b>Color.cmyk</b>
+				<br>Format supporté : <i>"cmyk(50,50,50,50)"</i>, ...
+				<br>Couleur formée des attributs c(Cyan), m(Magenta), y(Yellow) et k(Gris...).</dt>
+		</dl>
 
-		<dt><b>Color.rgb</b></dt>
-			<dd>Format supporté : <i>"rgb(1,12,200)", "rgba(1,12,200,0.5)"</i>, ...</dd>
-			<dd>Couleur formée des attributs r(rouge), v(vert) et b(bleu); et a(son opacité) en option.</dd>
-
-		<dt><b>Color.hsv</b></dt>
-			<dd>Format supporté :<i>"hsv(300,50,50)", "hsva(300,50,50,0.5)"</i>, ...</dd>
-			<dd>Couleur formée des attributs h(hue ou teinte), s(saturation) et v(value ou valeur); et a(son opacité) en option.</dd>
-			
-		<dt><b>Color.hsl</b></dt>
-			<dd>Format supporté :<i>"hsl(300,50,50)", "hsla(300,50,50,0.5)"</i>, ...</dd>
-			<dd>Couleur formée des attributs h(hue ou teinte), s(saturation) et l(lightness ou lumière); et a(son opacité) en option.</dd>
-			
-		<dt><b>Color.cmyk</b></dt>
-			<dd>Format supporté : <i>"cmyk(50,50,50,50)"</i>, ...</dd>
-			<dd>Couleur formée des attributs c(Cyan), m(Magenta), y(Yellow) et k(Gris...).</dd>
-	</dl>
-
-	<h6>Notes:</h6>
-	<dl>
-		<dt><b>valeur r, g ou b</b></dt>
-			<dd>Nombre variant de 0 à 255.</dd>
-			
-		<dt><b>valeur h (hue)</b></dt>
-			<dd>Nombre variant de 0 à 359.</dd>
-			
-		<dt><b>valeurs pourcentages s, v, l, c, m, y et k</b></dt>
-			<dd>Nombre variant de 0 à 100.</dd>
-			
-		<dt><b>valeur a (opacité)</b></dt>
-			<dd>Nombre variant de 0 à 1.</dd>
-	</dl>
-	<p>Par défaut, les valeurs devant être comprises entre un certain intervalle sont contrainte dedans.</p>
+		<h6>Notes:</h6>
+		<dl>
+			<dt><b>valeur r, g ou b</b>
+				<br>Nombre variant de 0 à 255.</dt>
+			<dt><b>valeur h (hue)</b>
+				<br>Nombre variant de 0 à 359.</dt>
+			<dt><b>valeurs pourcentages s, v, l, c, m, y et k</b>
+				<br>Nombre variant de 0 à 100.</dt>
+			<dt><b>valeur a (opacité)</b>
+				<br>Nombre variant de 0 à 1.</dt>
+		</dl>
+		<p>Par défaut, les valeurs devant être comprises entre un certain intervalle sont contrainte dedans.</p>
+	</section>
 
 	<section><h2>Méthodes objet Color</h2>
 		<section><h3>Color.hex ( sHEX )</h3>
@@ -166,49 +160,51 @@
 		</section>
 	</section>
 	<section><h2>Méthodes des 'instances'</h2>
-			<p>Tous les objets Color différents possèdent ces méthodes. </p>
+		<p>Tous les objets Color différents possèdent ces méthodes. </p>
+		<section><h3>oColor.toString( [ sType ] )</h2>
+			<p>Transforme l'objet Color en chaine de caractère. </p>
 			<dl>
-				<section><h3>oColor.toString( [ sType ] )</h2>
-					<p>Transforme l'objet Color en chaine de caractère. </p>
-					<dl>
-						<dt><var>sType</var> <i>String</i> - optionnel -
-							<ul>
-								<li>'%' indique qu'il faut ajouter le symbole '%' aux valeurs pourcentages.</li>
-								<li>indique pour les <var>Color.hex</var> le symbole préfixe... '#' idéalement.
-							</ul>
-						</dt>
-					</dl>
-					<p>Retourne une chaine de caractère. </p>
-				</section>
-				<section><h3>oColor.toWeb()</h2>
-					<p>Retourne une couleur héxadécimale au format "#FFCC00".</p>
-				</section>
-				<section><h3>oColor.toHEX()</h2>
-					<p>Transforme l'objet Color en Color.hex.</p>
-				</section>
-				<section><h3>oColor.toRGB()</h2>
-					<p>Transforme l'objet Color en Color.rgb.</p>
-				</section>
-				<section><h3>oColor.toHSV()</h2>
-					<p>Transforme l'objet Color en Color.hsv.</p>
-				</section>
-				<section><h3>oColor.toHSL()</h2>
-					<p>Transforme l'objet Color en Color.hsl.</p>
-				</section>
-				<section><h3>oColor.toCMYK()</h2>
-					<p>Transforme l'objet Color en Color.cmyk.</p>
-				</section>
+				<dt><var>sType</var> <i>String</i> - optionnel -
+					<ul>
+						<li>'%' indique qu'il faut ajouter le symbole '%' aux valeurs pourcentages.</li>
+						<li>indique pour les <var>Color.hex</var> le symbole préfixe... '#' idéalement.</li>
+					</ul>
+				</dt>
 			</dl>
+			<p>Retourne une chaine de caractère. </p>
 		</section>
+		<section><h3>oColor.toWeb()</h2>
+			<p>Retourne une couleur héxadécimale au format "#FFCC00".</p>
+		</section>
+		<section><h3>oColor.toHEX()</h2>
+			<p>Transforme l'objet Color en Color.hex.</p>
+		</section>
+		<section><h3>oColor.toRGB()</h2>
+			<p>Transforme l'objet Color en Color.rgb.</p>
+		</section>
+		<section><h3>oColor.toHSV()</h2>
+			<p>Transforme l'objet Color en Color.hsv.</p>
+		</section>
+		<section><h3>oColor.toHSL()</h2>
+			<p>Transforme l'objet Color en Color.hsl.</p>
+		</section>
+		<section><h3>oColor.toCMYK()</h2>
+			<p>Transforme l'objet Color en Color.cmyk.</p>
+		</section>
+	</section>
 </page>
 
 <page id="eUnitTest">
 	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
+	<h1>Testes unitaires</h1>
+
 	<p>...</p>
 </page>
 
 <page id="eBenchmarking">
 	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a>
+	<h1>Benchmarking</h1>
+
 	<p>...</p>
 </page>
 
