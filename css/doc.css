@@ -1,16 +1,23 @@
+@media only screen and (max-width: 733px) {
+	.summary {
+		float: none !important;
+		}
+	}
+
 body {
 	font: normal .8em Verdana;
 	}
 
 section {
-	margin: 1em 0 2em 1em;
+	margin: 1em 1em 2em 2em;
 	}
 	
 /* Sommaire */
 .summary {
-	background: #FFF;
+	background: #EEE;
 	border-radius: 1em;
-	float: right;
+	box-shadow: .5em .5em 1em rgba(0 0 0 / 20%);
+	float: left;
 	height: auto;
 	padding: 0 1em 1em;
 	}
