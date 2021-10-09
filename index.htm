@@ -14,7 +14,9 @@
 </page>
 
 <page id="eDoc">
-	<a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
+	<a href="#" onclick="goTo( eDoc )">Objet Color</a>
+	- <a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a>
+	- <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
 	<h1>Objet Color</h1>
 
 	<div id="eSummary1"></div>
@@ -197,7 +199,9 @@
 </page>
 
 <page id="eUnitTest">
-	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
+	<a href="#" onclick="goTo( eDoc )">Objet Color</a>
+	- <a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a>
+	- <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
 	<h1>Testes unitaires</h1>
 
 	<div id="eSummary2"></div>
@@ -205,7 +209,9 @@
 </page>
 
 <page id="eBenchmarking">
-	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a>
+	<a href="#" onclick="goTo( eDoc )">Objet Color</a>
+	- <a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a>
+	- <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
 	<h1>Benchmarking</h1>
 </page>
 
@@ -224,245 +230,276 @@ Insérer le code à charger ci-dessous
 layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 
 new UnitTest( eUnitTest,[
-	{ desc:"<h2>Analyse des chaînes</h2>",
-		eval:[
-			`
-window.f = ( s1, s2, sMode ) =>{
+	{ title:"Analyse des chaînes",
+	desc:"Contrôle la valeur et l'objet créé via le mode.",
+	eval:
+`window.f = ( s1, s2, sMode ) =>{
 	let oColor = Color( s1 )
-	return oColor.toString() == s2
-		&& oColor.mode == sMode
-	}`
-			] 
-		},
-	{ title:"Color &rarr; Color.hex",
-		eval:[],
-		assertions:[
-			`f( "FC0" , "FFCC00", 'hex' )`,
-			`f( "#FC0" , "FFCC00", 'hex')`,
-			`f( "FFCC00" , "FFCC00", 'hex')`,
-			`f( "#FFCC00" , "FFCC00", 'hex')`
-			]
-		},
-	{ title:"Color &rarr; Color.rgb",
-		assertions:[
-			`f( "rgb( 1, 12, 200 )" , "rgb(1,12,200)" , 'rgb' )`,
-			`f( "rgb( -10, -10, -10 )" , "rgb(0,0,0)" , 'rgb' )`,
-			`f( "rgb( 256, 256, 256 )" , "rgb(255,255,255)" , 'rgb' )`,
-			`f( "rgba( 1, 12, 200, 0.5 )" , "rgba(1,12,200,0.5)" , 'rgba' )`,
-			`f( "rgba( 1, 12, 200, 2 )" , "rgba(1,12,200,1)" , 'rgba' )`
-			]
-		},
-	{ title:"Color &rarr; Color.hsv",
-		assertions:[
-			`f( "hsv( 300, 50, 50 )" , "hsv(300,50,50)" , 'hsv' )`,
-			`f( "hsv( -10, -10, -10 )" , "hsv(0,0,0)" , 'hsv' )`,
-			`f( "hsv( 360, 101, 101 )" , "hsv(359,100,100)" , 'hsv' )`,
-			`f( "hsva( 300, 50, 50, 0.5 )" , "hsva(300,50,50,0.5)" , 'hsva' )`,
-			`f( "hsva( 300, 50, 50, 2 )" , "hsva(300,50,50,1)" , 'hsva' )`
-			]
-		},
-	{ title:"Color &rarr; Color.hsl",
-		assertions:[
-			`f( "hsl( 300, 50, 50 )" , "hsl(300,50,50)" , 'hsl' )`,
-			`f( "hsl( -10, -10, -10 )" , "hsl(0,0,0)" , 'hsl' )`,
-			`f( "hsl( 360, 101, 101 )" , "hsl(359,100,100)" , 'hsl' )`,
-			`f( "hsla( 300, 50, 50, 0.5 )" , "hsla(300,50,50,0.5)" , 'hsla' )`,
-			`f( "hsla( 300, 50, 50, 2 )" , "hsla(300,50,50,1)" , 'hsla' )`
-			]
-		},
-	{ title:"Color &rarr; Color.cmyk",
-		assertions:[
-			`f( "cmyk( 50, 50, 50, 50 )" , "cmyk(50,50,50,50)" , 'cmyk' )`,
-			`f( "cmyk( -1, -1, -1, -1 )" , "cmyk(0,0,0,0)" , 'cmyk' )`,
-			`f( "cmyk( 101, 101, 101, 101 )" , "cmyk(100,100,100,100)" , 'cmyk' )`
-			]
-		},
-		
-	{ desc:"<h2>Structure des objets créés</h2>",
-		eval:[
-			`
-window.f = ( sMode, v1, v2, v3, v4 ) =>{
+	return oColor.toString() == s2 && oColor.mode == sMode
+	}`,
+	list:[
+		{ title:"Color &rarr; Color.hex",
+			assertions:[
+				`f( "FC0" , "FFCC00", 'hex' )`,
+				`f( "#FC0" , "FFCC00", 'hex')`,
+				`f( "FFCC00" , "FFCC00", 'hex')`,
+				`f( "#FFCC00" , "FFCC00", 'hex')`
+				]},
+		{ title:"Color &rarr; Color.rgb",
+			assertions:[
+				`f( "rgb( 1, 12, 200 )" , "rgb(1,12,200)" , 'rgb' )`,
+				`f( "rgb( -10, -10, -10 )" , "rgb(0,0,0)" , 'rgb' )`,
+				`f( "rgb( 256, 256, 256 )" , "rgb(255,255,255)" , 'rgb' )`,
+				`f( "rgba( 1, 12, 200, .5 )" , "rgba(1,12,200,0.5)" , 'rgba' )`,
+				`f( "rgba( 1, 12, 200, 2 )" , "rgba(1,12,200,1)" , 'rgba' )`
+				]},
+		{ title:"Color &rarr; Color.hsv",
+			assertions:[
+				`f( "hsv( 300, 50, 50 )" , "hsv(300,50,50)" , 'hsv' )`,
+				`f( "hsv( -10, -10, -10 )" , "hsv(0,0,0)" , 'hsv' )`,
+				`f( "hsv( 360, 101, 101 )" , "hsv(359,100,100)" , 'hsv' )`,
+				`f( "hsva( 300, 50, 50, 0.5 )" , "hsva(300,50,50,0.5)" , 'hsva' )`,
+				`f( "hsva( 300, 50, 50, 2 )" , "hsva(300,50,50,1)" , 'hsva' )`
+				]},
+		{ title:"Color &rarr; Color.hsl",
+			assertions:[
+				`f( "hsl( 300, 50, 50 )" , "hsl(300,50,50)" , 'hsl' )`,
+				`f( "hsl( -10, -10, -10 )" , "hsl(0,0,0)" , 'hsl' )`,
+				`f( "hsl( 360, 101, 101 )" , "hsl(359,100,100)" , 'hsl' )`,
+				`f( "hsla( 300, 50, 50, 0.5 )" , "hsla(300,50,50,0.5)" , 'hsla' )`,
+				`f( "hsla( 300, 50, 50, 2 )" , "hsla(300,50,50,1)" , 'hsla' )`
+				]},
+		{ title:"Color &rarr; Color.cmyk",
+			assertions:[
+				`f( "cmyk( 50, 50, 50, 50 )" , "cmyk(50,50,50,50)" , 'cmyk' )`,
+				`f( "cmyk( -1, -1, -1, -1 )" , "cmyk(0,0,0,0)" , 'cmyk' )`,
+				`f( "cmyk( 101, 101, 101, 101 )" , "cmyk(100,100,100,100)" , 'cmyk' )`
+				]},
+		]},
+	{ title:"Structure des objets créés",
+	desc:"Contrôle la présence des méthodes et la valeur des attributs.",
+	eval:
+`window.f = ( sMode, v1, v2, v3, v4 ) =>{
 	window.oColor = Color[sMode]( v1, v2, v3, v4 )
-	return oColor.mode
-		&& oColor.toString
+	return oColor.toString
 		&& oColor.toWeb
 		&& oColor.toHEX
 		&& oColor.toRGB
 		&& oColor.toHSV
 		&& oColor.toHSL
 		&& oColor.toCMYK
-	}`
-			]
-		},
-	{ title:"Color.hex",
-		eval:[],
-		assertions:[
-			`f( 'hex', "7F3F3F" )`,
-			`oColor.mode == 'hex'`,
-			]
-		},
-	{ title:"Color.rgb",
-		assertions:[
-			`f( 'rgb', 127, 63, 63 )`,
-			`oColor.mode == 'rgb'`,
-			`oColor.r == 127`,
-			`oColor.g == 63`,
-			`oColor.b == 63`,
-			`oColor.a == null`,
-			`f( 'rgb' , 127, 63, 63, .5 )`,
-			`oColor.mode == 'rgba'`,
-			`oColor.a == .5`
-			]
-		},
-	{ title:"Color.hsv",
-		assertions:[
-			`f( 'hsv', 0, 50, 50 )`,
-			`oColor.mode == 'hsv'`,
-			`oColor.h == 0`,
-			`oColor.s == 50`,
-			`oColor.v == 50`,
-			`oColor.a == null`,
-			`f( 'hsv' , 0, 50, 50, .5 )`,
-			`oColor.mode == 'hsva'`,
-			`oColor.a == .5`
-			]
-		},
-	{ title:"Color.hsl",
-		assertions:[
-			`f( 'hsl', 0, 34, 37 )`,
-			`oColor.mode == 'hsl'`,
-			`oColor.h == 0`,
-			`oColor.s == 34`,
-			`oColor.l == 37`,
-			`oColor.a == null`,
-			`f( 'hsl' , 0, 34, 37, .5 )`,
-			`oColor.mode == 'hsla'`,
-			`oColor.a == .5`
-			]
-		},
-	{ title:"Color.cmyk",
-		assertions:[
-			`f( 'cmyk', 50 , 50 , 50 , 50 )`,
-			`oColor.mode == 'cmyk'`,
-			`oColor.c == 50`,
-			`oColor.m == 50`,
-			`oColor.y == 50`,
-			`oColor.k == 50`
-			]
-		},
-		
-	{ desc:"<h2>Méthodes des objets créés</h2>",
-		eval:[
-			`
-window.f = ( sMode, v1, v2, v3, v4 ) =>{
+	}`,
+	list:[
+		{ title:"Color.hex",
+			assertions:[
+				`f( 'hex', "7F3F3F" )`,
+				`oColor.mode == 'hex'`,
+				]},
+		{ title:"Color.rgb",
+			assertions:[
+				`f( 'rgb', 127, 63, 63 )`,
+				`oColor.mode == 'rgb'`,
+				`oColor.r == 127`,
+				`oColor.g == 63`,
+				`oColor.b == 63`,
+				`oColor.a == null`,
+				`f( 'rgb' , 127, 63, 63, .5 )`,
+				`oColor.mode == 'rgba'`,
+				`oColor.a == .5`
+				]},
+		{ title:"Color.hsv",
+			assertions:[
+				`f( 'hsv', 0, 50, 50 )`,
+				`oColor.mode == 'hsv'`,
+				`oColor.h == 0`,
+				`oColor.s == 50`,
+				`oColor.v == 50`,
+				`oColor.a == null`,
+				`f( 'hsv' , 0, 50, 50, .5 )`,
+				`oColor.mode == 'hsva'`,
+				`oColor.a == .5`
+				]},
+		{ title:"Color.hsl",
+			assertions:[
+				`f( 'hsl', 0, 34, 37 )`,
+				`oColor.mode == 'hsl'`,
+				`oColor.h == 0`,
+				`oColor.s == 34`,
+				`oColor.l == 37`,
+				`oColor.a == null`,
+				`f( 'hsl' , 0, 34, 37, .5 )`,
+				`oColor.mode == 'hsla'`,
+				`oColor.a == .5`
+				]},
+		{ title:"Color.cmyk",
+			assertions:[
+				`f( 'cmyk', 50 , 50 , 50 , 50 )`,
+				`oColor.mode == 'cmyk'`,
+				`oColor.c == 50`,
+				`oColor.m == 50`,
+				`oColor.y == 50`,
+				`oColor.k == 50`
+				]},
+		]},
+	{ title:"Méthodes des objets créés",
+	desc:"Contrôle les valeurs retournées et la rigidité de la conversion.",
+	eval:
+`window.f = ( sMode, v1, v2, v3, v4 ) =>{
 	window.oColor = Color[sMode]( v1, v2, v3, v4 )
-	return oColor.mode
-		&& oColor.toWeb() == '#00FF00'
+	return oColor.toWeb() == '#00FF00'
 	}
 window.f2 = ( sName, sMode ) =>{
 	let oColor = window.oColor[ sName ]()
 	return oColor.mode == sMode
 		&& oColor.toWeb() == '#00FF00'
-	}`
-			]
-		},
-	{ title:"Color.hex",
-		eval:[],
-		assertions:[
-			`f( 'hex', "00FF00" )`,
-			`oColor.toString() == '00FF00'`,
-			`oColor.toString('@') == '@00FF00'`,
-			`oColor.toString('#') == '#00FF00'`,
-			`f2( 'toHEX', 'hex' )`,
-			`f2( 'toRGB', 'rgb' )`,
-			`f2( 'toHSV', 'hsv' )`,
-			`f2( 'toHSL', 'hsl' )`,
-			`f2( 'toCMYK', 'cmyk' )`
-			]
-		},
-	{ title:"Color.rgb",
-		assertions:[
-			`f( 'rgb', 0, 255, 0 )`,
-			`oColor.toString() == 'rgb(0,255,0)'`,
-			`oColor.toString('#') == 'rgb(0%,100%,0%)'`,
-			`oColor.toString('%') == 'rgb(0%,100%,0%)'`,
-			`f2( 'toHEX', 'hex' )`,
-			`f2( 'toRGB', 'rgb' )`,
-			`f2( 'toHSV', 'hsv' )`,
-			`f2( 'toHSL', 'hsl' )`,
-			`f2( 'toCMYK', 'cmyk' )`,
-			`f( 'rgb', 0, 255, 0, .5 )`,
-			`oColor.toString() == 'rgba(0,255,0,0.5)'`,
-			`oColor.toString('#') == 'rgba(0%,100%,0%,0.5)'`,
-			`oColor.toString('%') == 'rgba(0%,100%,0%,0.5)'`,
-			`f2( 'toHEX', 'hex' )`,
-			`f2( 'toRGB', 'rgba' )`,
-			`f2( 'toHSV', 'hsva' )`,
-			`f2( 'toHSL', 'hsla' )`,
-			`f2( 'toCMYK', 'cmyk' )`
-			]
-		},
-	{ title:"Color.hsv",
-		assertions:[
-			`f( 'hsv', 119.67, 100, 100 )`,
-			`oColor.toString() == 'hsv(120,100,100)'`,
-			`oColor.toString('_') == 'hsv(120,100%,100%)'`,
-			`oColor.toString('%') == 'hsv(120,100%,100%)'`,
-			`f2( 'toHEX', 'hex' )`,
-			`f2( 'toRGB', 'rgb' )`,
-			`f2( 'toHSV', 'hsv' )`,
-			`f2( 'toHSL', 'hsl' )`,
-			`f2( 'toCMYK', 'cmyk' )`,
-			`f( 'hsv', 119.67, 100, 100, .5 )`,
-			`oColor.toString() == 'hsva(120,100,100,0.5)'`,
-			`oColor.toString('_') == 'hsva(120,100%,100%,0.5)'`,
-			`oColor.toString('%') == 'hsva(120,100%,100%,0.5)'`,
-			`f2( 'toHEX', 'hex' )`,
-			`f2( 'toRGB', 'rgba' )`,
-			`f2( 'toHSV', 'hsva' )`,
-			`f2( 'toHSL', 'hsla' )`,
-			`f2( 'toCMYK', 'cmyk' )`
-			]
-		},
-	{ title:"Color.hsl",
-		assertions:[
-			`f( 'hsl', 119.67, 100, 50 )`,
-			`oColor.toString() == 'hsl(120,100,50)'`,
-			`oColor.toString('@') == 'hsl(120,100%,50%)'`,
-			`oColor.toString('%') == 'hsl(120,100%,50%)'`,
-			`f2( 'toHEX', 'hex' )`,
-			`f2( 'toRGB', 'rgb' )`,
-			`f2( 'toHSV', 'hsv' )`,
-			`f2( 'toHSL', 'hsl' )`,
-			`f2( 'toCMYK', 'cmyk' )`,
-			`f( 'hsl', 119.67, 100, 50, .5 )`,
-			`oColor.toString() == 'hsla(120,100,50,0.5)'`,
-			`oColor.toString('@') == 'hsla(120,100%,50%,0.5)'`,
-			`oColor.toString('%') == 'hsla(120,100%,50%,0.5)'`,
-			`f2( 'toHEX', 'hex' )`,
-			`f2( 'toRGB', 'rgba' )`,
-			`f2( 'toHSV', 'hsva' )`,
-			`f2( 'toHSL', 'hsla' )`,
-			`f2( 'toCMYK', 'cmyk' )`
-			]
-		},
-	{ title:"Color.cmyk",
-		assertions:[
-			`f( 'cmyk', 100 , 0 , 100 , 0 )`,
-			`oColor.toString() == 'cmyk(100,0,100,0)'`,
-			`oColor.toString('&') == 'cmyk(100%,0%,100%,0%)'`,
-			`oColor.toString('%') == 'cmyk(100%,0%,100%,0%)'`,
-			`f2( 'toHEX', 'hex' )`,
-			`f2( 'toRGB', 'rgb' )`,
-			`f2( 'toHSV', 'hsv' )`,
-			`f2( 'toHSL', 'hsl' )`,
-			`f2( 'toCMYK', 'cmyk' )`
-			]
-		}
+	}`,
+	list:[
+		{ title:"Color.hex",
+			assertions:[
+				`f( 'hex', "00FF00" )`,
+				`oColor.toString() == '00FF00'`,
+				`oColor.toString('@') == '@00FF00'`,
+				`oColor.toString('#') == '#00FF00'`,
+				`f2( 'toHEX', 'hex' )`,
+				`f2( 'toRGB', 'rgb' )`,
+				`f2( 'toHSV', 'hsv' )`,
+				`f2( 'toHSL', 'hsl' )`,
+				`f2( 'toCMYK', 'cmyk' )`
+				]},
+		{ title:"Color.rgb",
+			assertions:[
+				`f( 'rgb', 0, 255, 0 )`,
+				`oColor.toString() == 'rgb(0,255,0)'`,
+				`oColor.toString('#') == 'rgb(0%,100%,0%)'`,
+				`oColor.toString('%') == 'rgb(0%,100%,0%)'`,
+				`f2( 'toHEX', 'hex' )`,
+				`f2( 'toRGB', 'rgb' )`,
+				`f2( 'toHSV', 'hsv' )`,
+				`f2( 'toHSL', 'hsl' )`,
+				`f2( 'toCMYK', 'cmyk' )`,
+				`f( 'rgb', 0, 255, 0, .5 )`,
+				`oColor.toString() == 'rgba(0,255,0,0.5)'`,
+				`oColor.toString('#') == 'rgba(0%,100%,0%,0.5)'`,
+				`oColor.toString('%') == 'rgba(0%,100%,0%,0.5)'`,
+				`f2( 'toHEX', 'hex' )`,
+				`f2( 'toRGB', 'rgba' )`,
+				`f2( 'toHSV', 'hsva' )`,
+				`f2( 'toHSL', 'hsla' )`,
+				`f2( 'toCMYK', 'cmyk' )`
+				]},
+		{ title:"Color.hsv",
+			assertions:[
+				`f( 'hsv', 119.67, 100, 100 )`,
+				`oColor.toString() == 'hsv(120,100,100)'`,
+				`oColor.toString('_') == 'hsv(120,100%,100%)'`,
+				`oColor.toString('%') == 'hsv(120,100%,100%)'`,
+				`f2( 'toHEX', 'hex' )`,
+				`f2( 'toRGB', 'rgb' )`,
+				`f2( 'toHSV', 'hsv' )`,
+				`f2( 'toHSL', 'hsl' )`,
+				`f2( 'toCMYK', 'cmyk' )`,
+				`f( 'hsv', 119.67, 100, 100, .5 )`,
+				`oColor.toString() == 'hsva(120,100,100,0.5)'`,
+				`oColor.toString('_') == 'hsva(120,100%,100%,0.5)'`,
+				`oColor.toString('%') == 'hsva(120,100%,100%,0.5)'`,
+				`f2( 'toHEX', 'hex' )`,
+				`f2( 'toRGB', 'rgba' )`,
+				`f2( 'toHSV', 'hsva' )`,
+				`f2( 'toHSL', 'hsla' )`,
+				`f2( 'toCMYK', 'cmyk' )`
+				]},
+		{ title:"Color.hsl",
+			assertions:[
+				`f( 'hsl', 119.67, 100, 50 )`,
+				`oColor.toString() == 'hsl(120,100,50)'`,
+				`oColor.toString('@') == 'hsl(120,100%,50%)'`,
+				`oColor.toString('%') == 'hsl(120,100%,50%)'`,
+				`f2( 'toHEX', 'hex' )`,
+				`f2( 'toRGB', 'rgb' )`,
+				`f2( 'toHSV', 'hsv' )`,
+				`f2( 'toHSL', 'hsl' )`,
+				`f2( 'toCMYK', 'cmyk' )`,
+				`f( 'hsl', 119.67, 100, 50, .5 )`,
+				`oColor.toString() == 'hsla(120,100,50,0.5)'`,
+				`oColor.toString('@') == 'hsla(120,100%,50%,0.5)'`,
+				`oColor.toString('%') == 'hsla(120,100%,50%,0.5)'`,
+				`f2( 'toHEX', 'hex' )`,
+				`f2( 'toRGB', 'rgba' )`,
+				`f2( 'toHSV', 'hsva' )`,
+				`f2( 'toHSL', 'hsla' )`,
+				`f2( 'toCMYK', 'cmyk' )`
+				]},
+		{ title:"Color.cmyk",
+			assertions:[
+				`f( 'cmyk', 100 , 0 , 100 , 0 )`,
+				`oColor.toString() == 'cmyk(100,0,100,0)'`,
+				`oColor.toString('&') == 'cmyk(100%,0%,100%,0%)'`,
+				`oColor.toString('%') == 'cmyk(100%,0%,100%,0%)'`,
+				`f2( 'toHEX', 'hex' )`,
+				`f2( 'toRGB', 'rgb' )`,
+				`f2( 'toHSV', 'hsv' )`,
+				`f2( 'toHSL', 'hsl' )`,
+				`f2( 'toCMYK', 'cmyk' )`
+				]},
+		]},
+	{ title:"Méthodes objet",
+	list:[
+		{ title:"Color.inRange",
+			assertions:[
+				`Color.inRange( -300, 'r' ) == 0`,
+				`Color.inRange( -300, 'g' ) == 0`,
+				`Color.inRange( -300, 'b' ) == 0`,
+				`Color.inRange( 10, 'r' ) == 10`,
+				`Color.inRange( 10, 'g' ) == 10`,
+				`Color.inRange( 10, 'b' ) == 10`,
+				`Color.inRange( 300, 'r' ) == 255`,
+				`Color.inRange( 300, 'g' ) == 255`,
+				`Color.inRange( 300, 'b' ) == 255`,
+				`Color.inRange( -400, 'h' ) == 0`,
+				`Color.inRange( 10, 'h' ) == 10`,
+				`Color.inRange( 400, 'h' ) == 359`,
+				`Color.inRange( -200, 's' ) == 0`,
+				`Color.inRange( -200, 'v' ) == 0`,
+				`Color.inRange( -200, 'l' ) == 0`,
+				`Color.inRange( -200, 'c' ) == 0`,
+				`Color.inRange( -200, 'm' ) == 0`,
+				`Color.inRange( -200, 'y' ) == 0`,
+				`Color.inRange( -200, 'k' ) == 0`,
+				`Color.inRange( 10, 's' ) == 10`,
+				`Color.inRange( 10, 'v' ) == 10`,
+				`Color.inRange( 10, 'l' ) == 10`,
+				`Color.inRange( 10, 'c' ) == 10`,
+				`Color.inRange( 10, 'm' ) == 10`,
+				`Color.inRange( 10, 'y' ) == 10`,
+				`Color.inRange( 10, 'k' ) == 10`,
+				`Color.inRange( 200, 's' ) == 100`,
+				`Color.inRange( 200, 'v' ) == 100`,
+				`Color.inRange( 200, 'l' ) == 100`,
+				`Color.inRange( 200, 'c' ) == 100`,
+				`Color.inRange( 200, 'm' ) == 100`,
+				`Color.inRange( 200, 'y' ) == 100`,
+				`Color.inRange( 200, 'k' ) == 100`,
+				`Color.inRange( -2, 'a' ) == 0`,
+				`Color.inRange( .5, 'a' ) == .5`,
+				`Color.inRange( 2, 'a' ) == 1`
+				]},
+		{ title:"Color.contrast",
+			assertions:[
+				]},
+		{ title:"Color.getWebSafe",
+			assertions:[
+				]},
+		{ title:"Color.visibleColor",
+			assertions:[
+				]},
+		{ title:"Color.visibleColors",
+			assertions:[
+				]}
+		]}
 	])
 
+layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 
-layoutDoc( eSummary2, { numbers: true, links: true }, eUnitTest )
 /*
 Une fois le code charger, afficher de la page d'accueil !!
 ... sans setTimeout SVP !

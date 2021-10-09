@@ -61,7 +61,7 @@ layoutDoc =(function(){
 				: sText
 			}
 		getAnchor ( nLevel, s ){
-			return '<a name="'+ this.sLinkPrefixe + nLevel +'">'+ ( this.numbers ? '<b>'+ nLevel +'</b> ' : '' )+ s +'</a>'
+			return '<a name="'+ this.sLinkPrefixe + nLevel +'"></a>'+ ( this.numbers ? '<b>'+ nLevel +'</b> ' : '' )+ s
 			}
 		}
 

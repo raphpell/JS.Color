@@ -8,6 +8,8 @@ section {
 	
 /* Sommaire */
 .summary {
+	background: #FFF;
+	border-radius: 1em;
 	float: right;
 	height: auto;
 	padding: 0 1em 1em;

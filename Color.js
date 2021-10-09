@@ -9,12 +9,12 @@ Color =(function(){ // 09/10/2021 raphpell
 		}
 
 	, MAX= {r:255,g:255,b:255,h:359,s:100,v:100,l:100,c:100,m:100,y:100,k:100,a:1}
-	
+
 	// VALIDATIONS
 	, parseString =function( s, sMode ){
 		let a =[], i =-1, re =new RegExp( "^\\s*"+ sMode +"?\\s*\\(([^)]+)\\)", 'gim' )
 		s.replace( re, function( sFound, $1 ){
-			$1.replace( /\s*(-?\d+(?:\.\d*)?)(%?)\s*,?/gim, function( sFound, $1, $2 ){
+			$1.replace( /\s*(-?\.?\d+(?:\.\d*)?)(%?)\s*,?/gim, function( sFound, $1, $2 ){
 				if( i++ < 4 ) a[i] = $2 ? MAX[ sMode.charAt(i)] * $1 / 100 : $1*1
 				})
 			})
@@ -270,14 +270,13 @@ Color =(function(){ // 09/10/2021 raphpell
 				toCMYK :function(){return this }
 				})
 			},
-
-		contrast:contrast,
+		contrast :contrast,
 		getWebSafe :function( m ){
 			let o = ( m.split ? Color( m ) : m ).toRGB()
 			, f=function( n ){ return DECtoHEX( Math.round( n / 51 ) * 51 )}
 			return f(o.r)+f(o.g)+f(o.b)
 			},
-		inRange: inRange,
+		inRange : inRange,
 		visibleColor :function( o1 ){
 			let n=aDEC.length, o2
 			for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++)

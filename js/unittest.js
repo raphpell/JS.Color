@@ -1,61 +1,74 @@
-class UnitTest {
-	constructor ( eTarget, a ){
-		let eDF = new DocumentFragment ()
-		, _ = s =>{ return document.createElement( s )}
-		
-		a.forEach( o =>{
-			
-			
-			let eDL = _('DL'), eTitle, bOK = true
-			if( o.title ){
-				eTitle = _('DT')
-				eTitle.innerHTML = o.title
-				eTitle.className = 'title'
-				eDL.appendChild( eTitle )
-				}
-			if( o.desc ){
-				let eDesc = _('DT')
-				eDesc.innerHTML = o.desc
-				eDL.appendChild( eDesc )
-				}
-			
-			if( o.eval )
-				o.eval.forEach( s =>{
-					let eDT = _('DT')
-					eDT.innerHTML = '<pre>'+ s +'</pre>'
-					try{
-						eval( s )
-					}catch( e ){
-						bOK = false
-						let eDIV = _('DIV')
-						eDIV.innerHTML = e.toString()
-						eDIV.className = 'error'
-						eDT.appendChild( eDIV )
-						 throw e
-						}
-					eDL.appendChild( eDT )
-					})
-			if( o.assertions )
-				o.assertions.forEach( s =>{
-					let eDD = _('DD')
-					eDD.innerHTML = '<code>'+ s +'</code>'
-					try{
-						let b = eval( s )
-						bOK &&= b
-						eDD.className = b ? 'true' : 'false'
-					}catch( e ){
-						bOK = false
-						let eDIV = _('DIV')
-						eDIV.innerHTML = e.toString()
-						eDIV.className = 'error'
-						eDD.appendChild( eDIV )
-						throw e
-						}
-					eDL.appendChild( eDD )
-					})
-			if( eTitle ) eTitle.classList.add( bOK ? 'true' : 'false' )
-			eDF.appendChild( eDL )
-			})
-		eTarget.appendChild( eDF )
+UnitTest =(function(){
+	let _ = ( sNodeName, sInnerHTML, sClassName ) =>{
+		let e = document.createElement( sNodeName )
+		if( sInnerHTML ) e.innerHTML = sInnerHTML
+		if( sClassName ) e.className = sClassName
+		return e
 		}
-	}
+
+	class UnitTest {
+		constructor ( eTarget, a ){
+			eTarget.appendChild( this.evalList( a, 2 ))
+			}
+		getTitle ( o, nLevel, eParent ){
+			return o.title
+				? eParent.appendChild( _('H'+ nLevel , o.title, 'title' ))
+				: null
+			}
+		getDesc ( o, eParent ){
+			return o.desc 
+				? eParent.appendChild( _('DIV', o.desc, 'desc' ) )
+				: null
+			}
+		getEval ( o, eParent ){
+			if( o.eval ){
+				let ePRE = _('PRE', o.eval, 'eval' )
+				try{
+					eval( o.eval )
+				}catch( e ){
+					bOK = false
+					let eDIV = _('DIV', e.toString(), 'error' )
+					ePRE.appendChild( eDIV )
+					// throw e
+					}
+				eParent.appendChild( ePRE )
+				}
+			}
+
+		evalList ( a, nLevel ){
+			let eDL = _('DL', null, 'list')
+			a.forEach( o =>{
+				let eDT = _('DT', null, 'section')
+				, bOK = true
+				, eTitle = this.getTitle( o, nLevel, eDT )
+				, eDesc = this.getDesc( o, eDT )
+				this.getEval( o, eDT )
+
+				if( o.assertions ){
+					let eDL2 = _('DL', null, 'assertions' )
+					o.assertions.forEach( s =>{
+						let eDD = _('DD', '<code>'+ s +'</code>' )
+						try{
+							let b = eval( s )
+							bOK &&= b
+							eDD.className = b ? 'true' : 'false'
+						}catch( e ){
+							bOK = false
+							let eDIV = _('DIV', e.toString(), 'error' )
+							eDD.appendChild( eDIV )
+							// throw e
+							}
+						eDL2.appendChild( eDD )
+						eDT.appendChild( eDL2 )
+						})
+					}
+				if( o.list ){
+					eDT.appendChild( this.evalList( o.list, nLevel+1 ))
+					}
+				eDL.appendChild( eDT )
+				})
+			return eDL
+			}
+		}
+	return UnitTest
+	})()

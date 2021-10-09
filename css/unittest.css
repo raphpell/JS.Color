@@ -11,6 +11,23 @@
 	border: 1px solid red;
 	color: red;
 	}
-.title {
-	font-size: 1.2em;
+.title,
+.assertions	{
+	margin: 0;
+	padding: 0;
+	}
+.eval {
+	}
+.desc {
+	margin: 1em 0 0;
+	}
+.section {
+	margin: 1em 1em 2em;
+	}
+.list {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: stretch;
+	flex-wrap: wrap;
 	}
