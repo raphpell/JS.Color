@@ -1,8 +1,8 @@
 Color =(function(){
-	var Color =function( s ){
+	let Color =function( s ){
 		if( ! s || ! s.charAt ) return s
 		if( s.charAt(0)=='#' || s.length<=6 ) return Color.hex( s )
-		for(var a=['rgb','hsv','hsl'], i=0, ni=a.length; i<ni; i++ )
+		for(var a=['rgb','hsv','hsl','cmyk'], i=0, ni=a.length; i<ni; i++ )
 			if(!s.indexOf(a[i])||!s.indexOf(a[i].toUpperCase()))
 				return Color[a[i]]( s )
 		throw new Error ('INVALID_COLOR '+ s )
@@ -49,28 +49,26 @@ Color =(function(){
 
 	// CONVERSIONS
 	// http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-	, f1= DECtoHEX =function( n ){
+	, f1= DECtoHEX = n =>{
 		n=n<0?0:(n>255?255:Math.round(n))
 		if(n==0)return'00'
 		n=new Number(n)
 		var s=n.toString(16).toUpperCase()
 		return(s.length==1?'0':'')+s
 		}
-	, f2= HEXtoDEC =function( s ){
+	, f2= HEXtoDEC = s =>{
 		var _f=function(n){return '0123456789ABCDEF'.indexOf(s.charAt(n))}
 		for(var n=0, nCoef=0, i=s.length-1; i>=0; i--, nCoef++)
 			n+=_f(i)*Math.pow(16,nCoef)
 		return n
 		}
-	, HEXtoRGB =function( HEX ){
-		var _f=function(n){return f2(HEX.substr(n,2))}
+	, HEXtoRGB = HEX =>{
+		let _f = n => { return f2(HEX.substr(n,2)) }
 		return Color.rgb( _f(0), _f(2), _f(4) )
 		}
-	, RGBtoHEX =function( RGB ){
-		return Color.hex( f1(RGB.r) + f1(RGB.g) + f1(RGB.b) )
-		}
-	, RGBtoHSV =function( RGB ){
-		var r=RGB.r/MAX.r, g=RGB.g/MAX.g, b=RGB.b/MAX.b
+	, RGBtoHEX = o =>{ return Color.hex( f1(o.r) + f1(o.g) + f1(o.b))}
+	, RGBtoHSV = o =>{
+		var r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
 		var max = Math.max(r,g,b), min = Math.min(r,g,b)
 		var h, s, v = max
 		var d = max-min
@@ -86,8 +84,8 @@ Color =(function(){
 			}
 		return Color.hsv( h*MAX.h, s*MAX.s, v*MAX.v, RGB.a )
 		}
-	, RGBtoHSL =function( RGB ){
-		var r=RGB.r/MAX.r, g=RGB.g/MAX.g, b=RGB.b/MAX.b
+	, RGBtoHSL = o =>{
+		var r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
 		var max = Math.max(r,g,b), min = Math.min(r,g,b)
 		var h, s, l = (max+min)/2
 		if( max==min ) h = s = 0 // achromatic
@@ -103,8 +101,8 @@ Color =(function(){
 			}
 		return Color.hsl( h*MAX.h, s*MAX.s, l*MAX.l, RGB.a )
 		}
-	, HSVtoRGB =function( HSV ){
-		var h=HSV.h/MAX.h, s=HSV.s/MAX.s, v=HSV.v/MAX.v
+	, HSVtoRGB = o =>{
+		var h=o.h/MAX.h, s=o.s/MAX.s, v=o.v/MAX.v
 		var r, g, b
 		var i = Math.floor(h*6)
 		var f = h*6-i
@@ -119,58 +117,58 @@ Color =(function(){
 			case 4: r=t,g=p,b=v; break
 			case 5: r=v,g=p,b=q; break
 			}
-		return Color.rgb( r*MAX.r, g*MAX.g, b*MAX.b, HSV.a )
+		return Color.rgb( r*MAX.r, g*MAX.g, b*MAX.b, o.a )
 		}
-	, HSVtoHSL =function( HSV ){
-		var L = (2-HSV.s/100)*HSV.v/2
-		, S = HSV.s*HSV.v/( L<50 ? L*2 : 200-L*2 )
+	, HSVtoHSL = o =>{
+		var L = (2-o.s/100)*o.v/2
+		, S = o.s*o.v/( L<50 ? L*2 : 200-L*2 )
 		if( isNaN(S)) S = 0
-		return Color.hsl( HSV.h, S, L, HSV.a )
+		return Color.hsl( o.h, S, L, o.a )
 		}
-	, HSLtoRGB =function( HSL ){
-			var h=HSL.h/MAX.h, s=HSL.s/MAX.s, l=HSL.l/MAX.l
-			var r, g, b
-			if( s==0 ) r=g=b=l // achromatic
-			else{
-				var q = l<0.5 ? l*(1+s) : l+s-l*s
-				var p = 2*l-q
-				function hue2rgb(t){
-					if(t<0) t+=1
-					if(t>1) t-=1
-					if(t<1/6) return p+(q-p)*6*t
-					if(t<1/2) return q
-					if(t<2/3) return p+(q-p)*(2/3-t)*6
-					return p
-					}
-				r = hue2rgb(h+1/3)
-				g = hue2rgb(h)
-				b = hue2rgb(h-1/3)
+	, HSLtoRGB = o =>{
+		var h=o.h/MAX.h, s=o.s/MAX.s, l=o.l/MAX.l
+		var r, g, b
+		if( s==0 ) r=g=b=l // achromatic
+		else{
+			var q = l<0.5 ? l*(1+s) : l+s-l*s
+			var p = 2*l-q
+			function hue2rgb(t){
+				if(t<0) t+=1
+				if(t>1) t-=1
+				if(t<1/6) return p+(q-p)*6*t
+				if(t<1/2) return q
+				if(t<2/3) return p+(q-p)*(2/3-t)*6
+				return p
 				}
-			return Color.rgb( r*MAX.r, g*MAX.g, b*MAX.b, HSL.a )
+			r = hue2rgb(h+1/3)
+			g = hue2rgb(h)
+			b = hue2rgb(h-1/3)
 			}
-	, HSLtoHSV =function( HSL ){
-		var a = 2*HSL.l/MAX.l
-		, b = (a<=1?a:(2-a))*HSL.s/MAX.s
-		, S = a+b==0?0:(2*b)/(a+b)*MAX.s
-		return Color.hsv( HSL.h, S, (a+b)/2*MAX.v, HSL.a )
+		return Color.rgb( r*MAX.r, g*MAX.g, b*MAX.b, o.a )
 		}
-	, CMYKtoRGB =function( CMYK ){
-		var k = CMYK.k / MAX.k
-		, f=function( s ){ return 1 - Math.min( 1, (CMYK[s]/MAX[s]) * ( 1 - k ) + k ) * MAX.r }
+	, HSLtoHSV = o =>{
+		var a = 2*o.l/MAX.l
+		, b = (a<=1?a:(2-a))*o.s/MAX.s
+		, S = a+b==0?0:(2*b)/(a+b)*MAX.s
+		return Color.hsv( o.h, S, (a+b)/2*MAX.v, o.a )
+		}
+	, CMYKtoRGB = o =>{
+		var k = o.k / MAX.k
+		, f = s =>{ return 1 - Math.min( 1, (o[s]/MAX[s]) * ( 1 - k ) + k ) * MAX.r }
 		return Color.rgb( f('c'), f('m'), f('y'))
 		}
-	, RGBtoCMYK =function( RGB ){
-		var r= RGB.r/MAX.r, g= RGB.g/MAX.g, b= RGB.b/MAX.b
+	, RGBtoCMYK = o =>{
+		var r= o.r/MAX.r, g= o.g/MAX.g, b= o.b/MAX.b
 		, k = Math.min( 1 - r, 1 - g, 1 - b )
 		, f =function( N ){ return k==1 ? 0 : MAX.c * ( 1 - N - k ) / ( 1 - k ) }
 		return Color.cmyk( f(r), f(g), f(b), k * MAX.k )
 		}
 
-	, toString =function( sMode, X, Y, Z, a ){
+	, toString = ( sMode, X, Y, Z, a )=>{
 		var s = X+','+Y+','+Z
 		return sMode + ( a!==null ? 'a('+s+','+a+')' : '('+s+')' )
 		}
-	, value =function( n, sOption, sAxe ){
+	, value = ( n, sOption, sAxe )=>{
 		return sOption
 			? Math.round( 100 * n/MAX[sAxe] ) +'%'
 			: Math.round( n )
@@ -181,9 +179,9 @@ Color =(function(){
 	, aDEC2 = '0,17,34,51,68,85,102,119,136,153,170,187,204,221,238,255'.split(',')
 	, contrast =function( o1, o2 ){
 		var _1 = o1.toRGB(), _2 = o2.toRGB()
-		, f =function(s){ return Math.abs( _1[s] - _2[s] ) }
-		, brightness =function( o ){ return ( o.r*299 + o.g*587 + o.b*114 )/1000 }
-		, difference =function(){ return f('r') + f('g') + f('b') }
+		, f = s =>{ return Math.abs( _1[s] - _2[s] ) }
+		, brightness =  o =>{ return ( o.r*299 + o.g*587 + o.b*114 )/1000 }
+		, difference = () =>{ return f('r') + f('g') + f('b') }
 		return !( Math.abs( brightness(_1) - brightness(_2) ) < 125 || difference() < 500 )
 		}
 	Object.assign( Color, {
