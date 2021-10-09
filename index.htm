@@ -42,30 +42,28 @@
 
 	<dl>
 		<dt><b>Color.hex</b></dt>
-			<dd>Couleur hexadécimal (RGB).</dd>
 			<dd>Formats supportés : <i>"FC0", "#FC0", "FFCC00", "#FFCC00"</i>.</dd>
-			<dd>Objet créé = Objet String à 6 caractères étendu avec <code>{ mode:'hex' }</code></dd>
-			
+			<dd>Couleur hexadécimal (RGB).</dd>
+
 		<dt><b>Color.rgb</b></dt>
-			<dd>Couleur formée des attributs r(rouge), v(vert) et b(bleu); et a(son opacité) en option.</dd>
 			<dd>Format supporté : <i>"rgb(1,12,200)", "rgba(1,12,200,0.5)"</i>, ...</dd>
-			<dd>Objet créé = <code>{ r:0..255, g:0..255, b:0..255, a:(null||1), mode:('rgb'||'rgba') }</code></dd>
-			
+			<dd>Couleur formée des attributs r(rouge), v(vert) et b(bleu); et a(son opacité) en option.</dd>
+
 		<dt><b>Color.hsv</b></dt>
-			<dd>Couleur formée des attributs h(hue ou teinte), s(saturation) et v(value ou valeur); et a(son opacité) en option.</dd>
 			<dd>Format supporté :<i>"hsv(300,50,50)", "hsva(300,50,50,0.5)"</i>, ...</dd>
-			<dd>Objet créé = <code>{ h:0..359, s:0..100, v:0..100, a:(null||1), mode:('hsv'||'hsva') }</code></dd>
+			<dd>Couleur formée des attributs h(hue ou teinte), s(saturation) et v(value ou valeur); et a(son opacité) en option.</dd>
 			
 		<dt><b>Color.hsl</b></dt>
-			<dd>Couleur formée des attributs h(hue ou teinte), s(saturation) et l(lightness ou lumière); et a(son opacité) en option.</dd>
 			<dd>Format supporté :<i>"hsl(300,50,50)", "hsla(300,50,50,0.5)"</i>, ...</dd>
-			<dd>Objet créé = <code>{ h:0..359, s:0..100, l:0..100, a:(null||1), mode:('hsl'||'hsla') }</code></dd>
+			<dd>Couleur formée des attributs h(hue ou teinte), s(saturation) et l(lightness ou lumière); et a(son opacité) en option.</dd>
 			
 		<dt><b>Color.cmyk</b></dt>
-			<dd>Couleur formée des attributs c(Cyan), m(Magenta), y(Yellow) et k(Gris...).</dd>
 			<dd>Format supporté : <i>"cmyk(50,50,50,50)"</i>, ...</dd>
-			<dd>Objet créé = <code>{ c:0..100, m:0..100, y:0..100, k:0..100, mode:'cmyk' }</code></dd>
-			
+			<dd>Couleur formée des attributs c(Cyan), m(Magenta), y(Yellow) et k(Gris...).</dd>
+	</dl>
+
+	<h6>Notes:</h6>
+	<dl>
 		<dt><b>valeur r, g ou b</b></dt>
 			<dd>Nombre variant de 0 à 255.</dd>
 			
@@ -86,6 +84,8 @@
 			<dl>
 				<dt><var>sHEX</var> <i>String</i> - Valeur hexadécimale.</dt>
 			</dl>
+			
+			<p>Retourne un objet String à 6 caractères étendu avec <code>{ mode:'hex' }</code></p>
 		</section>
 		<section><h3>Color.rgb ( r, g, b [, a ])</h3>
 			<p>Crée un objet <var>Color.rgb</var>.</p>
@@ -95,6 +95,7 @@
 				<dt><var>b</var> <i>Number</i> - Valeur bleue.</dt>
 				<dt><var>a</var> <i>Number</i> - optionnel - Valeur opacitée.</dt>
 			</dl>
+			<p>Objet créé = <code>{ r:0..255, g:0..255, b:0..255, a:(null||1), mode:('rgb'||'rgba') }</code></p>
 		</section>
 		<section><h3>Color.hsv ( h, s, v [, a ])</h3>
 			<p>Crée un objet <var>Color.hsv</var>.</p>
@@ -104,6 +105,7 @@
 				<dt><var>v</var> <i>Number</i> - Valeur value.</dt>
 				<dt><var>a</var> <i>Number</i> - optionnel - Valeur opacitée.</dt>
 			</dl>
+			<p>Objet créé = <code>{ h:0..359, s:0..100, v:0..100, a:(null||1), mode:('hsv'||'hsva') }</code></p>
 		</section>
 		<section><h3>Color.hsl ( h, s, l [, a ])</h3>
 			<p>Crée un objet <var>Color.hsl</var>.</p>
@@ -113,6 +115,7 @@
 				<dt><var>l</var> <i>Number</i> - Valeur lightness.</dt>
 				<dt><var>a</var> <i>Number</i> - optionnel - Valeur opacitée.</dt>
 			</dl>
+			<p>Objet créé = <code>{ h:0..359, s:0..100, l:0..100, a:(null||1), mode:('hsl'||'hsla') }</code></p>
 		</section>
 		<section><h3>Color.cmyk ( c, m, y, k )</h3>
 			<p>Crée un objet <var>Color.cmyk</var>.</p>
@@ -122,6 +125,7 @@
 				<dt><var>y</var> <i>Number</i> - Valeur yellow.</dt>
 				<dt><var>k</var> <i>Number</i> - Valeur grises.</dt>
 			</dl>
+			<p>Objet créé = <code>{ c:0..100, m:0..100, y:0..100, k:0..100, mode:'cmyk' }</code></p>
 		</section>
 		<section><h3>Color.contrast ( oColor1, oColor2 )</h3>
 			<p>Indique si deux couleurs contrastes entre elles.</p>
@@ -167,7 +171,12 @@
 				<section><h3>oColor.toString( [ sType ] )</h2>
 					<p>Transforme l'objet Color en chaine de caractère. </p>
 					<dl>
-						<dt><var>sType</var> <i>String</i> - optionnel - seul valeur variante possible '%' : indique qu'il faut ajouter le symbole '%' aux valeurs pourcentages.</dt>
+						<dt><var>sType</var> <i>String</i> - optionnel -
+							<ul>
+								<li>'%' indique qu'il faut ajouter le symbole '%' aux valeurs pourcentages.</li>
+								<li>indique pour les <var>Color.hex</var> le symbole préfixe... '#' idéalement.
+							</ul>
+						</dt>
 					</dl>
 					<p>Retourne une chaine de caractère. </p>
 				</section>
