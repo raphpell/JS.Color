@@ -60,6 +60,7 @@
 		</dl>
 
 		<h6>Notes:</h6>
+		<p>La valeur de l'opacité est perdue lors de la conversions en Color.hex ou Color.cmyk.</p>
 		<dl>
 			<dt><b>valeur r, g ou b</b>
 				<br>Nombre variant de 0 à 255.</dt>
@@ -167,7 +168,7 @@
 			<dl>
 				<dt><var>sType</var> <i>String</i> - optionnel -
 					<ul>
-						<li>'%' indique qu'il faut ajouter le symbole '%' aux valeurs pourcentages.</li>
+						<li>indique qu'il faut ajouter le symbole '%' aux valeurs pourcentages.</li>
 						<li>indique pour les <var>Color.hex</var> le symbole préfixe... '#' idéalement.</li>
 					</ul>
 				</dt>
@@ -175,7 +176,7 @@
 			<p>Retourne une chaine de caractère. </p>
 		</section>
 		<section><h3>oColor.toWeb()</h2>
-			<p>Retourne une couleur héxadécimale au format "#FFCC00".</p>
+			<p>Retourne une couleur hexadécimale au format "#FFCC00".</p>
 		</section>
 		<section><h3>oColor.toHEX()</h2>
 			<p>Transforme l'objet Color en Color.hex.</p>
@@ -356,13 +357,6 @@ window.f = ( sMode, v1, v2, v3, v4 ) =>{
 window.f = ( sMode, v1, v2, v3, v4 ) =>{
 	window.oColor = Color[sMode]( v1, v2, v3, v4 )
 	return oColor.mode
-		&& oColor.toString
-		&& oColor.toWeb
-		&& oColor.toHEX
-		&& oColor.toRGB
-		&& oColor.toHSV
-		&& oColor.toHSL
-		&& oColor.toCMYK
 		&& oColor.toWeb() == '#00FF00'
 	}
 window.f2 = ( sName, sMode ) =>{
@@ -378,6 +372,7 @@ window.f2 = ( sName, sMode ) =>{
 			`f( 'hex', "00FF00" )`,
 			`oColor.toString() == '00FF00'`,
 			`oColor.toString('@') == '@00FF00'`,
+			`oColor.toString('#') == '#00FF00'`,
 			`f2( 'toHEX', 'hex' )`,
 			`f2( 'toRGB', 'rgb' )`,
 			`f2( 'toHSV', 'hsv' )`,
@@ -389,11 +384,21 @@ window.f2 = ( sName, sMode ) =>{
 		assertions:[
 			`f( 'rgb', 0, 255, 0 )`,
 			`oColor.toString() == 'rgb(0,255,0)'`,
+			`oColor.toString('#') == 'rgb(0%,100%,0%)'`,
 			`oColor.toString('%') == 'rgb(0%,100%,0%)'`,
 			`f2( 'toHEX', 'hex' )`,
 			`f2( 'toRGB', 'rgb' )`,
 			`f2( 'toHSV', 'hsv' )`,
 			`f2( 'toHSL', 'hsl' )`,
+			`f2( 'toCMYK', 'cmyk' )`,
+			`f( 'rgb', 0, 255, 0, .5 )`,
+			`oColor.toString() == 'rgba(0,255,0,0.5)'`,
+			`oColor.toString('#') == 'rgba(0%,100%,0%,0.5)'`,
+			`oColor.toString('%') == 'rgba(0%,100%,0%,0.5)'`,
+			`f2( 'toHEX', 'hex' )`,
+			`f2( 'toRGB', 'rgba' )`,
+			`f2( 'toHSV', 'hsva' )`,
+			`f2( 'toHSL', 'hsla' )`,
 			`f2( 'toCMYK', 'cmyk' )`
 			]
 		},
@@ -401,11 +406,21 @@ window.f2 = ( sName, sMode ) =>{
 		assertions:[
 			`f( 'hsv', 119.67, 100, 100 )`,
 			`oColor.toString() == 'hsv(120,100,100)'`,
+			`oColor.toString('_') == 'hsv(120,100%,100%)'`,
 			`oColor.toString('%') == 'hsv(120,100%,100%)'`,
 			`f2( 'toHEX', 'hex' )`,
 			`f2( 'toRGB', 'rgb' )`,
 			`f2( 'toHSV', 'hsv' )`,
 			`f2( 'toHSL', 'hsl' )`,
+			`f2( 'toCMYK', 'cmyk' )`,
+			`f( 'hsv', 119.67, 100, 100, .5 )`,
+			`oColor.toString() == 'hsva(120,100,100,0.5)'`,
+			`oColor.toString('_') == 'hsva(120,100%,100%,0.5)'`,
+			`oColor.toString('%') == 'hsva(120,100%,100%,0.5)'`,
+			`f2( 'toHEX', 'hex' )`,
+			`f2( 'toRGB', 'rgba' )`,
+			`f2( 'toHSV', 'hsva' )`,
+			`f2( 'toHSL', 'hsla' )`,
 			`f2( 'toCMYK', 'cmyk' )`
 			]
 		},
@@ -413,11 +428,21 @@ window.f2 = ( sName, sMode ) =>{
 		assertions:[
 			`f( 'hsl', 119.67, 100, 50 )`,
 			`oColor.toString() == 'hsl(120,100,50)'`,
+			`oColor.toString('@') == 'hsl(120,100%,50%)'`,
 			`oColor.toString('%') == 'hsl(120,100%,50%)'`,
 			`f2( 'toHEX', 'hex' )`,
 			`f2( 'toRGB', 'rgb' )`,
 			`f2( 'toHSV', 'hsv' )`,
 			`f2( 'toHSL', 'hsl' )`,
+			`f2( 'toCMYK', 'cmyk' )`,
+			`f( 'hsl', 119.67, 100, 50, .5 )`,
+			`oColor.toString() == 'hsla(120,100,50,0.5)'`,
+			`oColor.toString('@') == 'hsla(120,100%,50%,0.5)'`,
+			`oColor.toString('%') == 'hsla(120,100%,50%,0.5)'`,
+			`f2( 'toHEX', 'hex' )`,
+			`f2( 'toRGB', 'rgba' )`,
+			`f2( 'toHSV', 'hsva' )`,
+			`f2( 'toHSL', 'hsla' )`,
 			`f2( 'toCMYK', 'cmyk' )`
 			]
 		},
@@ -425,6 +450,7 @@ window.f2 = ( sName, sMode ) =>{
 		assertions:[
 			`f( 'cmyk', 100 , 0 , 100 , 0 )`,
 			`oColor.toString() == 'cmyk(100,0,100,0)'`,
+			`oColor.toString('&') == 'cmyk(100%,0%,100%,0%)'`,
 			`oColor.toString('%') == 'cmyk(100%,0%,100%,0%)'`,
 			`f2( 'toHEX', 'hex' )`,
 			`f2( 'toRGB', 'rgb' )`,

@@ -49,6 +49,7 @@ Color =(function(){
 		}
 
 	// CONVERSIONS
+	// https://www.rapidtables.com/convert/color/index.html
 	// http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 	, f1= DECtoHEX = n =>{
 		n=n<0?0:(n>255?255:Math.round(n))
