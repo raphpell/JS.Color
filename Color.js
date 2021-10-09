@@ -1,4 +1,4 @@
-Color =(function(){
+Color =(function(){ // 09/10/2021 raphpell
 	let Color =function( s ){
 		if( ! s || ! s.charAt ) return s
 		if( s.charAt(0)=='#' || s.length<=6 ) return Color.hex( s )
