@@ -28,12 +28,12 @@ Color =(function(){
 		}
 	, inRange =(n,s)=>{
 		if( isNaN(n) || ! MAX[s]) return null
-		return n > MAX[s] ? MAX[s] : ( n < 0 ? 0 : n )
+		return n>MAX[s]?MAX[s]:(n<0?0:n)
 		}
 	, isHEX = s =>{
 		if( s[0]=='#' ) s = s.slice(1)
-		if( s.length==1 ) s = s[0]+s[0] +s[0]+s[0] +s[0]+s[0]
-		if( s.length==3 ) s = s[0]+s[0] +s[1]+s[1] +s[2]+s[2]
+		if( s.length==1 ) s = s[0]+s[0]+s[0]+s[0]+s[0]+s[0]
+		if( s.length==3 ) s = s[0]+s[0]+s[1]+s[1]+s[2]+s[2]
 		if( /^[\dABCDEF]{6}$/i.test( s )) return s.toUpperCase()
 		throw new Error ('INVALID_HEXADECIMAL_COLOR '+ s )
 		}
@@ -57,14 +57,14 @@ Color =(function(){
 		return(s.length==1?'0':'')+s
 		}
 	, f2= HEXtoDEC = s =>{
-		let n=0, _f= n => '0123456789ABCDEF'.indexOf( s.charAt(n))
+		let n=0, f= n => '0123456789ABCDEF'.indexOf( s.charAt(n))
 		for(let nCoef=0, i=s.length-1; i>=0; i--, nCoef++)
-			n+=_f(i)*Math.pow(16,nCoef)
+			n+=f(i)*Math.pow(16,nCoef)
 		return n
 		}
 	, HEXtoRGB = HEX =>{
-		let _f = n => f2(HEX.substr(n,2))
-		return Color.rgb( _f(0), _f(2), _f(4) )
+		let f = n => f2(HEX.substr(n,2))
+		return Color.rgb(f(0),f(2),f(4))
 		}
 	, RGBtoHEX = o => Color.hex( f1(o.r) + f1(o.g) + f1(o.b))
 	, RGBtoHSV = o =>{
@@ -72,7 +72,7 @@ Color =(function(){
 		let max = Math.max(r,g,b), min = Math.min(r,g,b)
 		let h, s, v = max
 		let d = max-min
-		s = max==0 ? 0 : d/max
+		s = max==0?0:d/max
 		if( max==min ) h = 0 // achromatic
 		else{
 			switch( max ){
@@ -86,14 +86,14 @@ Color =(function(){
 		}
 	, RGBtoHSL = o =>{
 		let r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
-		let max = Math.max(r,g,b), min = Math.min(r,g,b)
-		let h, s, l = (max+min)/2
+		, max = Math.max(r,g,b), min = Math.min(r,g,b)
+		, h, s, l = (max+min)/2
 		if( max==min ) h = s = 0 // achromatic
 		else{
 			let d = max-min
 			s = l>0.5 ? d/(2-max-min) : d/(max+min)
 			switch(max){
-				case r: h = (g-b)/d+( g<b ? 6 : 0 ); break
+				case r: h = (g-b)/d+(g<b?6:0); break
 				case g: h = (b-r)/d+2; break
 				case b: h = (r-g)/d+4; break
 				}
@@ -121,16 +121,18 @@ Color =(function(){
 		}
 	, HSVtoHSL = o =>{
 		let L = (2-o.s/100)*o.v/2
-		, S = o.s*o.v/( L<50 ? L*2 : 200-L*2 )
+		, S = o.s*o.v/(L<50?L*2:200-L*2)
 		if( isNaN(S)) S = 0
-		return Color.hsl( o.h, S, L, o.a )
+		return Color.hsl(o.h,S,L,o.a)
 		}
 	, HSLtoRGB = o =>{
-		let h=o.h/MAX.h, s=o.s/MAX.s, l=o.l/MAX.l
-		let r, g, b
+		let h=o.h/MAX.h
+		, s=o.s/MAX.s
+		, l=o.l/MAX.l
+		, r,g,b
 		if( s==0 ) r=g=b=l // achromatic
 		else{
-			let q = l<0.5 ? l*(1+s) : l+s-l*s
+			let q = l<0.5?l*(1+s):l+s-l*s
 			, p = 2*l-q
 			, hue2rgb = t =>{
 				if(t<0) t+=1
@@ -144,24 +146,25 @@ Color =(function(){
 			g = hue2rgb(h)
 			b = hue2rgb(h-1/3)
 			}
-		return Color.rgb( r*MAX.r, g*MAX.g, b*MAX.b, o.a )
+		return Color.rgb(r*MAX.r,g*MAX.g,b*MAX.b,o.a)
 		}
 	, HSLtoHSV = o =>{
 		let a = 2*o.l/MAX.l
 		, b = (a<=1?a:(2-a))*o.s/MAX.s
 		, S = a+b==0?0:(2*b)/(a+b)*MAX.s
-		return Color.hsv( o.h, S, (a+b)/2*MAX.v, o.a )
+		return Color.hsv(o.h,S,(a+b)/2*MAX.v,o.a)
 		}
 	, CMYKtoRGB = o =>{
-		let n = 255 * ( 100 - o.k ) / 10000
-		, f = s => n * ( 100 - o[s] )
-		return Color.rgb( f('c'), f('m'), f('y'))
+		let n = 255*(100-o.k)/10000
+		, f = s => n*(100-o[s])
+		return Color.rgb(f('c'),f('m'),f('y'))
 		}
 	, RGBtoCMYK = o =>{
-		let r= o.r/MAX.r, g= o.g/MAX.g, b= o.b/MAX.b
-		, k = 1 - Math.max( r, g, b )
-		, f = N => k==1 ? 0 : MAX.c * ( 1 - N - k ) / ( 1 - k )
-		return Color.cmyk( f(r), f(g), f(b), k * MAX.k )
+		let r= o.r/MAX.r
+		, g= o.g/MAX.g, b= o.b/MAX.b
+		, k = 1-Math.max(r,g,b)
+		, f = N => k==1?0:MAX.c*(1-N-k)/(1-k)
+		return Color.cmyk( f(r), f(g), f(b), k*MAX.k )
 		}
 
 	, toString = ( sMode, X, Y, Z, a )=>{
@@ -198,14 +201,7 @@ Color =(function(){
 			},
 		rgb :function(R,G,B,A){
 			return Object.assign( is('rgba',R,G,B,A), {
-				toString :function( m ){
-					return toString('rgb',
-						value(this.r,m,'r'),
-						value(this.g,m,'g'),
-						value(this.b,m,'b'),
-						this.a
-						)
-					},
+				toString :function( m ){ return toString('rgb', value(this.r,m,'r'), value(this.g,m,'g'), value(this.b,m,'b'), this.a ) },
 				toWeb :function(){return this.toHEX().toString('#')},
 				toHEX :function(){return RGBtoHEX(this)},
 				toRGB :function(){return this},
@@ -216,14 +212,7 @@ Color =(function(){
 			},
 		hsv :function(H,S,V,A){
 			return Object.assign( is('hsva',H,S,V,A), {
-				toString :function( m ){
-					return toString('hsv',
-						value(this.h||0),
-						value(this.s,m,'s'),
-						value(this.v,m,'v'),
-						this.a
-						)
-					},
+				toString :function( m ){ return toString('hsv', value(this.h||0), value(this.s,m,'s'), value(this.v,m,'v'), this.a ) },
 				toWeb :function(){return this.toHEX().toString('#')},
 				toHEX :function(){return this.toRGB().toHEX()},
 				toRGB :function(){return HSVtoRGB(this)},
@@ -234,14 +223,7 @@ Color =(function(){
 			},
 		hsl :function(H,S,L,A){
 			return Object.assign( is('hsla',H,S,L,A), {
-				toString :function( m ){
-					return toString('hsl',
-						value(this.h||0),
-						value(this.s,m,'s'),
-						value(this.l,m,'l'),
-						this.a
-						)
-					},
+				toString :function( m ){ return toString('hsl', value(this.h||0), value(this.s,m,'s'), value(this.l,m,'l'), this.a ) },
 				toWeb :function(){return this.toHEX().toString('#')},
 				toHEX :function(){return this.toRGB().toHEX()},
 				toRGB :function(){return HSLtoRGB(this)},
@@ -252,14 +234,7 @@ Color =(function(){
 			},
 		cmyk :function(C,M,Y,K){
 			return Object.assign( is('cmyk',C,M,Y,K), {
-				toString :function( m ){
-					return 'cmyk('+ [
-						value(this.c,m,'c'),
-						value(this.m,m,'m'),
-						value(this.y,m,'y'),
-						value(this.k,m,'k')
-						] +')'
-					},
+				toString :function( m ){ return 'cmyk('+ [ value(this.c,m,'c'), value(this.m,m,'m'), value(this.y,m,'y'), value(this.k,m,'k') ] +')' },
 				toWeb :function(){return this.toHEX().toString('#')},
 				toHEX :function(){return this.toRGB().toHEX()},
 				toRGB :function(){return CMYKtoRGB(this)},
@@ -284,7 +259,7 @@ Color =(function(){
 			},
 		visibleColors : o1 =>{
 			let a=[]
-			let f =function( aDEC ){
+			let f = aDEC => {
 				let n=aDEC.length, o2
 				for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++)
 					if( contrast( o1, o2 = Color.rgb( aDEC[i], aDEC[j], aDEC[k] )))
@@ -294,6 +269,6 @@ Color =(function(){
 			return a
 			}
 		})
-	
+
 	return Color
 	})()
