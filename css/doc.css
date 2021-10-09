@@ -7,15 +7,15 @@ section {
 	}
 	
 /* Sommaire */
-#eSummary {
+.summary {
 	float: right;
 	height: auto;
 	padding: 0 1em 1em;
 	}
-#eSummary > ol {
+.summary > ol {
 	padding: 0;
 	}
-#eSummary ol {
+.summary ol {
 	list-style: none;
 	}
 

@@ -17,7 +17,7 @@
 	<a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
 	<h1>Objet Color</h1>
 
-	<div id="eSummary"></div>
+	<div id="eSummary1"></div>
 
 	<section>
 		<p>La fonction <var>Color</var> créée un objet Color d'un certain type (Color.hex, Color.rgb,...) pouvant être converti en n'importe quel autre type.</p>
@@ -199,6 +199,9 @@
 <page id="eUnitTest">
 	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
 	<h1>Testes unitaires</h1>
+
+	<div id="eSummary2"></div>
+
 </page>
 
 <page id="eBenchmarking">
@@ -218,13 +221,10 @@ La page est en chargement
 Insérer le code à charger ci-dessous
 */
 
-layoutDoc( eSummary, {
-	numbers: false,
-	links: true
-	})
-	
+layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
+
 new UnitTest( eUnitTest,[
-	{ desc:"Contrôle de l'analyse des chaînes",
+	{ desc:"<h2>Analyse des chaînes</h2>",
 		eval:[
 			`
 window.f = ( s1, s2, sMode ) =>{
@@ -278,7 +278,7 @@ window.f = ( s1, s2, sMode ) =>{
 			]
 		},
 		
-	{ desc:"Contrôle de la structure des objets créés",
+	{ desc:"<h2>Structure des objets créés</h2>",
 		eval:[
 			`
 window.f = ( sMode, v1, v2, v3, v4 ) =>{
@@ -351,7 +351,7 @@ window.f = ( sMode, v1, v2, v3, v4 ) =>{
 			]
 		},
 		
-	{ desc:"Contrôle les méthodes des objets créés",
+	{ desc:"<h2>Méthodes des objets créés</h2>",
 		eval:[
 			`
 window.f = ( sMode, v1, v2, v3, v4 ) =>{
@@ -461,6 +461,8 @@ window.f2 = ( sName, sMode ) =>{
 		}
 	])
 
+
+layoutDoc( eSummary2, { numbers: true, links: true }, eUnitTest )
 /*
 Une fois le code charger, afficher de la page d'accueil !!
 ... sans setTimeout SVP !

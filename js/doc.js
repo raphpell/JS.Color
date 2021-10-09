@@ -1,21 +1,23 @@
 /* Concerne la mise en page de la doc */
 
 layoutDoc =(function(){
+	var nSummaryCount = 0
+	
 	class Layout {
-		constructor ( eSummary, oSettings ){
+		constructor ( eSummary, oSettings, e ){
+			nSummaryCount++
+			this.sLinkPrefixe = '_'.repeat(nSummaryCount)
 			if( oSettings ) Object.assign( this, oSettings )
-			this.aHierarchy = this.getHierarchy ()
+			this.aHierarchy = this.getHierarchy ( e, 2 )
 			let eH4 = document.createElement('H4')
 			eH4.innerHTML = 'Sommaire'
 			eSummary.appendChild( eH4 )
+			eSummary.classList.add( 'summary' )
 			this.displaySummary ( eSummary, this.aHierarchy )
 			this.mapSections ( this.aHierarchy )
 			}
 		getHierarchy ( e, nIndex ){
-			if( ! e ){
-				e = document
-				nIndex = 2
-				}
+			if( ! e ) e = document
 			let a = []
 			let o = this.getLevel( nIndex, e )
 			for(var i = 0, ni=o.length; i<ni; i++ )
@@ -55,15 +57,15 @@ layoutDoc =(function(){
 		getLink ( nLevel, s ){
 			let sText = ( this.numbers ? '<b>'+ nLevel +'</b> ' : '' )+ s
 			return this.links
-				? '<a href="#'+ nLevel +'">'+ sText +'</a>'
+				? '<a href="#'+ this.sLinkPrefixe + nLevel +'">'+ sText +'</a>'
 				: sText
 			}
 		getAnchor ( nLevel, s ){
-			return '<a name="'+ nLevel +'">'+ ( this.numbers ? '<b>'+ nLevel +'</b> ' : '' )+ s +'</a>'
+			return '<a name="'+ this.sLinkPrefixe + nLevel +'">'+ ( this.numbers ? '<b>'+ nLevel +'</b> ' : '' )+ s +'</a>'
 			}
 		}
 
-	return function( eSummary, oSettings ){
-		let o = new Layout ( eSummary, oSettings )
+	return function( eSummary, oSettings, e ){
+		let o = new Layout ( eSummary, oSettings, e )
 		}
 	})()
