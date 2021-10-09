@@ -69,9 +69,9 @@ Color =(function(){
 	, RGBtoHEX = o => Color.hex( f1(o.r) + f1(o.g) + f1(o.b))
 	, RGBtoHSV = o =>{
 		let r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
-		let max = Math.max(r,g,b), min = Math.min(r,g,b)
-		let h, s, v = max
-		let d = max-min
+		, max = Math.max(r,g,b), min = Math.min(r,g,b)
+		, h, s, v = max
+		, d = max-min
 		s = max==0?0:d/max
 		if( max==min ) h = 0 // achromatic
 		else{
@@ -103,12 +103,12 @@ Color =(function(){
 		}
 	, HSVtoRGB = o =>{
 		let h=o.h/MAX.h, s=o.s/MAX.s, v=o.v/MAX.v
-		let r, g, b
-		let i = Math.floor(h*6)
-		let f = h*6-i
-		let p = v*(1-s)
-		let q = v*(1-f*s)
-		let t = v*(1-(1-f)*s)
+		, r, g, b
+		, i = Math.floor(h*6)
+		, f = h*6-i
+		, p = v*(1-s)
+		, q = v*(1-f*s)
+		, t = v*(1-(1-f)*s)
 		switch( i%6 ){
 			case 0: r=v,g=t,b=p; break
 			case 1: r=q,g=v,b=p; break
@@ -259,7 +259,7 @@ Color =(function(){
 			},
 		visibleColors : o1 =>{
 			let a=[]
-			let f = aDEC => {
+			, f = aDEC => {
 				let n=aDEC.length, o2
 				for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++)
 					if( contrast( o1, o2 = Color.rgb( aDEC[i], aDEC[j], aDEC[k] )))
