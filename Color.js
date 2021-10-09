@@ -8,13 +8,13 @@ Color =(function(){
 		throw new Error ('INVALID_COLOR '+ s )
 		}
 
-	, MAX= {r:255,g:255,b:255,h:360,s:100,v:100,l:100,c:100,m:100,y:100,k:100,a:1}
+	, MAX= {r:255,g:255,b:255,h:359,s:100,v:100,l:100,c:100,m:100,y:100,k:100,a:1}
 	
 	// VALIDATIONS
 	, parseString =function( s, sMode ){
 		let a =[], i =-1, re =new RegExp( "^\\s*"+ sMode +"?\\s*\\(([^)]+)\\)", 'gim' )
 		s.replace( re, function( sFound, $1 ){
-			$1.replace( /\s*(\d+(?:\.\d*)?)(%?)\s*,?/gim, function( sFound, $1, $2 ){
+			$1.replace( /\s*(-?\d+(?:\.\d*)?)(%?)\s*,?/gim, function( sFound, $1, $2 ){
 				if( i++ < 4 ) a[i] = $2 ? MAX[ sMode.charAt(i)] * $1 / 100 : $1*1
 				})
 			})
@@ -22,7 +22,8 @@ Color =(function(){
 		return null
 		}
 	, getObject =function( sMode, a ){
-		for(let o ={}, i=0; s=sMode.charAt(i); i++ ) o[s] = inRange( a[i], s )
+		let o ={}
+		for(let i=0; s=sMode.charAt(i); i++ ) o[s] = inRange( a[i], s )
 		return o
 		}
 	, inRange =function(n,s){
@@ -57,8 +58,8 @@ Color =(function(){
 		return(s.length==1?'0':'')+s
 		}
 	, f2= HEXtoDEC = s =>{
-		let _f=function(n){return '0123456789ABCDEF'.indexOf(s.charAt(n))}
-		for(let n=0, nCoef=0, i=s.length-1; i>=0; i--, nCoef++)
+		let n=0, _f=function(n){return '0123456789ABCDEF'.indexOf(s.charAt(n))}
+		for(let nCoef=0, i=s.length-1; i>=0; i--, nCoef++)
 			n+=_f(i)*Math.pow(16,nCoef)
 		return n
 		}
@@ -82,7 +83,7 @@ Color =(function(){
 				}
 			h /= 6
 			}
-		return Color.hsv( h*MAX.h, s*MAX.s, v*MAX.v, RGB.a )
+		return Color.hsv( h*MAX.h, s*MAX.s, v*MAX.v, o.a )
 		}
 	, RGBtoHSL = o =>{
 		let r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
@@ -99,7 +100,7 @@ Color =(function(){
 				}
 			h /= 6
 			}
-		return Color.hsl( h*MAX.h, s*MAX.s, l*MAX.l, RGB.a )
+		return Color.hsl( h*MAX.h, s*MAX.s, l*MAX.l, o.a )
 		}
 	, HSVtoRGB = o =>{
 		let h=o.h/MAX.h, s=o.s/MAX.s, v=o.v/MAX.v
@@ -153,13 +154,13 @@ Color =(function(){
 		return Color.hsv( o.h, S, (a+b)/2*MAX.v, o.a )
 		}
 	, CMYKtoRGB = o =>{
-		let k = o.k / MAX.k
-		, f = s =>{ return 1 - Math.min( 1, (o[s]/MAX[s]) * ( 1 - k ) + k ) * MAX.r }
+		let n = 255 * ( 100 - o.k ) / 10000
+		, f = s =>{ return n * ( 100 - o[s] ) }
 		return Color.rgb( f('c'), f('m'), f('y'))
 		}
 	, RGBtoCMYK = o =>{
 		let r= o.r/MAX.r, g= o.g/MAX.g, b= o.b/MAX.b
-		, k = Math.min( 1 - r, 1 - g, 1 - b )
+		, k = 1 - Math.max( r, g, b )
 		, f =function( N ){ return k==1 ? 0 : MAX.c * ( 1 - N - k ) / ( 1 - k ) }
 		return Color.cmyk( f(r), f(g), f(b), k * MAX.k )
 		}

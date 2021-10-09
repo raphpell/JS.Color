@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" href="css/page.css">
 	<link rel="stylesheet" type="text/css" href="css/doc.css">
+	<link rel="stylesheet" type="text/css" href="css/unittest.css">
 </head>
 <body>
 
@@ -197,15 +198,11 @@
 <page id="eUnitTest">
 	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eBenchmarking )">Benchmarking</a>
 	<h1>Testes unitaires</h1>
-
-	<p>...</p>
 </page>
 
 <page id="eBenchmarking">
 	<a href="#" onclick="goTo( eDoc )">Documentation</a> - <a href="#" onclick="goTo( eUnitTest )">Testes unitaires</a>
 	<h1>Benchmarking</h1>
-
-	<p>...</p>
 </page>
 
 
@@ -213,6 +210,7 @@
 <script src="Color.js"></script>
 <script src="js/page.js"></script>
 <script src="js/doc.js"></script>
+<script src="js/unittest.js"></script>
 <script>
 /*
 La page est en chargement
@@ -223,6 +221,219 @@ layoutDoc( eSummary, {
 	numbers: false,
 	links: true
 	})
+	
+new UnitTest( eUnitTest,[
+	{ desc:"Contrôle de l'analyse des chaînes",
+		eval:[
+			`
+window.f = ( s1, s2, sMode ) =>{
+	let oColor = Color( s1 )
+	return oColor.toString() == s2
+		&& oColor.mode == sMode
+	}`
+			] 
+		},
+	{ title:"Color &rarr; Color.hex",
+		eval:[],
+		assertions:[
+			`f( "FC0" , "FFCC00", 'hex' )`,
+			`f( "#FC0" , "FFCC00", 'hex')`,
+			`f( "FFCC00" , "FFCC00", 'hex')`,
+			`f( "#FFCC00" , "FFCC00", 'hex')`
+			]
+		},
+	{ title:"Color &rarr; Color.rgb",
+		assertions:[
+			`f( "rgb( 1, 12, 200 )" , "rgb(1,12,200)" , 'rgb' )`,
+			`f( "rgb( -10, -10, -10 )" , "rgb(0,0,0)" , 'rgb' )`,
+			`f( "rgb( 256, 256, 256 )" , "rgb(255,255,255)" , 'rgb' )`,
+			`f( "rgba( 1, 12, 200, 0.5 )" , "rgba(1,12,200,0.5)" , 'rgba' )`,
+			`f( "rgba( 1, 12, 200, 2 )" , "rgba(1,12,200,1)" , 'rgba' )`
+			]
+		},
+	{ title:"Color &rarr; Color.hsv",
+		assertions:[
+			`f( "hsv( 300, 50, 50 )" , "hsv(300,50,50)" , 'hsv' )`,
+			`f( "hsv( -10, -10, -10 )" , "hsv(0,0,0)" , 'hsv' )`,
+			`f( "hsv( 360, 101, 101 )" , "hsv(359,100,100)" , 'hsv' )`,
+			`f( "hsva( 300, 50, 50, 0.5 )" , "hsva(300,50,50,0.5)" , 'hsva' )`,
+			`f( "hsva( 300, 50, 50, 2 )" , "hsva(300,50,50,1)" , 'hsva' )`
+			]
+		},
+	{ title:"Color &rarr; Color.hsl",
+		assertions:[
+			`f( "hsl( 300, 50, 50 )" , "hsl(300,50,50)" , 'hsl' )`,
+			`f( "hsl( -10, -10, -10 )" , "hsl(0,0,0)" , 'hsl' )`,
+			`f( "hsl( 360, 101, 101 )" , "hsl(359,100,100)" , 'hsl' )`,
+			`f( "hsla( 300, 50, 50, 0.5 )" , "hsla(300,50,50,0.5)" , 'hsla' )`,
+			`f( "hsla( 300, 50, 50, 2 )" , "hsla(300,50,50,1)" , 'hsla' )`
+			]
+		},
+	{ title:"Color &rarr; Color.cmyk",
+		assertions:[
+			`f( "cmyk( 50, 50, 50, 50 )" , "cmyk(50,50,50,50)" , 'cmyk' )`,
+			`f( "cmyk( -1, -1, -1, -1 )" , "cmyk(0,0,0,0)" , 'cmyk' )`,
+			`f( "cmyk( 101, 101, 101, 101 )" , "cmyk(100,100,100,100)" , 'cmyk' )`
+			]
+		},
+		
+	{ desc:"Contrôle de la structure des objets créés",
+		eval:[
+			`
+window.f = ( sMode, v1, v2, v3, v4 ) =>{
+	window.oColor = Color[sMode]( v1, v2, v3, v4 )
+	return oColor.mode
+		&& oColor.toString
+		&& oColor.toWeb
+		&& oColor.toHEX
+		&& oColor.toRGB
+		&& oColor.toHSV
+		&& oColor.toHSL
+		&& oColor.toCMYK
+	}`
+			]
+		},
+	{ title:"Color.hex",
+		eval:[],
+		assertions:[
+			`f( 'hex', "7F3F3F" )`,
+			`oColor.mode == 'hex'`,
+			]
+		},
+	{ title:"Color.rgb",
+		assertions:[
+			`f( 'rgb', 127, 63, 63 )`,
+			`oColor.mode == 'rgb'`,
+			`oColor.r == 127`,
+			`oColor.g == 63`,
+			`oColor.b == 63`,
+			`oColor.a == null`,
+			`f( 'rgb' , 127, 63, 63, .5 )`,
+			`oColor.mode == 'rgba'`,
+			`oColor.a == .5`
+			]
+		},
+	{ title:"Color.hsv",
+		assertions:[
+			`f( 'hsv', 0, 50, 50 )`,
+			`oColor.mode == 'hsv'`,
+			`oColor.h == 0`,
+			`oColor.s == 50`,
+			`oColor.v == 50`,
+			`oColor.a == null`,
+			`f( 'hsv' , 0, 50, 50, .5 )`,
+			`oColor.mode == 'hsva'`,
+			`oColor.a == .5`
+			]
+		},
+	{ title:"Color.hsl",
+		assertions:[
+			`f( 'hsl', 0, 34, 37 )`,
+			`oColor.mode == 'hsl'`,
+			`oColor.h == 0`,
+			`oColor.s == 34`,
+			`oColor.l == 37`,
+			`oColor.a == null`,
+			`f( 'hsl' , 0, 34, 37, .5 )`,
+			`oColor.mode == 'hsla'`,
+			`oColor.a == .5`
+			]
+		},
+	{ title:"Color.cmyk",
+		assertions:[
+			`f( 'cmyk', 50 , 50 , 50 , 50 )`,
+			`oColor.mode == 'cmyk'`,
+			`oColor.c == 50`,
+			`oColor.m == 50`,
+			`oColor.y == 50`,
+			`oColor.k == 50`
+			]
+		},
+		
+	{ desc:"Contrôle les méthodes des objets créés",
+		eval:[
+			`
+window.f = ( sMode, v1, v2, v3, v4 ) =>{
+	window.oColor = Color[sMode]( v1, v2, v3, v4 )
+	return oColor.mode
+		&& oColor.toString
+		&& oColor.toWeb
+		&& oColor.toHEX
+		&& oColor.toRGB
+		&& oColor.toHSV
+		&& oColor.toHSL
+		&& oColor.toCMYK
+		&& oColor.toWeb() == '#00FF00'
+	}
+window.f2 = ( sName, sMode ) =>{
+	let oColor = window.oColor[ sName ]()
+	return oColor.mode == sMode
+		&& oColor.toWeb() == '#00FF00'
+	}`
+			]
+		},
+	{ title:"Color.hex",
+		eval:[],
+		assertions:[
+			`f( 'hex', "00FF00" )`,
+			`oColor.toString() == '00FF00'`,
+			`oColor.toString('@') == '@00FF00'`,
+			`f2( 'toHEX', 'hex' )`,
+			`f2( 'toRGB', 'rgb' )`,
+			`f2( 'toHSV', 'hsv' )`,
+			`f2( 'toHSL', 'hsl' )`,
+			`f2( 'toCMYK', 'cmyk' )`
+			]
+		},
+	{ title:"Color.rgb",
+		assertions:[
+			`f( 'rgb', 0, 255, 0 )`,
+			`oColor.toString() == 'rgb(0,255,0)'`,
+			`oColor.toString('%') == 'rgb(0%,100%,0%)'`,
+			`f2( 'toHEX', 'hex' )`,
+			`f2( 'toRGB', 'rgb' )`,
+			`f2( 'toHSV', 'hsv' )`,
+			`f2( 'toHSL', 'hsl' )`,
+			`f2( 'toCMYK', 'cmyk' )`
+			]
+		},
+	{ title:"Color.hsv",
+		assertions:[
+			`f( 'hsv', 119.67, 100, 100 )`,
+			`oColor.toString() == 'hsv(120,100,100)'`,
+			`oColor.toString('%') == 'hsv(120,100%,100%)'`,
+			`f2( 'toHEX', 'hex' )`,
+			`f2( 'toRGB', 'rgb' )`,
+			`f2( 'toHSV', 'hsv' )`,
+			`f2( 'toHSL', 'hsl' )`,
+			`f2( 'toCMYK', 'cmyk' )`
+			]
+		},
+	{ title:"Color.hsl",
+		assertions:[
+			`f( 'hsl', 119.67, 100, 50 )`,
+			`oColor.toString() == 'hsl(120,100,50)'`,
+			`oColor.toString('%') == 'hsl(120,100%,50%)'`,
+			`f2( 'toHEX', 'hex' )`,
+			`f2( 'toRGB', 'rgb' )`,
+			`f2( 'toHSV', 'hsv' )`,
+			`f2( 'toHSL', 'hsl' )`,
+			`f2( 'toCMYK', 'cmyk' )`
+			]
+		},
+	{ title:"Color.cmyk",
+		assertions:[
+			`f( 'cmyk', 100 , 0 , 100 , 0 )`,
+			`oColor.toString() == 'cmyk(100,0,100,0)'`,
+			`oColor.toString('%') == 'cmyk(100%,0%,100%,0%)'`,
+			`f2( 'toHEX', 'hex' )`,
+			`f2( 'toRGB', 'rgb' )`,
+			`f2( 'toHSV', 'hsv' )`,
+			`f2( 'toHSL', 'hsl' )`,
+			`f2( 'toCMYK', 'cmyk' )`
+			]
+		}
+	])
 
 /*
 Une fois le code charger, afficher de la page d'accueil !!
