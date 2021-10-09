@@ -28,3 +28,12 @@ page.active {
 	justify-content: center;
 	}
 
+A,
+A:visited {
+	color: blue;
+	}
+A:hover ,
+A:active {
+	color: darkorange;
+	}
+

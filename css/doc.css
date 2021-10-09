@@ -10,7 +10,10 @@ section {
 #eSummary {
 	float: right;
 	height: auto;
-	bottom: 0;
+	padding: 0 1em 1em;
+	}
+#eSummary > ol {
+	padding: 0;
 	}
 #eSummary ol {
 	list-style: none;
