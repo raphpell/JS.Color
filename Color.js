@@ -2,7 +2,7 @@ Color =(function(){
 	let Color =function( s ){
 		if( ! s || ! s.charAt ) return s
 		if( s.charAt(0)=='#' || s.length<=6 ) return Color.hex( s )
-		for(var a=['rgb','hsv','hsl','cmyk'], i=0, ni=a.length; i<ni; i++ )
+		for(let a=['rgb','hsv','hsl','cmyk'], i=0, ni=a.length; i<ni; i++ )
 			if(!s.indexOf(a[i])||!s.indexOf(a[i].toUpperCase()))
 				return Color[a[i]]( s )
 		throw new Error ('INVALID_COLOR '+ s )
@@ -12,7 +12,7 @@ Color =(function(){
 	
 	// VALIDATIONS
 	, parseString =function( s, sMode ){
-		var a =[], i =-1, re =new RegExp( "^\\s*"+ sMode +"?\\s*\\(([^)]+)\\)", 'gim' )
+		let a =[], i =-1, re =new RegExp( "^\\s*"+ sMode +"?\\s*\\(([^)]+)\\)", 'gim' )
 		s.replace( re, function( sFound, $1 ){
 			$1.replace( /\s*(\d+(?:\.\d*)?)(%?)\s*,?/gim, function( sFound, $1, $2 ){
 				if( i++ < 4 ) a[i] = $2 ? MAX[ sMode.charAt(i)] * $1 / 100 : $1*1
@@ -22,7 +22,7 @@ Color =(function(){
 		return null
 		}
 	, getObject =function( sMode, a ){
-		for(var o ={}, i=0; s=sMode.charAt(i); i++ ) o[s] = inRange( a[i], s )
+		for(let o ={}, i=0; s=sMode.charAt(i); i++ ) o[s] = inRange( a[i], s )
 		return o
 		}
 	, inRange =function(n,s){
@@ -37,7 +37,7 @@ Color =(function(){
 		throw new Error ('INVALID_HEXADECIMAL_COLOR '+ s )
 		}
 	, is =function( sMode, X, Y, Z, A ){
-		var o = isNaN(Y)
+		let o = isNaN(Y)
 			? parseString( X, sMode )
 			: getObject(sMode, [0+X,0+Y,0+Z,A]) // Fast Conversion
 		if( o ){
@@ -53,12 +53,12 @@ Color =(function(){
 		n=n<0?0:(n>255?255:Math.round(n))
 		if(n==0)return'00'
 		n=new Number(n)
-		var s=n.toString(16).toUpperCase()
+		let s=n.toString(16).toUpperCase()
 		return(s.length==1?'0':'')+s
 		}
 	, f2= HEXtoDEC = s =>{
-		var _f=function(n){return '0123456789ABCDEF'.indexOf(s.charAt(n))}
-		for(var n=0, nCoef=0, i=s.length-1; i>=0; i--, nCoef++)
+		let _f=function(n){return '0123456789ABCDEF'.indexOf(s.charAt(n))}
+		for(let n=0, nCoef=0, i=s.length-1; i>=0; i--, nCoef++)
 			n+=_f(i)*Math.pow(16,nCoef)
 		return n
 		}
@@ -68,10 +68,10 @@ Color =(function(){
 		}
 	, RGBtoHEX = o =>{ return Color.hex( f1(o.r) + f1(o.g) + f1(o.b))}
 	, RGBtoHSV = o =>{
-		var r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
-		var max = Math.max(r,g,b), min = Math.min(r,g,b)
-		var h, s, v = max
-		var d = max-min
+		let r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
+		let max = Math.max(r,g,b), min = Math.min(r,g,b)
+		let h, s, v = max
+		let d = max-min
 		s = max==0 ? 0 : d/max
 		if( max==min ) h = 0 // achromatic
 		else{
@@ -85,12 +85,12 @@ Color =(function(){
 		return Color.hsv( h*MAX.h, s*MAX.s, v*MAX.v, RGB.a )
 		}
 	, RGBtoHSL = o =>{
-		var r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
-		var max = Math.max(r,g,b), min = Math.min(r,g,b)
-		var h, s, l = (max+min)/2
+		let r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
+		let max = Math.max(r,g,b), min = Math.min(r,g,b)
+		let h, s, l = (max+min)/2
 		if( max==min ) h = s = 0 // achromatic
 		else{
-			var d = max-min
+			let d = max-min
 			s = l>0.5 ? d/(2-max-min) : d/(max+min)
 			switch(max){
 				case r: h = (g-b)/d+( g<b ? 6 : 0 ); break
@@ -102,13 +102,13 @@ Color =(function(){
 		return Color.hsl( h*MAX.h, s*MAX.s, l*MAX.l, RGB.a )
 		}
 	, HSVtoRGB = o =>{
-		var h=o.h/MAX.h, s=o.s/MAX.s, v=o.v/MAX.v
-		var r, g, b
-		var i = Math.floor(h*6)
-		var f = h*6-i
-		var p = v*(1-s)
-		var q = v*(1-f*s)
-		var t = v*(1-(1-f)*s)
+		let h=o.h/MAX.h, s=o.s/MAX.s, v=o.v/MAX.v
+		let r, g, b
+		let i = Math.floor(h*6)
+		let f = h*6-i
+		let p = v*(1-s)
+		let q = v*(1-f*s)
+		let t = v*(1-(1-f)*s)
 		switch( i%6 ){
 			case 0: r=v,g=t,b=p; break
 			case 1: r=q,g=v,b=p; break
@@ -120,18 +120,18 @@ Color =(function(){
 		return Color.rgb( r*MAX.r, g*MAX.g, b*MAX.b, o.a )
 		}
 	, HSVtoHSL = o =>{
-		var L = (2-o.s/100)*o.v/2
+		let L = (2-o.s/100)*o.v/2
 		, S = o.s*o.v/( L<50 ? L*2 : 200-L*2 )
 		if( isNaN(S)) S = 0
 		return Color.hsl( o.h, S, L, o.a )
 		}
 	, HSLtoRGB = o =>{
-		var h=o.h/MAX.h, s=o.s/MAX.s, l=o.l/MAX.l
-		var r, g, b
+		let h=o.h/MAX.h, s=o.s/MAX.s, l=o.l/MAX.l
+		let r, g, b
 		if( s==0 ) r=g=b=l // achromatic
 		else{
-			var q = l<0.5 ? l*(1+s) : l+s-l*s
-			var p = 2*l-q
+			let q = l<0.5 ? l*(1+s) : l+s-l*s
+			let p = 2*l-q
 			function hue2rgb(t){
 				if(t<0) t+=1
 				if(t>1) t-=1
@@ -147,25 +147,25 @@ Color =(function(){
 		return Color.rgb( r*MAX.r, g*MAX.g, b*MAX.b, o.a )
 		}
 	, HSLtoHSV = o =>{
-		var a = 2*o.l/MAX.l
+		let a = 2*o.l/MAX.l
 		, b = (a<=1?a:(2-a))*o.s/MAX.s
 		, S = a+b==0?0:(2*b)/(a+b)*MAX.s
 		return Color.hsv( o.h, S, (a+b)/2*MAX.v, o.a )
 		}
 	, CMYKtoRGB = o =>{
-		var k = o.k / MAX.k
+		let k = o.k / MAX.k
 		, f = s =>{ return 1 - Math.min( 1, (o[s]/MAX[s]) * ( 1 - k ) + k ) * MAX.r }
 		return Color.rgb( f('c'), f('m'), f('y'))
 		}
 	, RGBtoCMYK = o =>{
-		var r= o.r/MAX.r, g= o.g/MAX.g, b= o.b/MAX.b
+		let r= o.r/MAX.r, g= o.g/MAX.g, b= o.b/MAX.b
 		, k = Math.min( 1 - r, 1 - g, 1 - b )
 		, f =function( N ){ return k==1 ? 0 : MAX.c * ( 1 - N - k ) / ( 1 - k ) }
 		return Color.cmyk( f(r), f(g), f(b), k * MAX.k )
 		}
 
 	, toString = ( sMode, X, Y, Z, a )=>{
-		var s = X+','+Y+','+Z
+		let s = X+','+Y+','+Z
 		return sMode + ( a!==null ? 'a('+s+','+a+')' : '('+s+')' )
 		}
 	, value = ( n, sOption, sAxe )=>{
@@ -176,9 +176,8 @@ Color =(function(){
 
 	// DIVERS
 	, aDEC = '0,51,102,153,204,255'.split(',')
-	, aDEC2 = '0,17,34,51,68,85,102,119,136,153,170,187,204,221,238,255'.split(',')
 	, contrast =function( o1, o2 ){
-		var _1 = o1.toRGB(), _2 = o2.toRGB()
+		let _1 = o1.toRGB(), _2 = o2.toRGB()
 		, f = s =>{ return Math.abs( _1[s] - _2[s] ) }
 		, brightness =  o =>{ return ( o.r*299 + o.g*587 + o.b*114 )/1000 }
 		, difference = () =>{ return f('r') + f('g') + f('b') }
@@ -272,23 +271,23 @@ Color =(function(){
 
 		contrast:contrast,
 		getWebSafe :function( m ){
-			var o = ( m.split ? Color( m ) : m ).toRGB()
+			let o = ( m.split ? Color( m ) : m ).toRGB()
 			, f=function( n ){ return DECtoHEX( Math.round( n / 51 ) * 51 )}
 			return f(o.r)+f(o.g)+f(o.b)
 			},
 		inRange: inRange,
 		visibleColor :function( o1 ){
-			var n=aDEC.length, o2
-			for(var i=0;i<n;i++)for(var j=0;j<n;j++)for(var k=0;k<n;k++)
+			let n=aDEC.length, o2
+			for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++)
 				if( contrast( o1, o2 = Color.rgb( aDEC[i], aDEC[j], aDEC[k] )))
 					return o2.toWeb()
 			return '#000000'
 			},
 		visibleColors :function( o1 ){
-			var a=[]
-			var f =function( aDEC ){
-				var n=aDEC.length, o2
-				for(var i=0;i<n;i++)for(var j=0;j<n;j++)for(var k=0;k<n;k++)
+			let a=[]
+			let f =function( aDEC ){
+				let n=aDEC.length, o2
+				for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++)
 					if( contrast( o1, o2 = Color.rgb( aDEC[i], aDEC[j], aDEC[k] )))
 						a.push( o2.toWeb())
 				}
