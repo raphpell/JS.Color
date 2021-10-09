@@ -1,5 +1,5 @@
-Color =(function(){ // 09/10/2021 raphpell
-	let Color =function( s ){
+Color =(function(){
+	let Color = s =>{
 		if( ! s || ! s.charAt ) return s
 		if( s.charAt(0)=='#' || s.length<=6 ) return Color.hex( s )
 		for(let a=['rgb','hsv','hsl','cmyk'], i=0, ni=a.length; i<ni; i++ )
@@ -11,7 +11,7 @@ Color =(function(){ // 09/10/2021 raphpell
 	, MAX= {r:255,g:255,b:255,h:359,s:100,v:100,l:100,c:100,m:100,y:100,k:100,a:1}
 
 	// VALIDATIONS
-	, parseString =function( s, sMode ){
+	, parseString =( s, sMode )=>{
 		let a =[], i =-1, re =new RegExp( "^\\s*"+ sMode +"?\\s*\\(([^)]+)\\)", 'gim' )
 		s.replace( re, function( sFound, $1 ){
 			$1.replace( /\s*(-?\.?\d+(?:\.\d*)?)(%?)\s*,?/gim, function( sFound, $1, $2 ){
@@ -21,23 +21,23 @@ Color =(function(){ // 09/10/2021 raphpell
 		if( a.length ) return getObject( sMode, a )
 		return null
 		}
-	, getObject =function( sMode, a ){
+	, getObject =( sMode, a )=>{
 		let o ={}
 		for(let i=0; s=sMode.charAt(i); i++ ) o[s] = inRange( a[i], s )
 		return o
 		}
-	, inRange =function(n,s){
+	, inRange =(n,s)=>{
 		if( isNaN(n) || ! MAX[s]) return null
 		return n > MAX[s] ? MAX[s] : ( n < 0 ? 0 : n )
 		}
-	, isHEX =function( s ){
+	, isHEX = s =>{
 		if( s[0]=='#' ) s = s.slice(1)
 		if( s.length==1 ) s = s[0]+s[0] +s[0]+s[0] +s[0]+s[0]
 		if( s.length==3 ) s = s[0]+s[0] +s[1]+s[1] +s[2]+s[2]
 		if( /^[\dABCDEF]{6}$/i.test( s )) return s.toUpperCase()
 		throw new Error ('INVALID_HEXADECIMAL_COLOR '+ s )
 		}
-	, is =function( sMode, X, Y, Z, A ){
+	, is =( sMode, X, Y, Z, A )=>{
 		let o = isNaN(Y)
 			? parseString( X, sMode )
 			: getObject(sMode, [0+X,0+Y,0+Z,A]) // Fast Conversion
@@ -57,16 +57,16 @@ Color =(function(){ // 09/10/2021 raphpell
 		return(s.length==1?'0':'')+s
 		}
 	, f2= HEXtoDEC = s =>{
-		let n=0, _f=function(n){return '0123456789ABCDEF'.indexOf(s.charAt(n))}
+		let n=0, _f= n => '0123456789ABCDEF'.indexOf( s.charAt(n))
 		for(let nCoef=0, i=s.length-1; i>=0; i--, nCoef++)
 			n+=_f(i)*Math.pow(16,nCoef)
 		return n
 		}
 	, HEXtoRGB = HEX =>{
-		let _f = n => { return f2(HEX.substr(n,2)) }
+		let _f = n => f2(HEX.substr(n,2))
 		return Color.rgb( _f(0), _f(2), _f(4) )
 		}
-	, RGBtoHEX = o =>{ return Color.hex( f1(o.r) + f1(o.g) + f1(o.b))}
+	, RGBtoHEX = o => Color.hex( f1(o.r) + f1(o.g) + f1(o.b))
 	, RGBtoHSV = o =>{
 		let r=o.r/MAX.r, g=o.g/MAX.g, b=o.b/MAX.b
 		let max = Math.max(r,g,b), min = Math.min(r,g,b)
@@ -131,8 +131,8 @@ Color =(function(){ // 09/10/2021 raphpell
 		if( s==0 ) r=g=b=l // achromatic
 		else{
 			let q = l<0.5 ? l*(1+s) : l+s-l*s
-			let p = 2*l-q
-			function hue2rgb(t){
+			, p = 2*l-q
+			, hue2rgb = t =>{
 				if(t<0) t+=1
 				if(t>1) t-=1
 				if(t<1/6) return p+(q-p)*6*t
@@ -154,13 +154,13 @@ Color =(function(){ // 09/10/2021 raphpell
 		}
 	, CMYKtoRGB = o =>{
 		let n = 255 * ( 100 - o.k ) / 10000
-		, f = s =>{ return n * ( 100 - o[s] ) }
+		, f = s => n * ( 100 - o[s] )
 		return Color.rgb( f('c'), f('m'), f('y'))
 		}
 	, RGBtoCMYK = o =>{
 		let r= o.r/MAX.r, g= o.g/MAX.g, b= o.b/MAX.b
 		, k = 1 - Math.max( r, g, b )
-		, f =function( N ){ return k==1 ? 0 : MAX.c * ( 1 - N - k ) / ( 1 - k ) }
+		, f = N => k==1 ? 0 : MAX.c * ( 1 - N - k ) / ( 1 - k )
 		return Color.cmyk( f(r), f(g), f(b), k * MAX.k )
 		}
 
@@ -178,9 +178,9 @@ Color =(function(){ // 09/10/2021 raphpell
 	, aDEC = '0,51,102,153,204,255'.split(',')
 	, contrast =function( o1, o2 ){
 		let _1 = o1.toRGB(), _2 = o2.toRGB()
-		, f = s =>{ return Math.abs( _1[s] - _2[s] ) }
-		, brightness =  o =>{ return ( o.r*299 + o.g*587 + o.b*114 )/1000 }
-		, difference = () =>{ return f('r') + f('g') + f('b') }
+		, f = s => Math.abs( _1[s] - _2[s] )
+		, brightness =  o => ( o.r*299 + o.g*587 + o.b*114 )/1000
+		, difference = () => f('r') + f('g') + f('b')
 		return !( Math.abs( brightness(_1) - brightness(_2) ) < 125 || difference() < 500 )
 		}
 	Object.assign( Color, {
@@ -269,20 +269,20 @@ Color =(function(){ // 09/10/2021 raphpell
 				})
 			},
 		contrast :contrast,
-		getWebSafe :function( m ){
+		getWebSafe :  m =>{
 			let o = ( m.split ? Color( m ) : m ).toRGB()
-			, f=function( n ){ return DECtoHEX( Math.round( n / 51 ) * 51 )}
+			, f = n => DECtoHEX( Math.round( n / 51 ) * 51 )
 			return f(o.r)+f(o.g)+f(o.b)
 			},
 		inRange : inRange,
-		visibleColor :function( o1 ){
+		visibleColor : o1 =>{
 			let n=aDEC.length, o2
 			for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++)
 				if( contrast( o1, o2 = Color.rgb( aDEC[i], aDEC[j], aDEC[k] )))
 					return o2.toWeb()
 			return '#000000'
 			},
-		visibleColors :function( o1 ){
+		visibleColors : o1 =>{
 			let a=[]
 			let f =function( aDEC ){
 				let n=aDEC.length, o2
