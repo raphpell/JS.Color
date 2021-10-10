@@ -180,7 +180,7 @@ Color =(function(){
 		}
 
 	return Object.assign( Color, {
-		hex:function( s ){
+		hex( s ){
 			return Object.assign(isHEX( s ),{
 				mode: 'hex',
 				toString :function( m ){return (m||'')+this},
@@ -192,7 +192,7 @@ Color =(function(){
 				toCMYK :function(){return HEXtoRGB(this).toCMYK()}
 				})
 			},
-		rgb:function(R,G,B,A){
+		rgb(R,G,B,A){
 			return Object.assign(is('rgba',R,G,B,A),{
 				toString :function( m ){ return toString('rgb',value(this.r,m,'r'),value(this.g,m,'g'),value(this.b,m,'b'),this.a)},
 				toWeb :function(){return this.toHEX().toString('#')},
@@ -203,7 +203,7 @@ Color =(function(){
 				toCMYK :function(){return RGBtoCMYK(this)}
 				})
 			},
-		hsv:function(H,S,V,A){
+		hsv(H,S,V,A){
 			return Object.assign(is('hsva',H,S,V,A),{
 				toString :function( m ){ return toString('hsv',value(this.h||0),value(this.s,m,'s'),value(this.v,m,'v'),this.a)},
 				toWeb :function(){return this.toHEX().toString('#')},
@@ -214,7 +214,7 @@ Color =(function(){
 				toCMYK :function(){return this.toRGB().toCMYK()}
 				})
 			},
-		hsl:function(H,S,L,A){
+		hsl(H,S,L,A){
 			return Object.assign(is('hsla',H,S,L,A),{
 				toString :function( m ){ return toString('hsl',value(this.h||0),value(this.s,m,'s'),value(this.l,m,'l'),this.a)},
 				toWeb :function(){return this.toHEX().toString('#')},
@@ -225,7 +225,7 @@ Color =(function(){
 				toCMYK :function(){return this.toRGB().toCMYK()}
 				})
 			},
-		cmyk:function(C,M,Y,K){
+		cmyk(C,M,Y,K){
 			return Object.assign(is('cmyk',C,M,Y,K),{
 				toString :function( m ){ return 'cmyk('+[value(this.c,m,'c'),value(this.m,m,'m'),value(this.y,m,'y'),value(this.k,m,'k')]+')' },
 				toWeb :function(){return this.toHEX().toString('#')},
@@ -237,20 +237,20 @@ Color =(function(){
 				})
 			},
 		contrast: contrast,
-		getWebSafe: m =>{
+		getWebSafe(m){
 			let o = ( m.split ? Color( m ) : m ).toRGB()
 			, f = n => DECtoHEX( Math.round(n/51)*51)
 			return f(o.r)+f(o.g)+f(o.b)
 			},
 		inRange: inRange,
-		visibleColor: o1 =>{
+		visibleColor(o1){
 			let n=aDEC.length, o2
 			for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++)
 				if( contrast( o1, o2 = Color.rgb( aDEC[i], aDEC[j], aDEC[k] )))
 					return o2.toWeb()
 			return '#000000'
 			},
-		visibleColors: o1 =>{
+		visibleColors(o1){
 			let a=[]
 			let n=aDEC.length, o2
 			for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++)

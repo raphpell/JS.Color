@@ -1,10 +1,5 @@
-.UT_true {
-	border-left: .5em solid lime;
-	padding-left: 1em;
-	}
-.UT_false {
-	border-left: .5em solid red;
-	padding-left: 1em;
+.bench {
+	font: normal 0.9em Arial;
 	}
 .UT_error,
 .UT_correct {
@@ -26,6 +21,19 @@
 .UT_assertions {
 	margin: 0;
 	padding: 0;
+	}
+.UT_assertions DD {
+	border-left: .5em solid blue;
+	padding: 0 1em;
+	}
+.UT_assertions CODE {
+	font: 1.1em;
+	}
+DD.UT_true {
+	border-left: .5em solid lime;
+	}
+DD.UT_false {
+	border-left: .5em solid red;
 	}
 .UT_assertions > *{
 	border-radius: 2em;

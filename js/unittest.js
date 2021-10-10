@@ -6,15 +6,27 @@ UnitTest =(function(){
 		return e
 		}
 	class UnitTest {
-		constructor ( eTarget, a ){
+		constructor ( eTarget, a, oSettings = { unittest:true, benchmark:false }){
+			Object.assign( this, oSettings )
 			this.nError = 0
 			let e = this.evalList( a, 2 )
 			eTarget.appendChild( e )
-			e.insertBefore(
-				this.nError
-					? _('DIV', 'Attention: '+this.nError+' erreur(s) !', 'error' )
-					: _('DIV', "Pas une erreur.", 'correct' )
-				, e.firstChild )
+			if( this.benchmark ){
+				let eButton = _('BUTTON')
+				eButton.innerHTML = "Benchmark ("+Benchmark.total+")"
+				eButton.count = Benchmark.total
+				eButton.onclick = ()=>{
+					Benchmark.repeat( eTarget )
+					eButton.innerHTML = "Benchmark ("+(eButton.count+=Benchmark.total)+")"
+					}
+				e.insertBefore( eButton, e.firstChild )
+				}
+			if( this.unittest )
+				e.insertBefore(
+					this.nError
+						? _('DIV', 'Attention: '+this.nError+' erreur(s) !', 'error' )
+						: _('DIV', "Ok! pas une erreur.", 'correct' )
+					, e.firstChild )
 			}
 		evalList ( a, nLevel ){
 			let eDL = _('DL', null, 'list')
@@ -61,7 +73,8 @@ UnitTest =(function(){
 					try{
 						let b = eval( s )
 						if( ! b ) this.nError++
-						eDD.className = b ? 'UT_true' : 'UT_false'
+						if( this.unittest ) eDD.className = b ? 'UT_true' : 'UT_false'
+						if( this.benchmark ) Benchmark.element( eDD.firstChild )
 					}catch( error ){
 						this.nError++
 						eDD.className ='UT_false'
