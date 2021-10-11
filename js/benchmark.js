@@ -77,7 +77,7 @@ var Stats =(function(){
 		}
 	aStats.print ={
 		now:0,
-		min:1,
+		min:0,
 		moy:0,
 		moy:1,
 		max:1,
@@ -87,7 +87,7 @@ var Stats =(function(){
 		times :function( nNow, nMin, nMoy, nMax, nTot, nSum ){
 			let a =[]
 			, that = this
-			, f= ( sAttr, sValue ) => that[ sAttr ] && sValue ? a.push( sAttr+': <b>' + sValue +'</b>' ) : null
+			, f= ( sAttr, sValue ) => that[ sAttr ] ? a.push( sAttr+': <b>' + sValue +'</b>' ) : null
 			f( 'now', nNow )
 			f( 'min', nMin )
 			f( 'moy', nMoy )

@@ -41,4 +41,20 @@ section {
 	margin: 1em;
 	}
 
-}
+/* Doc */
+.doc {
+	display: flex;
+	flex-direction: column;
+	}
+.doc SECTION H2,
+.doc SECTION H3,
+.doc SECTION H4,
+.doc SECTION H5 {
+	margin-left: 0;
+	}
+.doc SECTION > * {
+	margin-left: 1em;
+	}
+.doc SECTION > DL {
+	margin-left: 3em;
+	}

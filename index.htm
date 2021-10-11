@@ -22,16 +22,16 @@
 	<h1>Objet Color</h1>
 	<div id="eSummary1"></div>
 
-	<div style="display: flex; flex-direction: column;">
+	<div class="doc">
 		<section>
 			<p>La fonction <var>Color</var> créée un objet Color d'un certain type (Color.hex, Color.rgb,...) pouvant être converti en n'importe quel autre type.</p>
 
 			<h6>Exemples d'utilisation:</h6>
-			<code>
-				let oColor1 = Color( 'FFCC00' )<br>
-				let oColor2 = Color.hex( '#FC0' ).toHSV()<br>
-				let oColor3 = Color.rgb( 255, 127, 0, 0.5 )
-			</code>
+			<pre>
+	let oColor1 = Color( 'FFCC00' )
+	let oColor2 = Color.hex( '#FC0' ).toHSV()
+	let oColor3 = Color.rgb( 255, 127, 0, 0.5 )
+			</pre>
 
 			<p>L'argument de la fonction <var>Color</var> est soit :</p>
 			<ul>
@@ -47,33 +47,33 @@
 
 			<dl>
 				<dt><b>Color.hex</b></dt>
-				<dd>Formats supportés : <i>"FC0", "#FC0", "FFCC00", "#FFCC00"</i>.
+				<dd><i>"FC0", "#FC0", "FFCC00", "#FFCC00"</i>.
 					<br>Couleur hexadécimal (RGB).</dd>
-				<dt><b>Color.rgb</b>
-					<br>Format supporté : <i>"rgb(1,12,200)", "rgba(1,12,200,0.5)"</i>, ...
-					<br>Couleur formée des attributs r(rouge), v(vert) et b(bleu); et a(son opacité) en option.</dt>
-				<dt><b>Color.hsv</b>
-					<br>Format supporté :<i>"hsv(300,50,50)", "hsva(300,50,50,0.5)"</i>, ...
-					<br>Couleur formée des attributs h(hue ou teinte), s(saturation) et v(value ou valeur); et a(son opacité) en option.</dt>
-				<dt><b>Color.hsl</b>
-					<br>Format supporté :<i>"hsl(300,50,50)", "hsla(300,50,50,0.5)"</i>, ...
-					<br>Couleur formée des attributs h(hue ou teinte), s(saturation) et l(lightness ou lumière); et a(son opacité) en option.</dt>
-				<dt><b>Color.cmyk</b>
-					<br>Format supporté : <i>"cmyk(50,50,50,50)"</i>, ...
-					<br>Couleur formée des attributs c(Cyan), m(Magenta), y(Yellow) et k(Gris...).</dt>
+				<dt><b>Color.rgb</b></dt>
+				<dd><i>"rgb(1,12,200)", "rgba(1,12,200,0.5)"</i>, ...
+					<br>Couleur formée des attributs r(rouge), v(vert) et b(bleu); et a(son opacité) en option.</dd>
+				<dt><b>Color.hsv</b></dt>
+				<dd><i>"hsv(300,50,50)", "hsva(300,50,50,0.5)"</i>, ...
+					<br>Couleur formée des attributs h(hue ou teinte), s(saturation) et v(value ou valeur); et a(son opacité) en option.</dd>
+				<dt><b>Color.hsl</b></dt>
+				<dd><i>"hsl(300,50,50)", "hsla(300,50,50,0.5)"</i>, ...
+					<br>Couleur formée des attributs h(hue ou teinte), s(saturation) et l(lightness ou lumière); et a(son opacité) en option.</dd>
+				<dt><b>Color.cmyk</b></dt>
+				<dd><i>"cmyk(50,50,50,50)"</i>, ...
+					<br>Couleur formée des attributs c(Cyan), m(Magenta), y(Yellow) et k(Gris...).</dd>
 			</dl>
 
 			<h6>Notes:</h6>
 			<p>La valeur de l'opacité est perdue lors de la conversions en Color.hex ou Color.cmyk.</p>
 			<dl>
-				<dt><b>valeur r, g ou b</b>
-					<br>Nombre variant de 0 à 255.</dt>
-				<dt><b>valeur h (hue)</b>
-					<br>Nombre variant de 0 à 359.</dt>
-				<dt><b>valeurs pourcentages s, v, l, c, m, y et k</b>
-					<br>Nombre variant de 0 à 100.</dt>
-				<dt><b>valeur a (opacité)</b>
-					<br>Nombre variant de 0 à 1.</dt>
+				<dt><b>valeur r, g ou b</b></dt>
+					<dd>Nombre variant de 0 à 255.</dd>
+				<dt><b>valeur h (hue)</b></dt>
+					<dd>Nombre variant de 0 à 359.</dd>
+				<dt><b>valeurs pourcentages s, v, l, c, m, y et k</b></dt>
+					<dd>Nombre variant de 0 à 100.</dd>
+				<dt><b>valeur a (opacité)</b></dt>
+					<dd>Nombre variant de 0 à 1.</dd>
 			</dl>
 			<p>Par défaut, les valeurs devant être comprises entre un certain intervalle sont contrainte dedans.</p>
 		</section>
@@ -499,6 +499,7 @@ layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 // BENCHMARKING
 // Benchmark( eUnitTest, 'CODE' )
 new UnitTest( eBenchmarking ,[
+	{ desc:"Il est plus facile d'optimiser le code que de chercher à l'optimiser depuis ses temps." },
 	{ title:"La fonction Color",
 	list:[
 		{ title:"String &rarr; Color.hex",
