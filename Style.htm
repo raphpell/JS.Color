@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Style Object</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/page.css">
+	<link rel="stylesheet" type="text/css" href="css/doc.css">
+	<link rel="stylesheet" type="text/css" href="css/unittest.css">
+	<style>
+		.test {
+			opacity:.5;
+			font-size: 10px;
+			}
+	</style>
+</head>
+<body>
+
+<ul class="pageMenu">
+	<li><a href="index.htm">JS.Objects</a></li>
+	<li onclick="goTo( eDoc )">Objet Style</li>
+	<li onclick="goTo( eUnitTest )">Testes unitaires</li>
+	<li onclick="goTo( eBenchmarking )">Benchmarking</li>
+</ul>
+
+<page id="ePreload" class="active">
+	chargement...
+</page>
+
+<page id="eDoc">
+	<h1>Objet Style</h1>
+	<div id="eSummary1"></div>
+
+	<div class="doc">
+		<section>
+			...
+		</section>
+		<section><h2>Méthodes objet Style</h2>
+		</section>
+	</div>
+</page>
+<page id="eUnitTest">
+	<h1>Testes unitaires</h1>
+	<div id="eSummary2"></div>
+
+	<ul style="position: absolute; top:-100em;">
+		<li id="eTest1">Style.js</li>
+		<li id="eTest2">Style.js</li>
+		<li id="eTest3">Style.js</li>
+		<li>Style.js</li>
+	</ul>
+
+</page>
+<page id="eBenchmarking">
+	<h1>Benchmarking</h1>
+	<div id="eSummary3"></div>
+</page>
+
+
+<script src="src/Style.js"></script>
+<script src="js/page.js"></script>
+<script src="js/doc.js"></script>
+<script src="js/unittest.js"></script>
+<script src="js/benchmark.js"></script>
+<script>
+// DOCUMENTATION
+layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
+
+// TESTS UNITAIRES
+new UnitTest( eUnitTest,[
+	{ title:"",
+		desc:".",
+		eval:
+``,
+		list:[]
+		}
+	],
+	{ unittest:1, benchmark: 0 }
+	)
+
+layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
+
+
+// BENCHMARKING
+// Benchmark( eUnitTest, 'CODE' )
+new UnitTest( eBenchmarking ,[
+	{ title:"Style.get",
+		desc:".",
+		list:[
+			{ title:"opacity",
+				eval:
+`eTest1.classList.add('test')
+eTest2.style.opacity=".5"
+eTest3.style.cssText = "opacity:.5;"`,
+				assertions:[
+					`Style.get( eTest1, "opacity" )==0.5`,
+					`Style.get( eTest2, "opacity" )==0.5`,
+					`Style.get( eTest3, "opacity" )==0.5`
+					]},
+			{ title:"font-size",
+				eval:
+`eTest2.style.fontSize="10px"
+eTest3.style.cssText = "font-size:10px;"`,
+				assertions:[
+					`Style.get( eTest1, "font-size" )=='10px'`,
+					`Style.get( eTest2, "font-size" )=='10px'`,
+					`Style.get( eTest3, "font-size" )=='10px'`
+					]},
+			]
+		}
+	],
+	{ unittest:1, benchmark: 1 }
+	)
+
+layoutDoc( eSummary3, { numbers: false, links: true }, eBenchmarking )
+
+
+
+
+/*
+Une fois le code charger, afficher de la page d'accueil !!
+... sans setTimeout SVP !
+*/
+setTimeout( ()=>goTo( eDoc ), 10 )
+</script>
+
+</body>
+</html>

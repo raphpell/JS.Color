@@ -1,3 +1,4 @@
+// Browser
 Tag = function( s, o ){
 	var b = s.nodeName 
 	, e = b ? s : document.createElement( s )

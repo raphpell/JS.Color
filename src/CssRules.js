@@ -17,8 +17,11 @@ CssRules = ( function(){
 			})()
 		if( ! b ){
 			// if the navigator respect the standard...
-			CSSStyleSheet.prototype.addRule = function( s1, s2 ){ this.insertRule( s1+'{'+s2+'}', 0 )}
-			CSSStyleSheet.prototype.removeRule = CSSStyleSheet.prototype.deleteRule
+			let o = CSSStyleSheet.prototype
+			Object.assign( o, {
+				addRule ( s1, s2 ){ this.insertRule( s1+'{'+s2+'}', 0 )}
+				removeRule: o.deleteRule
+				}
 			}
 		}
 	if( e ) f(); else throw new Error ( 'Tag HEAD undefined.' )
@@ -34,7 +37,7 @@ CssRules = ( function(){
 					sRule = aRules[i][1]
 					o = this.get( sName )
 					if( o ) Style.set( o, sRule ) // ne rajoute ainsi pas un sélecteur 2 fois et permet une suppression en un coup.
-						else _oStyleSheet.addRule( sName, sRule )
+						else _oStyleSheet.insertRule( sName, sRule )
 					}
 				}
 			},

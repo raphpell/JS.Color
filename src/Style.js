@@ -13,7 +13,7 @@ Style ={
 			case 'opacity':
 				m = new Number ( m )
 				n = m <= 0 ? 0 :( m >= 1 ? 1 : m.toFixed( 2 ))
-				return [ 'filter:alpha(opacity=', (n*100), ');-moz-opacity:', n, ';-khtml-opacity:', n, ';opacity:', n, ';' ].join( '' )
+				return 'opacity:'+ n
 			}
 		switch( s ){
 			// case 'font-size' : sUnit = 'em' ; break;
@@ -26,10 +26,9 @@ Style ={
 		return s + ':' + m + sUnit + ';'
 		},
 	get( e, sAttr ){
-		if( sAttr == 'opacity' && e.opacity ) return e.opacity // FOR IE
 		var s = Style.getAttributeNS( sAttr )
 		, sValue = e.style[s]
-		if( ! sValue && in_array( s, [ 'height', 'width', 'left', 'top' ])){
+		if( ! sValue && [ 'height', 'width', 'left', 'top' ].includes( s )){
 			o = Tag.cotes( e )
 			sValue = o[s]
 			}
@@ -87,7 +86,6 @@ Style ={
 		each( Array.unique( aAttr ), function( key ){
 				s += key +':'+ o[ key ] +';'
 			})
-		if( o.OPACITY ) e.opacity = o.OPACITY  // FOR IE
 		var sBG1 = m.backgroundImage
 		m.cssText = s
 		if( sBG1 ) m.backgroundImage = sBG1 // For Chrome
