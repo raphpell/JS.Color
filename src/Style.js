@@ -26,38 +26,34 @@ Style ={
 		return s + ':' + m + sUnit + ';'
 		},
 	get( e, sAttr ){
-		var s = Style.getAttributeNS( sAttr )
-		, sValue = e.style[s]
-		if( ! sValue && [ 'height', 'width', 'left', 'top' ].includes( s )){
-			o = Tag.cotes( e )
-			sValue = o[s]
-			}
-		if( ! sValue ){
-			if( e.currentStyle ) sValue = e.currentStyle[s]
-				else if( window.getComputedStyle )
-					sValue = window.getComputedStyle( e, '' ).getPropertyValue( sAttr )
-			}
-		if( ! sValue ){
-			var sClasses = e.className
-			if( sClasses ){
-				a = sClasses.split(' ')
-				for( var i=0, n=a.length, sClassName, o; i<n; i++ ){
-					sClassName = a[i].trim ()
-					if( CssRules ){
-						var o = CssRules.get( '.'+sClassName )
-						if( o ) sValue = o[s] || sValue
-						}
-					}
+		let s = Style.getAttributeNS( sAttr )
+		let sValue = e.style[s]
+		|| e.currentStyle && e.currentStyle[s]
+		|| window.getComputedStyle && window.getComputedStyle( e )[s]
+		if( sValue && sValue!='0px' ) return sValue
+		if( window.CssRules ){
+			let f = sSelector =>{
+				let o = CssRules.get( sSelector )
+				let sValue = o && o[s]
+				return sValue && sValue!='0px' ? sValue : null
 				}
+			if( e.id ){
+				var m = f( '#'+e.id )
+				if( m ) return m
+				}
+			e.classList.forEach( sClassName =>{
+				sValue = f( '.'+sClassName ) || sValue
+				})
+			return sValue || null
 			}
-		return sValue || '0'
 		},
 	getAttributeNS( s ){
 		if( s.indexOf( '-' )){
-			var a = s.split('-')
-			for( var i=0, s='', n=a.length, s1; i<n; i++ ){
+			let a = s.split('-')
+			s=''
+			for(let i=0,n=a.length,s1;i<n;i++){
 				s1 = a[i]
-				s += i==0 ? s1 : s1.charAt(0).toUpperCase()+s1.substr(1)
+				s += i==0 ?s1 :s1.charAt(0).toUpperCase()+s1.substr(1)
 				}
 			}
 		return s

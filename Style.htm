@@ -4,6 +4,9 @@
 	<title>Style Object</title>
 	<meta charset="UTF-8">
 	<style><!--TESTING PURPOSE--></style>
+	<style>
+	
+	</style>
 	<link rel="stylesheet" type="text/css" href="css/page.css">
 	<link rel="stylesheet" type="text/css" href="css/doc.css">
 	<link rel="stylesheet" type="text/css" href="css/unittest.css">
@@ -37,20 +40,23 @@
 	<h1>Testes unitaires</h1>
 	<div id="eSummary2"></div>
 
-	<ul style="position: absolute; top:-100em;">
-		<li id="eTest1">Style.js</li>
-		<li id="eTest2">Style.js</li>
-		<li id="eTest3">Style.js</li>
-		<li>Style.js</li>
-	</ul>
-
 </page>
 <page id="eBenchmarking">
 	<h1>Benchmarking</h1>
 	<div id="eSummary3"></div>
+
+	<ul style="position: absolute; top:-100em;">
+		<li id="eTestClassName">#eTestClassName</li>
+		<li id="eTestClassId">#eTestClassId</li>
+		<li id="eTestStyle">#eTestStyle</li>
+		<li id="eTestCssText">#eTestCssText</li>
+	</ul>
 </page>
 
 
+<script src="src/Browser.js"></script>
+<script src="src/Tag.js"></script>
+<script src="src/CssRules.js"></script>
 <script src="src/Style.js"></script>
 <script src="js/page.js"></script>
 <script src="js/doc.js"></script>
@@ -79,52 +85,112 @@ layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 // Benchmark( eUnitTest, 'CODE' )
 new UnitTest( eBenchmarking ,[
 	{ title:"Style.get",
-		desc:".",
+		desc:`Récupération des valeurs 'style' des éléments html : classe CSS, attribut <code>style</code>, et attribut <code>style.cssText</code>.<br>
+			Rapidité : <code>style</code> puis <code>style.cssText</code> et classe CSS.`,
 				eval:
 `document.styleSheets[0].insertRule( \`.test {
 	opacity:.5;
 	font-size: 10px;
 	padding: 10px;
 	padding-left: 20px;
+	border-width: 10px;
+	left: 10px;
+	top: 10px;
+	height: 100px;
+	width: 100px;
 	}\`)
+document.styleSheets[0].insertRule( \`#eTestClassId {
+	opacity:.5;
+	font-size: 10px;
+	padding: 10px;
+	padding-left: 20px;
+	border-width: 10px;
+	left: 10px;
+	top: 10px;
+	height: 100px;
+	width: 100px;
+	}\`)
+eTestClassName.classList.add('test')
 `,
 		list:[
 			{ title:"opacity",
 				eval:
-`eTest1.classList.add('test')
-eTest2.style.opacity=".5"
-eTest3.style.cssText = "opacity:.5;"`,
+`eTestStyle.style.opacity=".5"
+eTestCssText.style.cssText = "opacity: .5;"`,
 				assertions:[
-					`Style.get( eTest1, "opacity" )==0.5`,
-					`Style.get( eTest2, "opacity" )==0.5`,
-					`Style.get( eTest3, "opacity" )==0.5`
+					`Style.get( eTestClassName, "opacity" )==0.5`,
+					`Style.get( eTestClassId, "opacity" )==0.5`,
+					`Style.get( eTestStyle, "opacity" )==0.5`,
+					`Style.get( eTestCssText, "opacity" )==0.5`
 					]},
 			{ title:"font-size",
 				eval:
-`eTest2.style.fontSize="10px"
-eTest3.style.cssText = "font-size:10px;"`,
+`eTestStyle.style.fontSize="10px"
+eTestCssText.style.cssText = "font-size: 10px;"`,
 				assertions:[
-					`Style.get( eTest1, "font-size" )=='10px'`,
-					`Style.get( eTest2, "font-size" )=='10px'`,
-					`Style.get( eTest3, "font-size" )=='10px'`
+					`Style.get( eTestClassName, "font-size" )=='10px'`,
+					`Style.get( eTestClassName, "fontSize" )=='10px'`,
+					`Style.get( eTestClassId, "font-size" )=='10px'`,
+					`Style.get( eTestClassId, "fontSize" )=='10px'`,
+					`Style.get( eTestStyle, "font-size" )=='10px'`,
+					`Style.get( eTestStyle, "fontSize" )=='10px'`,
+					`Style.get( eTestCssText, "font-size" )=='10px'`,
+					`Style.get( eTestCssText, "fontSize" )=='10px'`
 					]},
 			{ title:"padding",
 				eval:
-`eTest2.style.padding="10px"
-eTest3.style.cssText = "padding:10px;"`,
+`eTestStyle.style.padding="10px 10px 10px 20px"
+eTestCssText.style.cssText = "padding: 10px 10px 10px 20px;"`,
 				assertions:[
-					`Style.get( eTest1, "padding" )=='10px 10px 10px 20px'`,
-					`Style.get( eTest2, "padding" )=='10px'`,
-					`Style.get( eTest3, "padding" )=='10px'`
+					`Style.get( eTestClassName, "padding" )=='10px 10px 10px 20px'`,
+					`Style.get( eTestClassId, "padding" )=='10px 10px 10px 20px'`,
+					`Style.get( eTestStyle, "padding" )=='10px 10px 10px 20px'`,
+					`Style.get( eTestCssText, "padding" )=='10px 10px 10px 20px'`
 					]},
 			{ title:"paddingLeft",
-				eval:
-`eTest2.style.paddingLeft="20px"
-eTest3.style.cssText = "padding-left:20px;"`,
 				assertions:[
-					`Style.get( eTest1, "paddingLeft" )=='20px'`,
-					`Style.get( eTest2, "paddingLeft" )=='20px'`,
-					`Style.get( eTest3, "paddingLeft" )=='20px'`
+					`Style.get( eTestClassName, "padding-left" )=='20px'`,
+					`Style.get( eTestClassName, "paddingLeft" )=='20px'`,
+					`Style.get( eTestClassId, "padding-left" )=='20px'`,
+					`Style.get( eTestClassId, "paddingLeft" )=='20px'`,
+					`Style.get( eTestStyle, "padding-left" )=='20px'`,
+					`Style.get( eTestStyle, "paddingLeft" )=='20px'`,
+					`Style.get( eTestCssText, "padding-left" )=='20px'`,
+					`Style.get( eTestCssText, "paddingLeft" )=='20px'`
+					]},
+			{ title:"border-width",
+				desc:"Eviter les classes css pour cet attribut.",
+				eval:
+`eTestStyle.style.borderWidth="10px"
+eTestCssText.style.cssText = "border-width: 10px;"`,
+				assertions:[
+					`Style.get( eTestClassName, "border-width" )=='10px'`,
+					`Style.get( eTestClassName, "borderWidth" )=='10px'`,
+					`Style.get( eTestClassId, "border-width" )=='10px'`,
+					`Style.get( eTestClassId, "borderWidth" )=='10px'`,
+					`Style.get( eTestStyle, "borderWidth" )=='10px'`,
+					`Style.get( eTestCssText, "borderWidth" )=='10px'`
+					]},
+			{ title:"width",
+				desc:"Eviter le width d'une classe css.",
+				eval:
+`eTestStyle.style.width="100px"
+eTestCssText.style.cssText = "width: 100px;"`,
+				assertions:[
+					`Style.get( eTestClassName, "width" )=='100px'`,
+					`Style.get( eTestClassId, "width" )=='100px'`,
+					`Style.get( eTestStyle, "width" )=='100px'`,
+					`Style.get( eTestCssText, "width" )=='100px'`
+					]},
+			{ title:"height",
+				eval:
+`eTestStyle.style.height="100px"
+eTestCssText.style.cssText = "height: 100px;"`,
+				assertions:[
+					`Style.get( eTestClassName, "height" )=='100px'`,
+					`Style.get( eTestClassId, "height" )=='100px'`,
+					`Style.get( eTestStyle, "height" )=='100px'`,
+					`Style.get( eTestCssText, "height" )=='100px'`
 					]},
 			]
 		}

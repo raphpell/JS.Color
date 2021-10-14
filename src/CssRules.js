@@ -1,7 +1,7 @@
 CssRules = ( function(){
 	var _oStyleSheets = document.styleSheets
 	, _oStyleSheet
-	, e = getTags( 'head' )[0]
+	, e = document.getElementsByTagName( 'head' )[0]
 	, _getRules
 	, f =function(){
 		e.appendChild( Tag( 'STYLE', { title:'CssRules', type:'text/css', media:'all' }))
@@ -19,9 +19,9 @@ CssRules = ( function(){
 			// if the navigator respect the standard...
 			let o = CSSStyleSheet.prototype
 			Object.assign( o, {
-				addRule ( s1, s2 ){ this.insertRule( s1+'{'+s2+'}', 0 )}
+				addRule ( s1, s2 ){ this.insertRule( s1+'{'+s2+'}', 0 )},
 				removeRule: o.deleteRule
-				}
+				})
 			}
 		}
 	if( e ) f(); else throw new Error ( 'Tag HEAD undefined.' )

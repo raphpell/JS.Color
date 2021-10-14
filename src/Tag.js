@@ -2,7 +2,8 @@
 Tag = function( s, o ){
 	var b = s.nodeName 
 	, e = b ? s : document.createElement( s )
-	if( o ) extend( e, o ) // bug en Object.assign
+	//if( o ) extend( e, o ) // bug en Object.assign
+	Object.assign( e, o )
 	Object.assign( e, Tag.prototype )
 	return e
 	}
@@ -120,12 +121,12 @@ Object.assign( Tag, {
 		return { left:pos.left, top:pos.top, width:dim.width, height:dim.height }
 		},
 	dimension( e ){
-		var o1 = e.style 
-		, b1 = o1.display == 'none'
-		, s = o1.position
-		if( b1 ) Object.assign( o1, { position:'absolute', display:'' })
-		var oDim = { width:e.offsetWidth , height:e.offsetHeight }
-		if( b1 ) Object.assign( o1, { position:s, display:'none' })
+	//	var o1 = e.style 
+	//	, b1 = o1.display == 'none'
+	//	, s = o1.position
+	//	if( b1 ) Object.assign( o1, { position:'absolute', display:'' })
+		var oDim = { width:e.offsetWidth+'px' , height:e.offsetHeight+'px' }
+	//	if( b1 ) Object.assign( o1, { position:s, display:'none' })
 		return oDim 
 		},
 	position( e ){
