@@ -3,15 +3,10 @@
 <head>
 	<title>Style Object</title>
 	<meta charset="UTF-8">
+	<style><!--TESTING PURPOSE--></style>
 	<link rel="stylesheet" type="text/css" href="css/page.css">
 	<link rel="stylesheet" type="text/css" href="css/doc.css">
 	<link rel="stylesheet" type="text/css" href="css/unittest.css">
-	<style>
-		.test {
-			opacity:.5;
-			font-size: 10px;
-			}
-	</style>
 </head>
 <body>
 
@@ -85,6 +80,14 @@ layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 new UnitTest( eBenchmarking ,[
 	{ title:"Style.get",
 		desc:".",
+				eval:
+`document.styleSheets[0].insertRule( \`.test {
+	opacity:.5;
+	font-size: 10px;
+	padding: 10px;
+	padding-left: 20px;
+	}\`)
+`,
 		list:[
 			{ title:"opacity",
 				eval:
@@ -104,6 +107,24 @@ eTest3.style.cssText = "font-size:10px;"`,
 					`Style.get( eTest1, "font-size" )=='10px'`,
 					`Style.get( eTest2, "font-size" )=='10px'`,
 					`Style.get( eTest3, "font-size" )=='10px'`
+					]},
+			{ title:"padding",
+				eval:
+`eTest2.style.padding="10px"
+eTest3.style.cssText = "padding:10px;"`,
+				assertions:[
+					`Style.get( eTest1, "padding" )=='10px 10px 10px 20px'`,
+					`Style.get( eTest2, "padding" )=='10px'`,
+					`Style.get( eTest3, "padding" )=='10px'`
+					]},
+			{ title:"paddingLeft",
+				eval:
+`eTest2.style.paddingLeft="20px"
+eTest3.style.cssText = "padding-left:20px;"`,
+				assertions:[
+					`Style.get( eTest1, "paddingLeft" )=='20px'`,
+					`Style.get( eTest2, "paddingLeft" )=='20px'`,
+					`Style.get( eTest3, "paddingLeft" )=='20px'`
 					]},
 			]
 		}
