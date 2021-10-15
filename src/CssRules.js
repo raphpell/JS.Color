@@ -1,5 +1,5 @@
 CssRules = ( function(){
-	let _oStyleSheets = document.styleSheets
+	let _oSheets = document.styleSheets
 	, _oSheet
 	, e = document.getElementsByTagName('head')[0]
 	, _getRules
@@ -7,7 +7,7 @@ CssRules = ( function(){
 		_oSheet = e.appendChild( Tag( 'STYLE', { title:'CssRules', type:'text/css', media:'all' })).sheet
 		let s = _oSheet.rules ? 'rules' : 'cssRules'
 		_getRules =(function(){
-			return o=>{ try{return o[s]}catch(e){}} // UPDATED : mozilla = operation insecure
+			return o=>{ try{return o[s]}catch(e){/* operation insecure */}}
 			})()
 		}
 	if( e ) f(); else throw new Error ( 'CssRules::Tag HEAD needed.' )
@@ -26,17 +26,17 @@ CssRules = ( function(){
 				}
 			},
 		disable( rePattern, sAttr='href', bDisable ){
-			for(let i=_oStyleSheets.length-1;i>=0;i--)
-				if(rePattern.test(_oStyleSheets[i][sAttr]))
-					_oStyleSheets[i].disabled=bDisable
+			for(let i=_oSheets.length-1;i>=0;i--)
+				if(rePattern.test(_oSheets[i][sAttr]))
+					_oSheets[i].disabled=bDisable
 			},
 		get( sSelector, bDelete ){
-			for(let i=_oStyleSheets.length-1;i>=0;i--){
-				let aRules=_getRules( _oStyleSheets[i])
+			for(let i=_oSheets.length-1;i>=0;i--){
+				let aRules=_getRules( _oSheets[i])
 				if(aRules)
 					for(let j=0,nj=aRules.length;j<nj;j++){
 						if(aRules[j].selectorText==sSelector){
-							if(bDelete===true)return _oStyleSheets[i].deleteRule(j)
+							if(bDelete===true)return _oSheets[i].deleteRule(j)
 							return aRules[j].style
 							}
 						}

@@ -1,4 +1,4 @@
-// Dépendance : CssRules, Tag, Array.unique
+// Dépendance : CssRules, Tag, Array.unique, each
 
 Style ={
 	calculate( s, m ){
