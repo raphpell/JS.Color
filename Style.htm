@@ -4,9 +4,6 @@
 	<title>Style Object</title>
 	<meta charset="UTF-8">
 	<style><!--TESTING PURPOSE--></style>
-	<style>
-	
-	</style>
 	<link rel="stylesheet" type="text/css" href="css/page.css">
 	<link rel="stylesheet" type="text/css" href="css/doc.css">
 	<link rel="stylesheet" type="text/css" href="css/unittest.css">
@@ -56,7 +53,7 @@
 
 <script src="src/Browser.js"></script>
 <script src="src/Tag.js"></script>
-<script src="src/CssRules.js"></script>
+<script src="src/CssRules.js"></script> <!-- -->
 <script src="src/Style.js"></script>
 <script src="js/page.js"></script>
 <script src="js/doc.js"></script>
@@ -159,7 +156,6 @@ eTestCssText.style.cssText = "padding: 10px 10px 10px 20px;"`,
 					`Style.get( eTestCssText, "paddingLeft" )=='20px'`
 					]},
 			{ title:"border-width",
-				desc:"Eviter les classes css pour cet attribut.",
 				eval:
 `eTestStyle.style.borderWidth="10px"
 eTestCssText.style.cssText = "border-width: 10px;"`,
@@ -172,7 +168,6 @@ eTestCssText.style.cssText = "border-width: 10px;"`,
 					`Style.get( eTestCssText, "borderWidth" )=='10px'`
 					]},
 			{ title:"width",
-				desc:"Eviter le width d'une classe css.",
 				eval:
 `eTestStyle.style.width="100px"
 eTestCssText.style.cssText = "width: 100px;"`,
@@ -191,6 +186,26 @@ eTestCssText.style.cssText = "height: 100px;"`,
 					`Style.get( eTestClassId, "height" )=='100px'`,
 					`Style.get( eTestStyle, "height" )=='100px'`,
 					`Style.get( eTestCssText, "height" )=='100px'`
+					]},
+			{ title:"left",
+				eval:
+`eTestStyle.style.left="10px"
+eTestCssText.style.cssText = "left: 10px;"`,
+				assertions:[
+					`Style.get( eTestClassName, "left" )=='10px'`,
+					`Style.get( eTestClassId, "left" )=='10px'`,
+					`Style.get( eTestStyle, "left" )=='10px'`,
+					`Style.get( eTestCssText, "left" )=='10px'`
+					]},
+			{ title:"top",
+				eval:
+`eTestStyle.style.top="10px"
+eTestCssText.style.cssText = "top: 10px;"`,
+				assertions:[
+					`Style.get( eTestClassName, "top" )=='10px'`,
+					`Style.get( eTestClassId, "top" )=='10px'`,
+					`Style.get( eTestStyle, "top" )=='10px'`,
+					`Style.get( eTestCssText, "top" )=='10px'`
 					]},
 			]
 		}

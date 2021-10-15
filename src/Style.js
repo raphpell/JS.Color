@@ -48,15 +48,11 @@ Style ={
 			}
 		},
 	getAttributeNS( s ){
-		if( s.indexOf( '-' )){
-			let a = s.split('-')
-			s=''
-			for(let i=0,n=a.length,s1;i<n;i++){
-				s1 = a[i]
-				s += i==0 ?s1 :s1.charAt(0).toUpperCase()+s1.substr(1)
-				}
-			}
-		return s
+		if(~s.indexOf('-')) return s
+		let a=s.split('-')
+		for(let i=1,n=a.length;i<n;i++)
+			a[i] = a[i].charAt(0).toUpperCase()+a[i].substr(1)
+		return a.join('')
 		},
 	remove( m, s ){ // m == CssRule || Element
 		m=m.style
