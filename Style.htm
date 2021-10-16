@@ -3,7 +3,19 @@
 <head>
 	<title>Style Object</title>
 	<meta charset="UTF-8">
-	<style><!--TESTING PURPOSE--></style>
+	<!--TESTING PURPOSE -->
+	<style>
+	.tests {
+		position: fixed;
+		top:-100em;
+		right:0;
+		}
+	.tests LI {
+		border-color: red;
+		border-style: dashed;
+		margin: 1px;
+		}
+	</style>
 	<link rel="stylesheet" type="text/css" href="css/page.css">
 	<link rel="stylesheet" type="text/css" href="css/doc.css">
 	<link rel="stylesheet" type="text/css" href="css/unittest.css">
@@ -14,7 +26,6 @@
 	<li><a href="index.htm">JS.Objects</a></li>
 	<li onclick="goTo( eDoc )">Objet Style</li>
 	<li onclick="goTo( eUnitTest )">Testes unitaires</li>
-	<li onclick="goTo( eBenchmarking )">Benchmarking</li>
 </ul>
 
 <page id="ePreload" class="active">
@@ -26,10 +37,52 @@
 	<div id="eSummary1"></div>
 
 	<div class="doc">
-		<section>
-			...
-		</section>
 		<section><h2>Méthodes objet Style</h2>
+		
+			<section><h3>validate ( sAttrCSS, mValue )</h3>
+				<p>Valide la valeur d'un attribut...</p>
+				<dl>
+					<dt><var>sAttrCSS</var> <i>String</i> - Nom de l'attribut CSS.</dt>
+					<dt><var>mValue</var> <i>Mixte</i> - Valeur.</dt>
+				</dl>
+				<p>Retourne une chaîne de la forme 'font-size:10px;'.</p>
+			</section>
+			<section><h3>get ( e, sAttr )</h3>
+				<p>Récupère la valeur d'un attribut CSS d'un élément html.</p>
+				<dl>
+					<dt><var>e</var> <i>HTMLElement</i> - élément html .</dt>
+					<dt><var>sAttr</var> <i>Mixte</i> - attribut CSS.</dt>
+				</dl>
+				<p>Retourne un chaîne contenant la valeur ou null.</p>
+			</section>
+			<section><h3>getNameSpaceCSS ( s )</h3>
+				<p>Retourne le nom d'un attribut CSS depuis un attribut JS.</p>
+				<dl>
+					<dt><var>s</var> <i>String</i> - attribut JS.</dt>
+				</dl>
+			</section>
+			<section><h3>getNameSpaceJS ( s )</h3>
+				<p>Retourne le nom d'un attribut JS depuis un attribut CSS.</p>
+				<dl>
+					<dt><var>s</var> <i>String</i> - attribut CSS.</dt>
+				</dl>
+			</section>
+			<section><h3>remove ( m, s )</h3>
+				<p>Efface un attribut CSS d'un objet.</p>
+				<dl>
+					<dt><var>m</var> <i>Mixte</i> - Elément <var>HTML</var>, instance <var>CSSStyleRule</var> (objet possédant un attribut style) ou instance <var>CSSStyleDeclaration</var>.</dt>
+					<dt><var>s</var> <i>String</i> - attribut CSS.</dt>
+				</dl>
+				<p>Retourne la valeur cssText résultante.</p>
+			</section>
+			<section><h3>set ( m, s )</h3>
+				<p>Défini la valeur d'un ou plusieurs attribut CSS d'un objet .</p>
+				<dl>
+					<dt><var>m</var> <i>Mixte</i> - Elément <var>HTML</var>, instance <var>CSSStyleRule</var> (objet possédant un attribut style) ou instance <var>CSSStyleDeclaration</var>.</dt>
+					<dt><var>s</var> <i>String</i> - une ou plusieurs déclaration(s) CSS.</dt>
+				</dl>
+				<p>Retourne la valeur cssText résultante.</p>
+			</section>
 		</section>
 	</div>
 </page>
@@ -37,12 +90,7 @@
 	<h1>Testes unitaires</h1>
 	<div id="eSummary2"></div>
 
-</page>
-<page id="eBenchmarking">
-	<h1>Benchmarking</h1>
-	<div id="eSummary3"></div>
-
-	<ul style="position: absolute; top:-100em;">
+	<ul class="tests">
 		<li id="eTestClassName">#eTestClassName</li>
 		<li id="eTestClassId">#eTestClassId</li>
 		<li id="eTestStyle">#eTestStyle</li>
@@ -50,11 +98,10 @@
 		<li id="eTest">#eTest</li>
 		<li id="eTest2">#eTest2</li>
 	</ul>
+
 </page>
 
-
 <!-- <script src="src/Browser.js"></script> -->
-<script src="src/Tag.js"></script>
 <script src="src/CssRules.js"></script>
 <script src="src/Style.js"></script>
 <script src="js/page.js"></script>
@@ -67,70 +114,49 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 
 // TESTS UNITAIRES
 new UnitTest( eUnitTest,[
-	{ title:"",
-		desc:".",
-		eval:
-``,
-		list:[]
-		}
-	],
-	{ unittest:1, benchmark: 0 }
-	)
-
-layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
-
-
-// BENCHMARKING
-// Benchmark( eUnitTest, 'CODE' )
-new UnitTest( eBenchmarking ,[
-	{ title:"Style.calculate",
-		desc:`...`,
-				eval:
-`
-`,
+	{ title:"Style.validate",
 		list:[
 			{ title:"background-position",
 				assertions:[
-					`Style.calculate("background-position",'20px 30px')=='background-position:20px 30px;'`,
-					`Style.calculate("background-position",'-20px -30px')=='background-position:-20px -30px;'`
+					`Style.validate("background-position",'20px 30px')=='background-position:20px 30px;'`,
+					`Style.validate("background-position",'-20px -30px')=='background-position:-20px -30px;'`
 					]},
 			{ title:"font-size",
 				assertions:[
-					`Style.calculate("font-size",-1)=='font-size:0px;'`,
-					`Style.calculate("font-size",1)=='font-size:1px;'`,
-					`Style.calculate("font-size",10)=='font-size:10px;'`,
-					`Style.calculate("font-size",10.5)=='font-size:10px;'`
+					`Style.validate("font-size",-1)=='font-size:0px;'`,
+					`Style.validate("font-size",1)=='font-size:1px;'`,
+					`Style.validate("font-size",10)=='font-size:10px;'`,
+					`Style.validate("font-size",10.5)=='font-size:10px;'`
 					]},
 			{ title:"font-weight",
 				assertions:[
-					`Style.calculate("font-weight",-1)=='font-weight:0;'`,
-					`Style.calculate("font-weight",1)=='font-weight:1;'`,
-					`Style.calculate("font-weight",10)=='font-weight:10;'`,
-					`Style.calculate("font-weight",10.5)=='font-weight:10;'`
+					`Style.validate("font-weight",-1)=='font-weight:0;'`,
+					`Style.validate("font-weight",1)=='font-weight:1;'`,
+					`Style.validate("font-weight",10)=='font-weight:10;'`,
+					`Style.validate("font-weight",10.5)=='font-weight:10;'`
 					]},
 			{ title:"height",
 				assertions:[
-					`Style.calculate("height",-10)=='height:0px;'`,
-					`Style.calculate("height",0)=='height:0px;'`,
-					`Style.calculate("height",10)=='height:10px;'`,
-					`Style.calculate("height",10.5)=='height:10px;'`
+					`Style.validate("height",-10)=='height:0px;'`,
+					`Style.validate("height",0)=='height:0px;'`,
+					`Style.validate("height",10)=='height:10px;'`,
+					`Style.validate("height",10.5)=='height:10px;'`
 					]},
 			{ title:"opacity",
 				assertions:[
-					`Style.calculate("opacity",-1)=='opacity:0;'`,
-					`Style.calculate("opacity",0)=='opacity:0;'`,
-					`Style.calculate("opacity",.5)=='opacity:0.50;'`,
-					`Style.calculate("opacity",1)=='opacity:1;'`,
-					`Style.calculate("opacity",2)=='opacity:1;'`
+					`Style.validate("opacity",-1)=='opacity:0;'`,
+					`Style.validate("opacity",0)=='opacity:0;'`,
+					`Style.validate("opacity",.5)=='opacity:0.50;'`,
+					`Style.validate("opacity",1)=='opacity:1;'`,
+					`Style.validate("opacity",2)=='opacity:1;'`
 					]},
 			{ title:"width",
 				assertions:[
-					`Style.calculate("width",-10)=='width:0px;'`,
-					`Style.calculate("width",0)=='width:0px;'`,
-					`Style.calculate("width",10)=='width:10px;'`,
-					`Style.calculate("width",10.5)=='width:10px;'`
+					`Style.validate("width",-10)=='width:0px;'`,
+					`Style.validate("width",0)=='width:0px;'`,
+					`Style.validate("width",10)=='width:10px;'`,
+					`Style.validate("width",10.5)=='width:10px;'`
 					]},
-			
 			]
 		},
 	{ title:"Style.get",
@@ -261,14 +287,24 @@ eTestCssText.style.cssText = "top: 10px;"`,
 					]},
 			]
 		},
-	{ title:"Style.getAttributeNS",
+	{ title:"Style.getNameSpaceCSS",
 		assertions:[
-			`Style.getAttributeNS("test-test-test")=='testTestTest'`,
-			`Style.getAttributeNS("border-bottom-right-radius")=='borderBottomRightRadius'`,
-			`Style.getAttributeNS("background-position")=='backgroundPosition'`,
-			`Style.getAttributeNS("font-weigth")=='fontWeigth'`,
-			`Style.getAttributeNS("opacity")=='opacity'`,
-			`Style.getAttributeNS("padding")=='padding'`
+			`Style.getNameSpaceCSS("testTestTest")=='test-test-test'`,
+			`Style.getNameSpaceCSS("borderBottomRightRadius")=='border-bottom-right-radius'`,
+			`Style.getNameSpaceCSS("backgroundPosition")=='background-position'`,
+			`Style.getNameSpaceCSS("fontWeigth")=='font-weigth'`,
+			`Style.getNameSpaceCSS("opacity")=='opacity'`,
+			`Style.getNameSpaceCSS("padding")=='padding'`
+			]
+		},
+	{ title:"Style.getNameSpaceJS",
+		assertions:[
+			`Style.getNameSpaceJS("test-test-test")=='testTestTest'`,
+			`Style.getNameSpaceJS("border-bottom-right-radius")=='borderBottomRightRadius'`,
+			`Style.getNameSpaceJS("background-position")=='backgroundPosition'`,
+			`Style.getNameSpaceJS("font-weigth")=='fontWeigth'`,
+			`Style.getNameSpaceJS("opacity")=='opacity'`,
+			`Style.getNameSpaceJS("padding")=='padding'`
 			]
 		},
 	{ title:"Style.set",
@@ -279,6 +315,9 @@ eTestCssText.style.cssText = "top: 10px;"`,
 		},
 	{ title:"Style.remove",
 		assertions:[
+			`Style.remove( eTest, "font-size")== 'width: 20px; color: red;'`,
+			`Style.remove( eTest, "color")== 'width: 20px;'`,
+			`Style.remove( eTest, "width")== ''`,
 		
 			]
 		},
@@ -286,9 +325,7 @@ eTestCssText.style.cssText = "top: 10px;"`,
 	{ unittest:1, benchmark: 1 }
 	)
 
-layoutDoc( eSummary3, { numbers: false, links: true }, eBenchmarking )
-
-
+layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 
 
 /*

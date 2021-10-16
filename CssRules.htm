@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>CSSRules Object</title>
+	<meta charset="UTF-8">
+	<!--TESTING PURPOSE -->
+	<style>
+	.tests {
+		position: fixed;
+		top:-100em;
+		right:0;
+		}
+	.tests LI {
+		border-color: red;
+		border-style: dashed;
+		margin: 1px;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="css/page.css">
+	<link rel="stylesheet" type="text/css" href="css/doc.css">
+	<link rel="stylesheet" type="text/css" href="css/unittest.css">
+</head>
+<body>
+
+<ul class="pageMenu">
+	<li><a href="index.htm">JS.Objects</a></li>
+	<li onclick="goTo( eDoc )">Objet CSSRules</li>
+	<li onclick="goTo( eUnitTest )">Testes unitaires</li>
+</ul>
+
+<page id="ePreload" class="active">
+	chargement...
+</page>
+
+<page id="eDoc">
+	<h1>Objet CSSRules</h1>
+	<div id="eSummary1"></div>
+
+	<div class="doc">
+		<section><h2>Méthodes objet CSSRules</h2>
+			<section><h3>add ( s )</h3>
+				<p>.</p>
+				<dl>
+					<dt><var>s</var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne.</p>
+			</section>
+		</section>
+	</div>
+</page>
+<page id="eUnitTest">
+	<h1>Testes unitaires</h1>
+	<div id="eSummary2"></div>
+</page>
+
+<script src="src/CssRules.js"></script>
+<script src="src/Style.js"></script>
+<script src="js/page.js"></script>
+<script src="js/doc.js"></script>
+<script src="js/unittest.js"></script>
+<script src="js/benchmark.js"></script>
+<script>
+// DOCUMENTATION
+layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
+
+// TESTS UNITAIRES
+new UnitTest( eUnitTest,[
+	{ title:"Style.getNameSpaceJS",
+		assertions:[
+			`Style.getNameSpaceJS("test-test-test")=='testTestTest'`,
+			`Style.getNameSpaceJS("border-bottom-right-radius")=='borderBottomRightRadius'`,
+			`Style.getNameSpaceJS("background-position")=='backgroundPosition'`,
+			`Style.getNameSpaceJS("font-weigth")=='fontWeigth'`,
+			`Style.getNameSpaceJS("opacity")=='opacity'`,
+			`Style.getNameSpaceJS("padding")=='padding'`
+			]
+		},
+	],
+	{ unittest:1, benchmark: 1 }
+	)
+
+layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
+
+
+/*
+Une fois le code charger, afficher de la page d'accueil !!
+... sans setTimeout SVP !
+*/
+setTimeout( ()=>goTo( eDoc ), 10 )
+</script>
+
+</body>
+</html>

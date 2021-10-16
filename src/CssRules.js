@@ -4,25 +4,31 @@ CssRules = ( function(){
 	, e = document.getElementsByTagName('head')[0]
 	, _getRules
 	, f =function(){
-		_oSheet = e.appendChild( Tag( 'STYLE', { title:'CssRules', type:'text/css', media:'all' })).sheet
+		_oSheet = e.appendChild( document.createElement('STYLE')).sheet
 		let s = _oSheet.rules ? 'rules' : 'cssRules'
 		_getRules =(function(){
-			return o=>{ try{return o[s]}catch(e){/* operation insecure */}}
+			return o=>{ try{return o[s]}catch(error){/* operation insecure */}}
 			})()
 		}
 	if( e ) f(); else throw new Error ( 'CssRules::Tag HEAD needed.' )
 	return {
 		add( s ){
 			let aRules=[]
+			,reRules = /\s*([^\{]+)\{\s*([^\}]+)\}\s*/g
+			
+			console.info( Array.from(s.matchAll(reRules)) )
+			// .forEach(a=>m[a[1]]=a[2])
+			
 			for(let a=s.split('}'),i=a.length-2;i>=0;i--)
 				if(a[i].indexOf('{')!=-1)
 					aRules.push(a[i].split('{'))
-			for(let i=aRules.length-1,sName,sRule,o;i>=0;i--){
+			for(let i=aRules.length-1,sName,sDeclBlock,o;i>=0;i--){
 				sName=aRules[i][0].trim()
-				sRule=aRules[i][1]
+				sDeclBlock=aRules[i][1]
 				o=this.get(sName)
-				if(o) Style.set(o,sRule) // ne rajoute ainsi pas un sélecteur 2 fois et permet une suppression en un coup.
-					else _oSheet.insertRule(sName,sRule)
+				return o
+					? Style.set(o,sDeclBlock) // ne rajoute ainsi pas un sélecteur 2 fois et permet une suppression en un coup.
+					: _oSheet.insertRule(s)
 				}
 			},
 		disable( rePattern, sAttr='href', bDisable ){
