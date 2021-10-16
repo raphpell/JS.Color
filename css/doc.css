@@ -58,6 +58,9 @@ section {
 .doc SECTION > DL {
 	margin-left: 3em;
 	}
+.doc DT VAR {
+	font-weight: bold;
+	}
 	
 h2 a ,
 h3 a ,
