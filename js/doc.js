@@ -37,7 +37,7 @@ layoutDoc =(function(){
 			for(var i = 0, ni=a.length; i<ni; i++ ){
 				let eLI = document.createElement('LI')
 				, nLevel = this.getNumbers( (i+1), nParentLevel )
-				eLI.innerHTML = this.getLink( nLevel, a[i].title.innerHTML )
+				eLI.innerHTML = this.getLink( nLevel, a[i].title.innerHTML.replace( /\([^\)]+\)/g, '' ))
 				this.displaySummary ( eLI, a[i].childs, nLevel )
 				eOL.appendChild( eLI )
 				}

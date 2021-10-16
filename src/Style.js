@@ -52,14 +52,14 @@ Style =(()=>{
 			if(!~s.indexOf('-')) return s
 			return s.replace( reCSSns, (s)=>s.charAt(1).toUpperCase())
 			},
-		remove( m, s ){ // m == CssRule || Element
+		remove( m, s ){
 			m=m.style||m
 			if(m && m[s] && m.removeProperty) m.removeProperty(s) 
 			return m.cssText
 			},
 		set( m, s ){
 			m=m.style||m
-			Array.from(s.matchAll(reCssDecl)).forEach(a=>m[a[1]]=a[2])
+			Array.from(s.matchAll(reCssDecl)).forEach(a=>m.setProperty(a[1],a[2]))
 			return m.cssText
 			}
 		}

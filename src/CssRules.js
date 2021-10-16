@@ -1,35 +1,27 @@
 CssRules = ( function(){
-	let _oSheets = document.styleSheets
-	, _oSheet
+	let _oSheet, _getRules
+	const reRules = /\s*([^\{]+)\{\s*([^\}]+)\}\s*/g
+	, _oSheets = document.styleSheets
 	, e = document.getElementsByTagName('head')[0]
-	, _getRules
-	, f =function(){
+	, f =()=>{
 		_oSheet = e.appendChild( document.createElement('STYLE')).sheet
-		let s = _oSheet.rules ? 'rules' : 'cssRules'
-		_getRules =(function(){
-			return o=>{ try{return o[s]}catch(error){/* operation insecure */}}
+		let s = _oSheet.cssRules ? 'cssRules' : 'rules'
+		_getRules =(function(){/*prevent operation insecure*/
+			return o=>{ try{return o[s]}catch(error){}}
 			})()
 		}
 	if( e ) f(); else throw new Error ( 'CssRules::Tag HEAD needed.' )
 	return {
 		add( s ){
-			let aRules=[]
-			,reRules = /\s*([^\{]+)\{\s*([^\}]+)\}\s*/g
-			
-			console.info( Array.from(s.matchAll(reRules)) )
-			// .forEach(a=>m[a[1]]=a[2])
-			
-			for(let a=s.split('}'),i=a.length-2;i>=0;i--)
-				if(a[i].indexOf('{')!=-1)
-					aRules.push(a[i].split('{'))
-			for(let i=aRules.length-1,sName,sDeclBlock,o;i>=0;i--){
-				sName=aRules[i][0].trim()
-				sDeclBlock=aRules[i][1]
-				o=this.get(sName)
-				return o
-					? Style.set(o,sDeclBlock) // ne rajoute ainsi pas un sélecteur 2 fois et permet une suppression en un coup.
-					: _oSheet.insertRule(s)
-				}
+			let m = []
+			Array.from(s.matchAll(reRules)).forEach(a=>{
+				o=this.get(a[1].trim())
+				m.push( o
+					? Style.set(o, a[2]) // ne rajoute ainsi pas un sélecteur 2 fois
+					: _getRules(_oSheet)[_oSheet.insertRule(a[0],_oSheet.cssRules.length)].style.cssText
+					)
+				})
+			return m.length==1?m[0]:m
 			},
 		disable( rePattern, sAttr='href', bDisable ){
 			for(let i=_oSheets.length-1;i>=0;i--)
@@ -50,7 +42,7 @@ CssRules = ( function(){
 			return false
 			},
 		remove(){
-			for(let a=arguments,ni=a.length,i=0;i<ni;i++) this.get(a[i].trim(),true)
+			for(let a=arguments,ni=a.length,i=0;i<ni;i++) this.get(a[i],true)
 			return true
 			}
 		}

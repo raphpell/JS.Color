@@ -1,21 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>CSSRules Object</title>
+	<title>CSSRules.js</title>
 	<meta charset="UTF-8">
-	<!--TESTING PURPOSE -->
-	<style>
-	.tests {
-		position: fixed;
-		top:-100em;
-		right:0;
-		}
-	.tests LI {
-		border-color: red;
-		border-style: dashed;
-		margin: 1px;
-		}
-	</style>
 	<link rel="stylesheet" type="text/css" href="css/page.css">
 	<link rel="stylesheet" type="text/css" href="css/doc.css">
 	<link rel="stylesheet" type="text/css" href="css/unittest.css">
@@ -24,7 +11,7 @@
 
 <ul class="pageMenu">
 	<li><a href="index.htm">JS.Objects</a></li>
-	<li onclick="goTo( eDoc )">Objet CSSRules</li>
+	<li onclick="goTo( eDoc )">Documentation</li>
 	<li onclick="goTo( eUnitTest )">Testes unitaires</li>
 </ul>
 
@@ -37,13 +24,22 @@
 	<div id="eSummary1"></div>
 
 	<div class="doc">
-		<section><h2>Méthodes objet CSSRules</h2>
+		<section><h2>Méthodes objet</h2>
 			<section><h3>add ( s )</h3>
 				<p>.</p>
 				<dl>
 					<dt><var>s</var> <i>String</i> - .</dt>
 				</dl>
 				<p>Retourne.</p>
+			</section>
+			<section><h3>disable ( rePattern, sAttr='href', bDisable )</h3>
+				
+			</section>
+			<section><h3>get( sSelector, bDelete )</h3>
+				
+			</section>
+			<section><h3>remove(...)</h3>
+				
 			</section>
 		</section>
 	</div>
@@ -65,14 +61,13 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 
 // TESTS UNITAIRES
 new UnitTest( eUnitTest,[
-	{ title:"Style.getNameSpaceJS",
+	{ title:"CssRules.add",
 		assertions:[
-			`Style.getNameSpaceJS("test-test-test")=='testTestTest'`,
-			`Style.getNameSpaceJS("border-bottom-right-radius")=='borderBottomRightRadius'`,
-			`Style.getNameSpaceJS("background-position")=='backgroundPosition'`,
-			`Style.getNameSpaceJS("font-weigth")=='fontWeigth'`,
-			`Style.getNameSpaceJS("opacity")=='opacity'`,
-			`Style.getNameSpaceJS("padding")=='padding'`
+			"CssRules.add( '.test1 { opacity:.5; }')=='opacity: 0.5;'",
+			"CssRules.add( '.test1 { color:red; }')=='opacity: 0.5; color: red;'",
+			"CssRules.add( '.test2 { opacity:.5; }')=='opacity: 0.5;'",
+			"CssRules.add( '.test2 { color:red; }')=='opacity: 0.5; color: red;'",
+			"CssRules.add( '.test3 { opacity:.5; } .test4 { color:red; }').toString()==['opacity: 0.5;','color: red;'].toString()"
 			]
 		},
 	],
