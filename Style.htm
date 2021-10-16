@@ -47,13 +47,15 @@
 		<li id="eTestClassId">#eTestClassId</li>
 		<li id="eTestStyle">#eTestStyle</li>
 		<li id="eTestCssText">#eTestCssText</li>
+		<li id="eTest">#eTest</li>
+		<li id="eTest2">#eTest2</li>
 	</ul>
 </page>
 
 
-<script src="src/Browser.js"></script>
+<!-- <script src="src/Browser.js"></script> -->
 <script src="src/Tag.js"></script>
-<script src="src/CssRules.js"></script> <!-- -->
+<script src="src/CssRules.js"></script>
 <script src="src/Style.js"></script>
 <script src="js/page.js"></script>
 <script src="js/doc.js"></script>
@@ -81,9 +83,59 @@ layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 // BENCHMARKING
 // Benchmark( eUnitTest, 'CODE' )
 new UnitTest( eBenchmarking ,[
+	{ title:"Style.calculate",
+		desc:`...`,
+				eval:
+`
+`,
+		list:[
+			{ title:"background-position",
+				assertions:[
+					`Style.calculate("background-position",'20px 30px')=='background-position:20px 30px;'`,
+					`Style.calculate("background-position",'-20px -30px')=='background-position:-20px -30px;'`
+					]},
+			{ title:"font-size",
+				assertions:[
+					`Style.calculate("font-size",-1)=='font-size:0px;'`,
+					`Style.calculate("font-size",1)=='font-size:1px;'`,
+					`Style.calculate("font-size",10)=='font-size:10px;'`,
+					`Style.calculate("font-size",10.5)=='font-size:10px;'`
+					]},
+			{ title:"font-weight",
+				assertions:[
+					`Style.calculate("font-weight",-1)=='font-weight:0;'`,
+					`Style.calculate("font-weight",1)=='font-weight:1;'`,
+					`Style.calculate("font-weight",10)=='font-weight:10;'`,
+					`Style.calculate("font-weight",10.5)=='font-weight:10;'`
+					]},
+			{ title:"height",
+				assertions:[
+					`Style.calculate("height",-10)=='height:0px;'`,
+					`Style.calculate("height",0)=='height:0px;'`,
+					`Style.calculate("height",10)=='height:10px;'`,
+					`Style.calculate("height",10.5)=='height:10px;'`
+					]},
+			{ title:"opacity",
+				assertions:[
+					`Style.calculate("opacity",-1)=='opacity:0;'`,
+					`Style.calculate("opacity",0)=='opacity:0;'`,
+					`Style.calculate("opacity",.5)=='opacity:0.50;'`,
+					`Style.calculate("opacity",1)=='opacity:1;'`,
+					`Style.calculate("opacity",2)=='opacity:1;'`
+					]},
+			{ title:"width",
+				assertions:[
+					`Style.calculate("width",-10)=='width:0px;'`,
+					`Style.calculate("width",0)=='width:0px;'`,
+					`Style.calculate("width",10)=='width:10px;'`,
+					`Style.calculate("width",10.5)=='width:10px;'`
+					]},
+			
+			]
+		},
 	{ title:"Style.get",
-		desc:`Récupération des valeurs 'style' des éléments html : classe CSS, attribut <code>style</code>, et attribut <code>style.cssText</code>.<br>
-			Rapidité : <code>style</code> puis <code>style.cssText</code> et classe CSS.`,
+		desc:'Récupération des valeurs style des éléments html : classe CSS, attribut <code>style</code>, et attribut <code>style.cssText</code>.<br>'
+			+'Rapidité : <code>style</code> puis <code>style.cssText</code> et classe CSS.',
 				eval:
 `document.styleSheets[0].insertRule( \`.test {
 	opacity:.5;
@@ -208,7 +260,28 @@ eTestCssText.style.cssText = "top: 10px;"`,
 					`Style.get( eTestCssText, "top" )=='10px'`
 					]},
 			]
-		}
+		},
+	{ title:"Style.getAttributeNS",
+		assertions:[
+			`Style.getAttributeNS("test-test-test")=='testTestTest'`,
+			`Style.getAttributeNS("border-bottom-right-radius")=='borderBottomRightRadius'`,
+			`Style.getAttributeNS("background-position")=='backgroundPosition'`,
+			`Style.getAttributeNS("font-weigth")=='fontWeigth'`,
+			`Style.getAttributeNS("opacity")=='opacity'`,
+			`Style.getAttributeNS("padding")=='padding'`
+			]
+		},
+	{ title:"Style.set",
+		assertions:[
+			`Style.set( eTest, "font-size:15px; width:20px;")=='font-size: 15px; width: 20px;'`,
+			`Style.set( eTest, "font-size:20px; color:red;")=='font-size: 20px; width: 20px; color: red;'`
+			]
+		},
+	{ title:"Style.remove",
+		assertions:[
+		
+			]
+		},
 	],
 	{ unittest:1, benchmark: 1 }
 	)
