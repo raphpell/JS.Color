@@ -428,9 +428,9 @@ Object.assign( Fx, {
 		},
 	Interval :(function(){
 		let _oFPS={}
-		, _create=>( nFps ){
+		, _create = nFps =>{
 			let o=_oFPS[nFps]
-			, f =>(){
+			, f =()=>{
 				let o=_oFPS[nFps], a=o.a.splice(0,o.a.length)
 				while(a.length) a.shift()()
 				if(o.a.length==0)_remove(nFps)
@@ -440,7 +440,7 @@ Object.assign( Fx, {
 				n: setInterval( f, parseInt(1000/nFps))
 				}
 			}
-		, _remove=>( nFps ){
+		, _remove = nFps =>{
 				let o=_oFPS[nFps]
 				if(!o)return false
 				clearInterval(o.n)

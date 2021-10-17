@@ -37,6 +37,34 @@
 				<p>Retourne </p>
 			</section>
 		</section>
+		<section><h2>FX.Effects</h2>
+			<p>Objet contenant les fonctions calculant transitions. 
+			Elles ont toutes quatre arguments:</p>
+			<div class="arguments">
+				<dl>
+					<dt><var>t</var> : <i>Number</i>. Temps en milliseconde (doit commencer par zéro).</dt>
+					<dt><var>b</var> : <i>Number</i>. Valeur au départ.</dt>
+					<dt><var>c</var> : <i>Number</i>. Différence entre la valeur finale et la valeur au départ.</dt>
+					<dt><var>d</var> : <i>Number</i>. Durée en milliseconde.</dt>
+				</dl>
+			</div>
+			<p>La valeur retourné par ces fonctions quand b=0, c=1 et d=1, est:</p>
+			<ul>
+				<li>si t=0, 0.</li><li>si t=1, 1.</li>
+			</ul>
+			<p>Il est possible d'en rajouter. Liste des effets disponibles.</p>
+			<ul>
+				<li>linear: seul effet sans choix <var>in, out, inOut</var>.</li>
+				<li>quad</li>
+				<li>quint</li>
+				<li>sine</li>
+				<li>expo</li>
+				<li>circ</li>
+				<li>elastic</li>
+				<li>back</li>
+				<li>bounce</li>
+			</ul>
+		</section>
 	</div>
 </page>
 <page id="eUnitTest">
@@ -48,8 +76,10 @@
 	<div id="eSummary3"></div>
 </page>
 
+<script src="src/Color.js"></script>
 <script src="src/CssRules.js"></script>
 <script src="src/Style.js"></script>
+<script src="src/FX.js"></script>
 <script src="js/page.js"></script>
 <script src="js/doc.js"></script>
 <script src="js/unittest.js"></script>
@@ -64,6 +94,103 @@ new UnitTest( eUnitTest,[
 	{ title:"FX",
 		desc:'',
 		list:[
+			{ title:".custom",
+				assertions:[
+					"true",
+					]
+				},
+			],
+		list:[
+			{ title:"Fx.Effects",
+				list:[
+					{ title:"linear",
+						assertions:[
+							"Fx.Effects.linear( 0, 0, 1, 1 )===0",
+							"Fx.Effects.linear( 1, 0, 1, 1 )===1",
+							]
+						},
+					{ title:"quad",
+						assertions:[
+							"Fx.Effects.quad.in( 0, 0, 1, 1 )===0",
+							"Fx.Effects.quad.in( 1, 0, 1, 1 )===1",
+							"Fx.Effects.quad.out( 0, 0, 1, 1 )===0",
+							"Fx.Effects.quad.out( 1, 0, 1, 1 )===1",
+							"Fx.Effects.quad.inOut( 0, 0, 1, 1 )===0",
+							"Fx.Effects.quad.inOut( 1, 0, 1, 1 )===1",
+							]
+						},
+					{ title:"quint",
+						assertions:[
+							"Fx.Effects.quint.in( 0, 0, 1, 1 )===0",
+							"Fx.Effects.quint.in( 1, 0, 1, 1 )===1",
+							"Fx.Effects.quint.out( 0, 0, 1, 1 )===0",
+							"Fx.Effects.quint.out( 1, 0, 1, 1 )===1",
+							"Fx.Effects.quint.inOut( 0, 0, 1, 1 )===0",
+							"Fx.Effects.quint.inOut( 1, 0, 1, 1 )===1",
+							]
+						},
+					{ title:"sine",
+						assertions:[
+							"Fx.Effects.sine.in( 0, 0, 1, 1 )===0",
+							"Fx.Effects.sine.in( 1, 0, 1, 1 )===1",
+							"Fx.Effects.sine.out( 0, 0, 1, 1 )===0",
+							"Fx.Effects.sine.out( 1, 0, 1, 1 )===1",
+							"Fx.Effects.sine.inOut( 0, 0, 1, 1 )===0",
+							"Fx.Effects.sine.inOut( 1, 0, 1, 1 )===1",
+							]
+						},
+					{ title:"expo",
+						assertions:[
+							"Fx.Effects.expo.in( 0, 0, 1, 1 )===0",
+							"Fx.Effects.expo.in( 1, 0, 1, 1 )===1",
+							"Fx.Effects.expo.out( 0, 0, 1, 1 )===0",
+							"Fx.Effects.expo.out( 1, 0, 1, 1 )===1",
+							"Fx.Effects.expo.inOut( 0, 0, 1, 1 )===0",
+							"Fx.Effects.expo.inOut( 1, 0, 1, 1 )===1",
+							]
+						},
+					{ title:"circ",
+						assertions:[
+							"Fx.Effects.circ.in( 0, 0, 1, 1 )===0",
+							"Fx.Effects.circ.in( 1, 0, 1, 1 )===1",
+							"Fx.Effects.circ.out( 0, 0, 1, 1 )===0",
+							"Fx.Effects.circ.out( 1, 0, 1, 1 )===1",
+							"Fx.Effects.circ.inOut( 0, 0, 1, 1 )===0",
+							"Fx.Effects.circ.inOut( 1, 0, 1, 1 )===1",
+							]
+						},
+					{ title:"elastic",
+						assertions:[
+							"Fx.Effects.elastic.in( 0, 0, 1, 1 )===0",
+							"Fx.Effects.elastic.in( 1, 0, 1, 1 )===1",
+							"Fx.Effects.elastic.out( 0, 0, 1, 1 )===0",
+							"Fx.Effects.elastic.out( 1, 0, 1, 1 )===1",
+							"Fx.Effects.elastic.inOut( 0, 0, 1, 1 )===0",
+							"Fx.Effects.elastic.inOut( 1, 0, 1, 1 )===1",
+							]
+						},
+					{ title:"back",
+						assertions:[
+							"Fx.Effects.back.in( 0, 0, 1, 1 )===0",
+							"Fx.Effects.back.in( 1, 0, 1, 1 )===1",
+							"Fx.Effects.back.out( 0, 0, 1, 1 )===0",
+							"Fx.Effects.back.out( 1, 0, 1, 1 )===1",
+							"Fx.Effects.back.inOut( 0, 0, 1, 1 )===0",
+							"Fx.Effects.back.inOut( 1, 0, 1, 1 )===1",
+							]
+						},
+					{ title:"bounce",
+						assertions:[
+							"Fx.Effects.bounce.in( 0, 0, 1, 1 )===0",
+							"Fx.Effects.bounce.in( 1, 0, 1, 1 )===1",
+							"Fx.Effects.bounce.out( 0, 0, 1, 1 )===0",
+							"Fx.Effects.bounce.out( 1, 0, 1, 1 )===1",
+							"Fx.Effects.bounce.inOut( 0, 0, 1, 1 )===0",
+							"Fx.Effects.bounce.inOut( 1, 0, 1, 1 )===1",
+							]
+						},
+					],
+				},
 			],
 	}],
 	{ unittest:1, benchmark: 0 }
@@ -77,14 +204,80 @@ new UnitTest( eBenchmarking ,[
 	{ title:"FX",
 		desc:'',
 		list:[
-			{ title:".",
+			{ title:".custom",
 				assertions:[
 					"true",
 					]
 				},
 			],
-		}
-	],
+		list:[
+			{ title:"Fx.Effects",
+				list:[
+					{ title:"linear",
+						assertions:[
+							"Fx.Effects.linear( 1, 0, 1, 1 )",
+							]
+						},
+					{ title:"quad",
+						assertions:[
+							"Fx.Effects.quad.in( 1, 0, 1, 1 )",
+							"Fx.Effects.quad.out( 1, 0, 1, 1 )",
+							"Fx.Effects.quad.inOut( 1, 0, 1, 1 )",
+							]
+						},
+					{ title:"quint",
+						assertions:[
+							"Fx.Effects.quint.in( 1, 0, 1, 1 )",
+							"Fx.Effects.quint.out( 1, 0, 1, 1 )",
+							"Fx.Effects.quint.inOut( 1, 0, 1, 1 )",
+							]
+						},
+					{ title:"sine",
+						assertions:[
+							"Fx.Effects.sine.in( 1, 0, 1, 1 )",
+							"Fx.Effects.sine.out( 1, 0, 1, 1 )",
+							"Fx.Effects.sine.inOut( 1, 0, 1, 1 )",
+							]
+						},
+					{ title:"expo",
+						assertions:[
+							"Fx.Effects.expo.in( 1, 0, 1, 1 )",
+							"Fx.Effects.expo.out( 1, 0, 1, 1 )",
+							"Fx.Effects.expo.inOut( 1, 0, 1, 1 )",
+							]
+						},
+					{ title:"circ",
+						assertions:[
+							"Fx.Effects.circ.in( 1, 0, 1, 1 )",
+							"Fx.Effects.circ.out( 1, 0, 1, 1 )",
+							"Fx.Effects.circ.inOut( 1, 0, 1, 1 )",
+							]
+						},
+					{ title:"elastic",
+						assertions:[
+							"Fx.Effects.elastic.in( 1, 0, 1, 1 )",
+							"Fx.Effects.elastic.out( 1, 0, 1, 1 )",
+							"Fx.Effects.elastic.inOut( 1, 0, 1, 1 )",
+							]
+						},
+					{ title:"back",
+						assertions:[
+							"Fx.Effects.back.in( 1, 0, 1, 1 )",
+							"Fx.Effects.back.out( 1, 0, 1, 1 )",
+							"Fx.Effects.back.inOut( 1, 0, 1, 1 )",
+							]
+						},
+					{ title:"bounce",
+						assertions:[
+							"Fx.Effects.bounce.in( 1, 0, 1, 1 )",
+							"Fx.Effects.bounce.out( 1, 0, 1, 1 )",
+							"Fx.Effects.bounce.inOut( 1, 0, 1, 1 )",
+							]
+						},
+					],
+				},
+			],
+	}],
 	{ unittest:0, benchmark: 1 }
 	)
 
