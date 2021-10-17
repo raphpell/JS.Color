@@ -5,3 +5,4 @@ Extensions Javascipt...
 
 - Color.js : Conversion des couleurs HEX, RGB, HSV, HSL et CMYK.
 - Style.js : Manipulation des styles CSS des élément HTML.
+- CssRules.js : Manipulation des classes CSS.
