@@ -1,6 +1,6 @@
-/*  REQUIS Les classes Color et Style.... Array.unique Array.merge */
+/*  REQUIS Les classes Color et Style....*/
 Fx =function( e, o2, mEffect, nTime, oSettings ){
-	var o = this
+	let o = this
 	Object.assign( o, Fx.oDefaultSettings, oSettings )
 	if( o.bPlayNow ) Fx.stop( e )
 	if( mEffect.constructor==Array ){
@@ -325,7 +325,9 @@ Object.assign( Fx, {
 				for( s in oFx.oFrames )
 					if( oFx.oFrames[s].constructor == Array && ( bPreserve ? ! o.oFrames[s] : true ))
 						o.oFrames[s] = oFx.oFrames[s]
-				o.aAttr = Array.unique( Array.merge( o.aAttr, oFx.aAttr ))
+
+				o.aAttr = [...new Set([ ...o.aAttr, ...oFx.aAttr ])]
+			//	o.aAttr = Array.unique( Array.merge( o.aAttr, oFx.aAttr ))
 				o.nFrames = o.nFrames > oFx.nFrames ? o.nFrames : oFx.nFrames
 				extend( o.o1, oFx.o1, bPreserve )
 				extend( o.o2, oFx.o2, bPreserve )
@@ -338,11 +340,13 @@ Object.assign( Fx, {
 				var nMax = o.nFrames, nLength
 				for( s in oFx.oFrames )
 					if( oFx.oFrames[s].constructor == Array ){
-						o.oFrames[s] = Array.merge( o.oFrames[s]||[], oFx.oFrames[s])
+						o.oFrames[s] = [ ...(o.oFrames[s]||[]), ...oFx.oFrames[s]]
+					//	o.oFrames[s] = Array.merge( o.oFrames[s]||[], oFx.oFrames[s])
 						nLength = o.oFrames[s].length
 						if( nLength > nMax ) nMax = nLength
 						}
-				o.aAttr = Array.unique( Array.merge( o.aAttr, oFx.aAttr ))
+				o.aAttr = [...new Set([ ...o.aAttr, ...oFx.aAttr ])]
+			//	o.aAttr = Array.unique( Array.merge( o.aAttr, oFx.aAttr ))
 				o.nFrames = nMax
 				extend( o.o1, oFx.o1, true )
 				Object.assign( o.o2, oFx.o2 )
