@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>FX.js</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/page.css">
+	<link rel="stylesheet" type="text/css" href="css/doc.css">
+	<link rel="stylesheet" type="text/css" href="css/unittest.css">
+</head>
+<body>
+
+<ul class="pageMenu">
+	<li><a href="index.htm">JS.Objects</a></li>
+	<li onclick="goTo( eDoc )" id="eDocMenu">Documentation</li>
+	<li onclick="goTo( eUnitTest )" id="eUnitTestMenu">Testes unitaires</li>
+	<li onclick="goTo( eBenchmarking )" id="eBenchmarkingMenu">Benchmarking</li>
+</ul>
+
+<page id="ePreload" class="active">
+	chargement...
+</page>
+
+<page id="eDoc">
+	<h1>Objet FX</h1>
+	<div id="eSummary1"></div>
+
+	<div class="doc">
+		<section>
+			<p>.</p>
+		</section>
+		<section><h2>Méthodes objet</h2>
+			<section><h3> (<var>  </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+		</section>
+	</div>
+</page>
+<page id="eUnitTest">
+	<h1>Testes unitaires</h1>
+	<div id="eSummary2"></div>
+</page>
+<page id="eBenchmarking">
+	<h1>Benchmarking</h1>
+	<div id="eSummary3"></div>
+</page>
+
+<script src="src/CssRules.js"></script>
+<script src="src/Style.js"></script>
+<script src="js/page.js"></script>
+<script src="js/doc.js"></script>
+<script src="js/unittest.js"></script>
+<script src="js/benchmark.js"></script>
+<script>
+// DOCUMENTATION
+layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
+
+// TESTS UNITAIRES
+new UnitTest( eUnitTest,[
+	{ desc:"...." },
+	{ title:"FX",
+		desc:'',
+		list:[
+			],
+	}],
+	{ unittest:1, benchmark: 0 }
+	)
+
+layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
+
+
+// BENCHMARKING
+new UnitTest( eBenchmarking ,[
+	{ title:"FX",
+		desc:'',
+		list:[
+			{ title:".",
+				assertions:[
+					"true",
+					]
+				},
+			],
+		}
+	],
+	{ unittest:0, benchmark: 1 }
+	)
+
+layoutDoc( eSummary3, { numbers: false, links: true }, eBenchmarking )
+
+/*
+Une fois le code charger, afficher de la page d'accueil !!
+... sans setTimeout SVP !
+*/
+setTimeout( ()=>goTo( eDoc ), 10 )
+</script>
+
+</body>
+</html>
