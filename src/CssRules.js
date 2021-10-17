@@ -1,21 +1,14 @@
 CssRules = ( function(){
-	let _oSheet, _getRules
-	const reRules = /\s*([^\{]+)\{\s*([^\}]+)\}\s*/g
-	, _oSheets = document.styleSheets
-	, e = document.getElementsByTagName('head')[0]
-	, f =()=>{
-		_oSheet = e.appendChild( document.createElement('STYLE')).sheet
-		let s = _oSheet.cssRules ? 'cssRules' : 'rules'
-		console.info( _oSheet )
-		_getRules =(function(){/*prevent operation insecure*/
-			return o=>{ try{return o[s]}catch(error){}}
-			})()
-		}
-	if( e ) f(); else throw new Error ( 'CssRules::Tag HEAD needed.' )
+	let _oSheets = document.styleSheets
+	, eStyle = document.createElement('STYLE')
+	eStyle.title = 'CssRules'
+	let _oSheet = document.firstElementChild.appendChild( eStyle ).sheet
+	, s = _oSheet.cssRules ? 'cssRules' : 'rules'
+	, _getRules = o=>{ try{return o[s]}catch(error){}} /*prevent operation insecure*/
 	return {
 		add( s ){
 			let m = []
-			Array.from(s.matchAll(reRules)).forEach(a=>{
+			Array.from(s.matchAll(/\s*([^\{]+)\{\s*([^\}]+)\}\s*/g)).forEach(a=>{
 				o=this.get(a[1].trim())
 				m.push( o
 					? Style.set(o, a[2]) // ne rajoute ainsi pas un sélecteur 2 fois
@@ -24,7 +17,7 @@ CssRules = ( function(){
 				})
 			return m.length==1?m[0]:m
 			},
-		disable( rePattern, sAttr='href', bDisable=1 ){
+		disable( bDisable=1, sAttr='title'||'href', rePattern=/CssRules/ ){
 			for(let i=_oSheets.length-1;i>=0;i--){
 				let oSheet = _oSheets[i]
 				if(rePattern.test(oSheet[sAttr])){
@@ -47,8 +40,8 @@ CssRules = ( function(){
 				}
 			return null
 			},
-		remove(){
-			for(let a=arguments,ni=a.length,i=0;i<ni;i++) this.get(a[i],true)
+		remove( ...a ){
+			a.forEach( s=>this.get(s,true) )
 			}
 		}
 	})()

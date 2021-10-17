@@ -25,6 +25,9 @@
 	<div id="eSummary1"></div>
 
 	<div class="doc">
+		<section>
+			<p>Un objet CSSStyleSheet est créé pour ajouter de nouvelles règles. Il a pour attribut <var>title</var> 'CssRules'.</p>
+		</section>
 		<section><h2>Méthodes objet</h2>
 			<section><h3>add ( sCssRules )</h3>
 				<p>Ajoute un ou plusieurs règle(s) CSS.</p>
@@ -34,12 +37,12 @@
 				<p>Retourne un objet CSSStyleDeclaration ou plusieurs dans un tableau.</p>
 				<p>Il est possible d'accéder à la l'objet CSSStyleRule parent avec l'attribut <var>parentRule</var>.</p>
 			</section>
-			<section><h3>disable ( rePattern, sAttr='href', bDisable=true )</h3>
+			<section><h3>disable ( bDisable=true, sAttr='title'||'href', rePattern=/CssRules/ )</h3>
 				<p>Désactive ou active un objet CSSStyleSheet en fonction d'une expression régulière.</p>
 				<dl>
-					<dt><var>rePattern</var> <i>RegExp</i> - expression à trouvé dans l'attribut.</dt>
-					<dt><var>sAttr</var> <i>String</i> - attribut d'un objet CSSStyleSheet.</dt>
 					<dt><var>bDisable</var> <i>Boolean</i> - indique si il faut désactivé l'objet CSSStyleSheet.</dt>
+					<dt><var>sAttr</var> <i>String</i> - attribut d'un objet CSSStyleSheet.</dt>
+					<dt><var>rePattern</var> <i>RegExp</i> - expression à trouvé dans l'attribut.</dt>
 				</dl>
 				<p>Retourne un objet CSSStyleSheet ou <code>null</code> si aucun objet n'est trouvé.</p>
 			</section>
@@ -83,7 +86,11 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 
 // TESTS UNITAIRES
 new UnitTest( eUnitTest,[
-	{ eval:
+	{ desc:"<b>NB</b>: Sur Firefox le constructeur CSSStyleDeclaration s'appelle CSS2Properties." },
+	{ title:"CssRules",
+		desc:'<span class="test1">.test1</span><span class="test2">.test2</span><span class="test3">.test3</span><span class="test4">.test4</span>',
+		list:[
+			{ eval:
 `window.f = function( CSSStyleDeclaration , m ){
 	if( m.constructor == String ) return CSSStyleDeclaration.cssText === m
 	// m.constructor == Array 
@@ -93,16 +100,45 @@ new UnitTest( eUnitTest,[
 		})
 	return b
 	}`},
-	{ title:"CssRules.add",
-		assertions:[
-			"f( CssRules.add( '.test1 { opacity:.5; }'), 'opacity: 0.5;')",
-			"f( CssRules.add( '.test1 { color:red; }'), 'opacity: 0.5; color: red;')",
-			"f( CssRules.add( '.test2 { opacity:.5; }'), 'opacity: 0.5;')",
-			"f( CssRules.add( '.test2 { color:red; }'), 'opacity: 0.5; color: red;')",
-			"f( CssRules.add( '.test3 { opacity:.5; } .test4 { color:red; }'), ['opacity: 0.5;','color: red;'])"
-			]
-		},
-	],
+			{ title:".add",
+				assertions:[
+					"f( CssRules.add( '.test1 { opacity:.5; }'), 'opacity: 0.5;')",
+					"f( CssRules.add( '.test1 { color:red; }'), 'opacity: 0.5; color: red;')",
+					"f( CssRules.add( '.test2 { opacity:.5; }'), 'opacity: 0.5;')",
+					"f( CssRules.add( '.test2 { color:blue; }'), 'opacity: 0.5; color: blue;')",
+					"f( CssRules.add( '.test3 { opacity:.5; } .test4 { color:lime; }'), ['opacity: 0.5;','color: lime;'])",
+					"CssRules.add( '.test1 { opacity:.5; }').constructor === CSSStyleDeclaration",
+					"CssRules.add( '.test1 { opacity:.5; }').parentRule.constructor === CSSStyleRule",
+					"CssRules.add( '.test1 { opacity:.5; }').parentRule.parentStyleSheet.constructor === CSSStyleSheet",
+					]
+				},
+			{ title:".disable",
+				assertions:[
+					"CssRules.disable().disabled == true",
+					"CssRules.disable( false ).disabled == false",
+					"CssRules.disable( true, 'title', /CssRules/ ).constructor === CSSStyleSheet ",
+					"CssRules.disable( false, 'title', /CssRules/ ).constructor === CSSStyleSheet ",
+					"CssRules.disable( true, 'title', /CssRules2/ ) == null"
+					]
+				},
+			{ title:".get",
+				assertions:[
+					"f( CssRules.get( '.test1' ), 'opacity: 0.5; color: red;' )",
+					"f( CssRules.get( '.test2' ), 'opacity: 0.5; color: blue;' )",
+					"f( CssRules.get( '.test3' ), 'opacity: 0.5;' )",
+					"f( CssRules.get( '.test4' ), 'color: lime;' )",
+					"CssRules.get( '.test1' ).constructor === CSSStyleDeclaration",
+					"CssRules.get( '.test5' ) === null"
+					]
+				},
+			{ title:".remove",
+				assertions:[
+					"CssRules.remove( '.test4' ) === undefined",
+					"CssRules.remove( '.test5' ) === undefined"
+					]
+				},
+			],
+	}],
 	{ unittest:1, benchmark: 0 }
 	)
 
@@ -111,16 +147,39 @@ layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 
 // BENCHMARKING
 new UnitTest( eBenchmarking ,[
-	{ desc:"" },
-	{ title:"",
+	{ title:"CssRules",
+		desc:'<span class="test21">.test21</span><span class="test22">.test22</span><span class="test23">.test23</span><span class="test24">.test24</span>',
 		list:[
-			{ title:"CssRules.add",
+			{ title:".add",
 				assertions:[
 					"CssRules.add( '.test21 { opacity:.5; }')",
 					"CssRules.add( '.test21 { color:red; }')",
 					"CssRules.add( '.test22 { opacity:.5; }')",
-					"CssRules.add( '.test22 { color:red; }')",
-					"CssRules.add( '.test23 { opacity:.5; } .test24 { color:red; }')"
+					"CssRules.add( '.test22 { color:blue; }')",
+					"CssRules.add( '.test23 { opacity:.5; } .test24 { color:lime; }')"
+					]
+				},
+			{ title:".disable",
+				assertions:[
+					"CssRules.disable()",
+					"CssRules.disable( true, 'title', /CssRules/ )",
+					"CssRules.disable( false, 'title', /CssRules/ )",
+					"CssRules.disable( true, 'title', /CssRules2/ )"
+					]
+				},
+			{ title:".get",
+				assertions:[
+					"CssRules.get( '.test21' )",
+					"CssRules.get( '.test22' )",
+					"CssRules.get( '.test23' )",
+					"CssRules.get( '.test24' )",
+					"CssRules.get( '.test25' )"
+					]
+				},
+			{ title:".remove",
+				assertions:[
+					"CssRules.remove( '.test24' )",
+					"CssRules.remove( '.test25' )"
 					]
 				},
 			],
