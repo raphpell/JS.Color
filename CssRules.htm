@@ -11,9 +11,9 @@
 
 <ul class="pageMenu">
 	<li><a href="index.htm">JS.Objects</a></li>
-	<li onclick="goTo( eDoc )">Documentation</li>
-	<li onclick="goTo( eUnitTest )">Testes unitaires</li>
-	<li onclick="goTo( eBenchmarking )">Benchmarking</li>
+	<li onclick="goTo( eDoc )" id="eDocMenu">Documentation</li>
+	<li onclick="goTo( eUnitTest )" id="eUnitTestMenu">Testes unitaires</li>
+	<li onclick="goTo( eBenchmarking )" id="eBenchmarkingMenu">Benchmarking</li>
 </ul>
 
 <page id="ePreload" class="active">
@@ -29,7 +29,7 @@
 			<p>Un objet CSSStyleSheet est créé pour ajouter de nouvelles règles. Il a pour attribut <var>title</var> 'CssRules'.</p>
 		</section>
 		<section><h2>Méthodes objet</h2>
-			<section><h3>add ( sCssRules )</h3>
+			<section><h3>add (<var> sCssRules </var>)</h3>
 				<p>Ajoute un ou plusieurs règle(s) CSS.</p>
 				<dl>
 					<dt><var>sCssRules</var> <i>String</i> - Règle(s) css.</dt>
@@ -37,7 +37,7 @@
 				<p>Retourne un objet CSSStyleDeclaration ou plusieurs dans un tableau.</p>
 				<p>Il est possible d'accéder à la l'objet CSSStyleRule parent avec l'attribut <var>parentRule</var>.</p>
 			</section>
-			<section><h3>disable ( bDisable=true, sAttr='title'||'href', rePattern=/CssRules/ )</h3>
+			<section><h3>disable (<var> bDisable=true, sAttr='title'||'href', rePattern=/CssRules/ </var>)</h3>
 				<p>Désactive ou active un objet CSSStyleSheet en fonction d'une expression régulière.</p>
 				<dl>
 					<dt><var>bDisable</var> <i>Boolean</i> - indique si il faut désactivé l'objet CSSStyleSheet.</dt>
@@ -46,7 +46,7 @@
 				</dl>
 				<p>Retourne un objet CSSStyleSheet ou <code>null</code> si aucun objet n'est trouvé.</p>
 			</section>
-			<section><h3>get( sSelector, bDelete=false )</h3>
+			<section><h3>get (<var> sSelector, bDelete=false </var>)</h3>
 				<p>Récupère un objet CSSStyleDeclaration d'un objet CSSStyleRule (propriété <var>style</var>) .</p>
 				<dl>
 					<dt><var>sSelector</var> <i>String</i> - Sélecteur css (Premier trouvé, premier renvoyé).</dt>
@@ -54,7 +54,7 @@
 				</dl>
 				<p>Retourne un objet CSSStyleDeclaration, <code>null</code> si aucun objet n'est trouvé ou <code>undefined</code> si l'objet est effacé.</p>
 			</section>
-			<section><h3>remove(...)</h3>
+			<section><h3>remove (<var> ... </var>)</h3>
 				<p>Efface un ou plusieurs objet(s) CSSStyleRule.</p>
 				<dl>
 					<dt><var>sSelector1</var> <i>String</i> - Sélecteur css (Premier trouvé, premier renvoyé).</dt>
@@ -88,15 +88,15 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 new UnitTest( eUnitTest,[
 	{ desc:"<b>NB</b>: Sur Firefox le constructeur CSSStyleDeclaration s'appelle CSS2Properties." },
 	{ title:"CssRules",
-		desc:'<span class="test1">.test1</span><span class="test2">.test2</span><span class="test3">.test3</span><span class="test4">.test4</span>',
+		desc:'Aperçu des classes CSS : <span class="test1">.test1</span><span class="test2">.test2</span><span class="test3">.test3</span><span class="test4">.test4</span>',
 		list:[
 			{ eval:
-`window.f = function( CSSStyleDeclaration , m ){
-	if( m.constructor == String ) return CSSStyleDeclaration.cssText === m
+`window.f = function( mCSSStyleDeclaration , m ){
+	if( m.constructor == String ) return mCSSStyleDeclaration.cssText === m
 	// m.constructor == Array 
 	let b = true
 	m.forEach( ( s , i )=>{
-		b &&= CSSStyleDeclaration[i].cssText === s
+		b &&= mCSSStyleDeclaration[i].cssText === s
 		})
 	return b
 	}`},
@@ -148,7 +148,7 @@ layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 // BENCHMARKING
 new UnitTest( eBenchmarking ,[
 	{ title:"CssRules",
-		desc:'<span class="test21">.test21</span><span class="test22">.test22</span><span class="test23">.test23</span><span class="test24">.test24</span>',
+		desc:'Aperçu des classes CSS : <span class="test21">.test21</span><span class="test22">.test22</span><span class="test23">.test23</span><span class="test24">.test24</span>',
 		list:[
 			{ title:".add",
 				assertions:[

@@ -4,9 +4,15 @@ class Page {
 		this.setActif( ePreload )
 		}
 	setActif ( e ){
-		if( this.eActif ) this.eActif.classList.remove( 'active' )
-		e.classList.add( 'active' )
+		this.update( this.eActif, 'remove' )
+		this.update( e, 'add' )
 		this.eActif = e
+		}
+	update ( e, sAction ){
+		if( ! e ) return;
+		e.classList[sAction]( 'active' )
+		e = document.getElementById( e.id+'Menu')
+		if( e ) e.classList[sAction]('active')
 		}
 	}
 	

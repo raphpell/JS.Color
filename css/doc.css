@@ -20,6 +20,10 @@ section {
 	float: left;
 	height: auto;
 	padding: 0 1em 1em;
+	transition: all 250ms;
+	}
+.summary:hover {
+	box-shadow: 0 0 0 rgba(0 0 0 / 20%);
 	}
 .summary > ol {
 	padding: 0;
@@ -50,6 +54,7 @@ section {
 .doc SECTION H3,
 .doc SECTION H4,
 .doc SECTION H5 {
+	margin-top: 0;
 	margin-left: 0;
 	}
 .doc SECTION > * {

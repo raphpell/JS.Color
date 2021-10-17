@@ -40,6 +40,14 @@ page.active {
 	list-style-type: none;
 	margin: 0 0 0 .5em ;
 	padding: .5em 1em;
+	transition: all 250ms;
+	}
+.pageMenu LI.active {
+	background: #000;
+	color: #FFF;
+	}
+.pageMenu LI:hover {
+	box-shadow: 0 0 0 rgba(0 0 0 / 20%);
 	}
 
 /* Chargement de la page */

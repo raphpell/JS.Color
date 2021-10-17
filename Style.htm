@@ -24,9 +24,9 @@
 
 <ul class="pageMenu">
 	<li><a href="index.htm">JS.Objects</a></li>
-	<li onclick="goTo( eDoc )">Documentation</li>
-	<li onclick="goTo( eUnitTest )">Testes unitaires</li>
-	<li onclick="goTo( eBenchmarking )">Benchmarking</li>
+	<li onclick="goTo( eDoc )" id="eDocMenu">Documentation</li>
+	<li onclick="goTo( eUnitTest )" id="eUnitTestMenu">Testes unitaires</li>
+	<li onclick="goTo( eBenchmarking )" id="eBenchmarkingMenu">Benchmarking</li>
 </ul>
 
 <page id="ePreload" class="active">
@@ -42,8 +42,7 @@
 			<p>L'objet Style est un objet simple avec des méthodes. Il sert à manipuler les attributs d'une propriété style d'un objet.</p>
 		</section>
 		<section><h2>Méthodes objet</h2>
-
-			<section><h3>get ( e, sAttr )</h3>
+			<section><h3>get (<var> e, sAttr </var>)</h3>
 				<p>Récupère la valeur d'un attribut CSS d'un élément html.</p>
 				<dl>
 					<dt><var>e</var> <i>HTMLElement</i> - élément html .</dt>
@@ -51,22 +50,19 @@
 				</dl>
 				<p>Retourne un chaîne contenant la valeur ou null.</p>
 			</section>
-
-			<section><h3>getNameSpaceCSS ( sJsAttr )</h3>
+			<section><h3>getNameSpaceCSS (<var> sJsAttr </var>)</h3>
 				<p>Retourne le nom d'un attribut CSS depuis un attribut JS.</p>
 				<dl>
 					<dt><var>sJsAttr</var> <i>String</i> - attribut JS.</dt>
 				</dl>
 			</section>
-
-			<section><h3>getNameSpaceJS ( sCssAttr )</h3>
+			<section><h3>getNameSpaceJS (<var> sCssAttr </var>)</h3>
 				<p>Retourne le nom d'un attribut JS depuis un attribut CSS.</p>
 				<dl>
 					<dt><var>sCssAttr</var> <i>String</i> - attribut CSS.</dt>
 				</dl>
 			</section>
-
-			<section><h3>remove ( m, s )</h3>
+			<section><h3>remove (<var> m, s </var>)</h3>
 				<p>Efface un attribut CSS d'un objet.</p>
 				<dl>
 					<dt><var>m</var> <i>Mixte</i> - Elément <var>HTML</var>, instance <var>CSSStyleRule</var> (objet possédant un attribut style) ou instance <var>CSSStyleDeclaration</var>.</dt>
@@ -74,8 +70,7 @@
 				</dl>
 				<p>Retourne un objet CSSStyleDeclaration.</p>
 			</section>
-
-			<section><h3>set ( m, s )</h3>
+			<section><h3>set (<var> m, s </var>)</h3>
 				<p>Défini la valeur d'un ou plusieurs attribut CSS d'un objet .</p>
 				<dl>
 					<dt><var>m</var> <i>Mixte</i> - Elément <var>HTML</var>, instance <var>CSSStyleRule</var> (objet possédant un attribut style) ou instance <var>CSSStyleDeclaration</var>.</dt>
@@ -83,8 +78,7 @@
 				</dl>
 				<p>Retourne un objet CSSStyleDeclaration.</p>
 			</section>
-
-			<section><h3>validate ( sAttrCSS, mValue )</h3>
+			<section><h3>validate (<var> sAttrCSS, mValue </var>)</h3>
 				<p>Valide la valeur d'un attribut... expérimental.</p>
 				<dl>
 					<dt><var>sAttrCSS</var> <i>String</i> - Nom de l'attribut CSS.</dt>
@@ -92,7 +86,6 @@
 				</dl>
 				<p>Retourne une chaîne de la forme 'font-size:10px;'.</p>
 			</section>
-
 		</section>
 	</div>
 </page>
@@ -129,8 +122,8 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 // TESTS UNITAIRES
 new UnitTest( eUnitTest,[
 	{ eval:
-`window.f = function( CSSStyleDeclaration , s ){
-	return CSSStyleDeclaration.cssText === s
+`window.f = function( oCSSStyleDeclaration , s ){
+	return oCSSStyleDeclaration.cssText === s
 	}`},
 	{ title:"Style.get",
 		desc:'Récupération des valeurs style des éléments html : classe CSS, attribut <code>style</code>, et attribut <code>style.cssText</code>.<br>'
@@ -340,7 +333,7 @@ eTestCssText.style.cssText = "top: 10px;"`,
 			]
 		},
 	],
-	{ unittest:1, benchmark: 1 }
+	{ unittest:1, benchmark: 0 }
 	)
 
 layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
