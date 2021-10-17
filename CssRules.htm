@@ -13,6 +13,7 @@
 	<li><a href="index.htm">JS.Objects</a></li>
 	<li onclick="goTo( eDoc )">Documentation</li>
 	<li onclick="goTo( eUnitTest )">Testes unitaires</li>
+	<li onclick="goTo( eBenchmarking )">Benchmarking</li>
 </ul>
 
 <page id="ePreload" class="active">
@@ -25,21 +26,38 @@
 
 	<div class="doc">
 		<section><h2>Méthodes objet</h2>
-			<section><h3>add ( s )</h3>
-				<p>.</p>
+			<section><h3>add ( sCssRules )</h3>
+				<p>Ajoute un ou plusieurs règle(s) CSS.</p>
 				<dl>
-					<dt><var>s</var> <i>String</i> - .</dt>
+					<dt><var>sCssRules</var> <i>String</i> - Règle(s) css.</dt>
 				</dl>
-				<p>Retourne.</p>
+				<p>Retourne un objet CSSStyleDeclaration ou plusieurs dans un tableau.</p>
+				<p>Il est possible d'accéder à la l'objet CSSStyleRule parent avec l'attribut <var>parentRule</var>.</p>
 			</section>
-			<section><h3>disable ( rePattern, sAttr='href', bDisable )</h3>
-				
+			<section><h3>disable ( rePattern, sAttr='href', bDisable=true )</h3>
+				<p>Désactive ou active un objet CSSStyleSheet en fonction d'une expression régulière.</p>
+				<dl>
+					<dt><var>rePattern</var> <i>RegExp</i> - expression à trouvé dans l'attribut.</dt>
+					<dt><var>sAttr</var> <i>String</i> - attribut d'un objet CSSStyleSheet.</dt>
+					<dt><var>bDisable</var> <i>Boolean</i> - indique si il faut désactivé l'objet CSSStyleSheet.</dt>
+				</dl>
+				<p>Retourne un objet CSSStyleSheet ou <code>null</code> si aucun objet n'est trouvé.</p>
 			</section>
-			<section><h3>get( sSelector, bDelete )</h3>
-				
+			<section><h3>get( sSelector, bDelete=false )</h3>
+				<p>Récupère un objet CSSStyleDeclaration d'un objet CSSStyleRule (propriété <var>style</var>) .</p>
+				<dl>
+					<dt><var>sSelector</var> <i>String</i> - Sélecteur css (Premier trouvé, premier renvoyé).</dt>
+					<dt><var>bDelete</var> <i>Boolean</i> - Indique qu'il faut effacer la règle.</dt>
+				</dl>
+				<p>Retourne un objet CSSStyleDeclaration, <code>null</code> si aucun objet n'est trouvé ou <code>undefined</code> si l'objet est effacé.</p>
 			</section>
 			<section><h3>remove(...)</h3>
-				
+				<p>Efface un ou plusieurs objet(s) CSSStyleRule.</p>
+				<dl>
+					<dt><var>sSelector1</var> <i>String</i> - Sélecteur css (Premier trouvé, premier renvoyé).</dt>
+					<dt>...</dt>
+				</dl>
+				<p>Retourne <code>undefined</code>.</p>
 			</section>
 		</section>
 	</div>
@@ -47,6 +65,10 @@
 <page id="eUnitTest">
 	<h1>Testes unitaires</h1>
 	<div id="eSummary2"></div>
+</page>
+<page id="eBenchmarking">
+	<h1>Benchmarking</h1>
+	<div id="eSummary3"></div>
 </page>
 
 <script src="src/CssRules.js"></script>
@@ -61,21 +83,53 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 
 // TESTS UNITAIRES
 new UnitTest( eUnitTest,[
+	{ eval:
+`window.f = function( CSSStyleDeclaration , m ){
+	if( m.constructor == String ) return CSSStyleDeclaration.cssText === m
+	// m.constructor == Array 
+	let b = true
+	m.forEach( ( s , i )=>{
+		b &&= CSSStyleDeclaration[i].cssText === s
+		})
+	return b
+	}`},
 	{ title:"CssRules.add",
 		assertions:[
-			"CssRules.add( '.test1 { opacity:.5; }')=='opacity: 0.5;'",
-			"CssRules.add( '.test1 { color:red; }')=='opacity: 0.5; color: red;'",
-			"CssRules.add( '.test2 { opacity:.5; }')=='opacity: 0.5;'",
-			"CssRules.add( '.test2 { color:red; }')=='opacity: 0.5; color: red;'",
-			"CssRules.add( '.test3 { opacity:.5; } .test4 { color:red; }').toString()==['opacity: 0.5;','color: red;'].toString()"
+			"f( CssRules.add( '.test1 { opacity:.5; }'), 'opacity: 0.5;')",
+			"f( CssRules.add( '.test1 { color:red; }'), 'opacity: 0.5; color: red;')",
+			"f( CssRules.add( '.test2 { opacity:.5; }'), 'opacity: 0.5;')",
+			"f( CssRules.add( '.test2 { color:red; }'), 'opacity: 0.5; color: red;')",
+			"f( CssRules.add( '.test3 { opacity:.5; } .test4 { color:red; }'), ['opacity: 0.5;','color: red;'])"
 			]
 		},
 	],
-	{ unittest:1, benchmark: 1 }
+	{ unittest:1, benchmark: 0 }
 	)
 
 layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 
+
+// BENCHMARKING
+new UnitTest( eBenchmarking ,[
+	{ desc:"" },
+	{ title:"",
+		list:[
+			{ title:"CssRules.add",
+				assertions:[
+					"CssRules.add( '.test21 { opacity:.5; }')",
+					"CssRules.add( '.test21 { color:red; }')",
+					"CssRules.add( '.test22 { opacity:.5; }')",
+					"CssRules.add( '.test22 { color:red; }')",
+					"CssRules.add( '.test23 { opacity:.5; } .test24 { color:red; }')"
+					]
+				},
+			],
+		}
+	],
+	{ unittest:0, benchmark: 1 }
+	)
+
+layoutDoc( eSummary3, { numbers: false, links: true }, eBenchmarking )
 
 /*
 Une fois le code charger, afficher de la page d'accueil !!

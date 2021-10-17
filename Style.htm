@@ -26,6 +26,7 @@
 	<li><a href="index.htm">JS.Objects</a></li>
 	<li onclick="goTo( eDoc )">Documentation</li>
 	<li onclick="goTo( eUnitTest )">Testes unitaires</li>
+	<li onclick="goTo( eBenchmarking )">Benchmarking</li>
 </ul>
 
 <page id="ePreload" class="active">
@@ -71,7 +72,7 @@
 					<dt><var>m</var> <i>Mixte</i> - Elément <var>HTML</var>, instance <var>CSSStyleRule</var> (objet possédant un attribut style) ou instance <var>CSSStyleDeclaration</var>.</dt>
 					<dt><var>s</var> <i>String</i> - attribut CSS.</dt>
 				</dl>
-				<p>Retourne la valeur cssText résultante.</p>
+				<p>Retourne un objet CSSStyleDeclaration.</p>
 			</section>
 
 			<section><h3>set ( m, s )</h3>
@@ -80,7 +81,7 @@
 					<dt><var>m</var> <i>Mixte</i> - Elément <var>HTML</var>, instance <var>CSSStyleRule</var> (objet possédant un attribut style) ou instance <var>CSSStyleDeclaration</var>.</dt>
 					<dt><var>s</var> <i>String</i> - une ou plusieurs déclaration(s) CSS.</dt>
 				</dl>
-				<p>Retourne la valeur cssText résultante.</p>
+				<p>Retourne un objet CSSStyleDeclaration.</p>
 			</section>
 
 			<section><h3>validate ( sAttrCSS, mValue )</h3>
@@ -109,6 +110,10 @@
 	</ul>
 
 </page>
+<page id="eBenchmarking">
+	<h1>Benchmarking</h1>
+	<div id="eSummary3"></div>
+</page>
 
 <!-- <script src="src/Browser.js"></script> -->
 <script src="src/CssRules.js"></script>
@@ -123,6 +128,10 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 
 // TESTS UNITAIRES
 new UnitTest( eUnitTest,[
+	{ eval:
+`window.f = function( CSSStyleDeclaration , s ){
+	return CSSStyleDeclaration.cssText === s
+	}`},
 	{ title:"Style.get",
 		desc:'Récupération des valeurs style des éléments html : classe CSS, attribut <code>style</code>, et attribut <code>style.cssText</code>.<br>'
 			+'Rapidité : <code>style</code> puis <code>style.cssText</code> et classe CSS.',
@@ -273,15 +282,15 @@ eTestCssText.style.cssText = "top: 10px;"`,
 		},
 	{ title:"Style.set",
 		assertions:[
-			`Style.set( eTest, "font-size:15px; width:20px;")=='font-size: 15px; width: 20px;'`,
-			`Style.set( eTest, "font-size:20px; color:red;")=='font-size: 20px; width: 20px; color: red;'`
+			`f( Style.set( eTest, "font-size:15px; width:20px;"), 'font-size: 15px; width: 20px;')`,
+			`f( Style.set( eTest, "font-size:20px; color:red;"), 'font-size: 20px; width: 20px; color: red;')`
 			]
 		},
 	{ title:"Style.remove",
 		assertions:[
-			`Style.remove( eTest, "font-size")== 'width: 20px; color: red;'`,
-			`Style.remove( eTest, "color")== 'width: 20px;'`,
-			`Style.remove( eTest, "width")== ''`,
+			`f( Style.remove( eTest, "font-size"), 'width: 20px; color: red;')`,
+			`f( Style.remove( eTest, "color"), 'width: 20px;')`,
+			`f( Style.remove( eTest, "width"), '')`,
 		
 			]
 		},
@@ -336,6 +345,169 @@ eTestCssText.style.cssText = "top: 10px;"`,
 
 layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 
+// BENCHMARKING
+new UnitTest( eBenchmarking ,[
+	{ title:"Style.get",
+		list:[
+			{ title:"opacity",
+				assertions:[
+					`Style.get( eTestClassName, "opacity" )`,
+					`Style.get( eTestClassId, "opacity" )`,
+					`Style.get( eTestStyle, "opacity" )`,
+					`Style.get( eTestCssText, "opacity" )`
+					]},
+			{ title:"font-size",
+				assertions:[
+					`Style.get( eTestClassName, "font-size" )`,
+					`Style.get( eTestClassName, "fontSize" )`,
+					`Style.get( eTestClassId, "font-size" )`,
+					`Style.get( eTestClassId, "fontSize" )`,
+					`Style.get( eTestStyle, "font-size" )`,
+					`Style.get( eTestStyle, "fontSize" )`,
+					`Style.get( eTestCssText, "font-size" )`,
+					`Style.get( eTestCssText, "fontSize" )`
+					]},
+			{ title:"padding",
+				assertions:[
+					`Style.get( eTestClassName, "padding" )`,
+					`Style.get( eTestClassId, "padding" )`,
+					`Style.get( eTestStyle, "padding" )`,
+					`Style.get( eTestCssText, "padding" )`
+					]},
+			{ title:"paddingLeft",
+				assertions:[
+					`Style.get( eTestClassName, "padding-left" )`,
+					`Style.get( eTestClassName, "paddingLeft" )`,
+					`Style.get( eTestClassId, "padding-left" )`,
+					`Style.get( eTestClassId, "paddingLeft" )`,
+					`Style.get( eTestStyle, "padding-left" )`,
+					`Style.get( eTestStyle, "paddingLeft" )`,
+					`Style.get( eTestCssText, "padding-left" )`,
+					`Style.get( eTestCssText, "paddingLeft" )`
+					]},
+			{ title:"border-width",
+				assertions:[
+					`Style.get( eTestClassName, "border-width" )`,
+					`Style.get( eTestClassName, "borderWidth" )`,
+					`Style.get( eTestClassId, "border-width" )`,
+					`Style.get( eTestClassId, "borderWidth" )`,
+					`Style.get( eTestStyle, "borderWidth" )`,
+					`Style.get( eTestCssText, "borderWidth" )`
+					]},
+			{ title:"width",
+				assertions:[
+					`Style.get( eTestClassName, "width" )`,
+					`Style.get( eTestClassId, "width" )`,
+					`Style.get( eTestStyle, "width" )`,
+					`Style.get( eTestCssText, "width" )`
+					]},
+			{ title:"height",
+				assertions:[
+					`Style.get( eTestClassName, "height" )`,
+					`Style.get( eTestClassId, "height" )`,
+					`Style.get( eTestStyle, "height" )`,
+					`Style.get( eTestCssText, "height" )`
+					]},
+			{ title:"left",
+				assertions:[
+					`Style.get( eTestClassName, "left" )`,
+					`Style.get( eTestClassId, "left" )`,
+					`Style.get( eTestStyle, "left" )`,
+					`Style.get( eTestCssText, "left" )`
+					]},
+			{ title:"top",
+				assertions:[
+					`Style.get( eTestClassName, "top" )`,
+					`Style.get( eTestClassId, "top" )`,
+					`Style.get( eTestStyle, "top" )`,
+					`Style.get( eTestCssText, "top" )`
+					]},
+			]
+		},
+	{ title:"Style.getNameSpaceCSS",
+		assertions:[
+			`Style.getNameSpaceCSS("testTestTest")`,
+			`Style.getNameSpaceCSS("borderBottomRightRadius")`,
+			`Style.getNameSpaceCSS("backgroundPosition")`,
+			`Style.getNameSpaceCSS("fontWeigth")`,
+			`Style.getNameSpaceCSS("opacity")`,
+			`Style.getNameSpaceCSS("padding")`
+			]
+		},
+	{ title:"Style.getNameSpaceJS",
+		assertions:[
+			`Style.getNameSpaceJS("test-test-test")`,
+			`Style.getNameSpaceJS("border-bottom-right-radius")`,
+			`Style.getNameSpaceJS("background-position")`,
+			`Style.getNameSpaceJS("font-weigth")`,
+			`Style.getNameSpaceJS("opacity")`,
+			`Style.getNameSpaceJS("padding")`
+			]
+		},
+	{ title:"Style.set",
+		assertions:[
+			`Style.set( eTest, "font-size:15px; width:20px;")`,
+			`Style.set( eTest, "font-size:20px; color:red;")`
+			]
+		},
+	{ title:"Style.remove",
+		assertions:[
+			`Style.remove( eTest, "font-size")`,
+			`Style.remove( eTest, "color")`,
+			`Style.remove( eTest, "width")`,
+		
+			]
+		},
+	{ title:"Style.validate",
+		list:[
+			{ title:"background-position",
+				assertions:[
+					`Style.validate("background-position",'20px 30px')`,
+					`Style.validate("background-position",'-20px -30px')`
+					]},
+			{ title:"font-size",
+				assertions:[
+					`Style.validate("font-size",-1)`,
+					`Style.validate("font-size",1)`,
+					`Style.validate("font-size",10)`,
+					`Style.validate("font-size",10.5)`
+					]},
+			{ title:"font-weight",
+				assertions:[
+					`Style.validate("font-weight",-1)`,
+					`Style.validate("font-weight",1)`,
+					`Style.validate("font-weight",10)`,
+					`Style.validate("font-weight",10.5)`
+					]},
+			{ title:"height",
+				assertions:[
+					`Style.validate("height",-10)`,
+					`Style.validate("height",0)`,
+					`Style.validate("height",10)`,
+					`Style.validate("height",10.5)`
+					]},
+			{ title:"opacity",
+				assertions:[
+					`Style.validate("opacity",-1)`,
+					`Style.validate("opacity",0)`,
+					`Style.validate("opacity",.5)`,
+					`Style.validate("opacity",1)`,
+					`Style.validate("opacity",2)`
+					]},
+			{ title:"width",
+				assertions:[
+					`Style.validate("width",-10)`,
+					`Style.validate("width",0)`,
+					`Style.validate("width",10)`,
+					`Style.validate("width",10.5)`
+					]},
+			]
+		},
+	],
+	{ unittest:0, benchmark: 1 }
+	)
+
+layoutDoc( eSummary3, { numbers: false, links: true }, eBenchmarking )
 
 /*
 Une fois le code charger, afficher de la page d'accueil !!

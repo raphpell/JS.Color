@@ -55,12 +55,12 @@ Style =(()=>{
 		remove( m, s ){
 			m=m.style||m
 			if(m && m[s] && m.removeProperty) m.removeProperty(s) 
-			return m.cssText
+			return m
 			},
 		set( m, s ){
 			m=m.style||m
 			Array.from(s.matchAll(reCssDecl)).forEach(a=>m.setProperty(a[1],a[2]))
-			return m.cssText
+			return m
 			}
 		}
 	})()
