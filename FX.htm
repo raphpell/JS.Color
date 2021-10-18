@@ -37,6 +37,15 @@
 				<p>Retourne </p>
 			</section>
 		</section>
+		<section><h2>FX.Methods</h2>
+			<p>Le soucis ici est la conservation des pointeurs sur le moindre tableau et objet d'un objet oFx.</p>
+			<section><h3>concat (<var> oFx </var>)</h3>
+			</section>
+			<section><h3>merge (<var> oFx, bPreserve </var>)</h3>
+			</section>
+			<section><h3>push (<var> oFx </var>)</h3>
+			</section>
+		</section>
 		<section><h2>FX.Effects</h2>
 			<p>Objet contenant les fonctions calculant transitions. 
 			Elles ont toutes quatre arguments:</p>
@@ -101,15 +110,187 @@ new UnitTest( eUnitTest,[
 				},
 			],
 		list:[
-			{ title:"Fx.Effects",
+			{ title:".Methods",
+				eval:
+`window.sL2 = '0,2,6,10'
+window.sP2 = '10,12,16,20'
+window.sP3 = '20,17,15'
+window.sW3 = '100,150,200'
+
+window.fArray = s=> s.split( ',' )
+window.fLength = s=> s.split( ',' ).length
+window.fFirst = s=> parseInt( fArray( s ).shift())
+window.fLast = s=> parseInt( fArray( s ).pop())
+
+window.ePseudoHtmlElement = {}
+window.getFX = function( n ){
+	switch( n ){
+		case 1: return {
+			e : ePseudoHtmlElement,
+			aAttr: [],
+			nFrames: 0,
+			oFrames: {},
+			o1: {},
+			o2: {}
+			}
+		case 2: return {
+			e : ePseudoHtmlElement,
+			aAttr: ['left','padding'],
+			nFrames: fLength(sL2),
+			oFrames: { left:fArray(sL2), padding:fArray(sP2) },
+			o1: { left:fFirst(sL2), padding:fFirst(sP2)},
+			o2: { left:fLast(sL2), padding:fLast(sP2)}
+			}
+		case 3: return {
+			e : ePseudoHtmlElement,
+			aAttr: ['padding','width'],
+			nFrames: fLength(sP3),
+			oFrames: { padding:fArray(sP3), width:fArray(sW3) },
+			o1: { padding:fFirst(sP3), width:fFirst(sW3)},
+			o2: { padding:fLast(sP3), width:fLast(sW3)}
+			}
+		}
+	}`,
 				list:[
-					{ title:"linear",
+					{ title:".merge",
+						list:[
+							{ desc:"Ajout simple",
+								eval:
+`window.oFx1 = getFX(1)
+window.oFx2 = getFX(2)
+window.oFx3 = getFX(3)
+ePseudoHtmlElement.oFx = null`,
+								assertions:[
+									'oFx1 === Fx.Methods.merge( oFx1 )',
+									'oFx1 === Fx.Methods.merge( oFx2 )',
+									'oFx1 === Fx.Methods.merge( oFx3 )',
+									'ePseudoHtmlElement.oFx === oFx1',
+									'oFx1.nFrames === 4',
+									'oFx1.o1.left === fFirst( sL2 )',
+									'oFx1.o1.padding === fFirst( sP3 )',
+									'oFx1.o1.width === fFirst( sW3 )',
+									'oFx1.o2.left === fLast( sL2 )',
+									'oFx1.o2.padding === fLast( sP3 )',
+									'oFx1.o2.width === fLast( sW3 )',
+									]},
+							{ desc:"Préservation",
+								eval:
+`window.oFx1 = getFX(1)
+window.oFx2 = getFX(2)
+window.oFx3 = getFX(3)
+ePseudoHtmlElement.oFx = oFx1
+oFx1.next = oFx2`,
+								assertions:[
+									'oFx1 === Fx.Methods.merge( oFx3, true )',
+									'ePseudoHtmlElement.oFx = oFx1',
+									'oFx2.aAttr.toString() === "left,padding,width"',
+									'oFx2.nFrames === 4',
+									'oFx2.oFrames.left.toString() === sL2',
+									'oFx2.oFrames.padding.toString() === sP2',
+									'oFx2.oFrames.width.toString() === sW3',
+									'oFx2.o1.left === fFirst( sL2 )',
+									'oFx2.o1.padding === fFirst( sP2 )',
+									'oFx2.o1.width === fFirst( sW3 )',
+									'oFx2.o2.left === fLast( sL2 )',
+									'oFx2.o2.padding === fLast( sP2 )',
+									'oFx2.o2.width === fLast( sW3 )'
+									]},
+							{ desc:"Remplacement",
+								eval:
+`window.oFx1 = getFX(1)
+window.oFx2 = getFX(2)
+window.oFx3 = getFX(3)
+ePseudoHtmlElement.oFx = oFx1
+oFx1.next = oFx2`,
+								assertions:[
+									'oFx1 === Fx.Methods.merge( oFx3 )',
+									'ePseudoHtmlElement.oFx = oFx1',
+									'oFx2.aAttr.toString() === "left,padding,width"',
+									'oFx2.nFrames === 4',
+									'oFx2.oFrames.left.toString() === sL2',
+									'oFx2.oFrames.padding.toString() === sP3',
+									'oFx2.oFrames.width.toString() === sW3',
+									'oFx2.o1.left === fFirst( sL2 )',
+									'oFx2.o1.padding === fFirst( sP3 )',
+									'oFx2.o1.width === fFirst( sW3 )',
+									'oFx2.o2.left === fLast( sL2 )',
+									'oFx2.o2.padding === fLast( sP3 )',
+									'oFx2.o2.width === fLast( sW3 )'
+									]},
+							{
+								eval:
+`window.oFx1 = getFX(1)
+window.oFx2 = getFX(2)
+window.oFx3 = getFX(3)
+ePseudoHtmlElement.oFx = oFx1
+oFx1.next = oFx3`,
+								assertions:[
+									'oFx1 === Fx.Methods.merge( oFx2 )',
+									'ePseudoHtmlElement.oFx = oFx1',
+									'oFx3.aAttr.toString() === "padding,width,left"',
+									'oFx3.nFrames === 4',
+									'oFx3.oFrames.left.toString() === sL2',
+									'oFx3.oFrames.padding.toString() === sP2',
+									'oFx3.oFrames.width.toString() === sW3',
+									'oFx3.o1.left === fFirst( sL2 )',
+									'oFx3.o1.padding === fFirst( sP2 )',
+									'oFx3.o1.width === fFirst( sW3 )',
+									'oFx3.o2.left === fLast( sL2 )',
+									'oFx3.o2.padding === fLast( sP2 )',
+									'oFx3.o2.width === fLast( sW3 )'
+									]}
+							]
+						},
+					{ title:".concat",
+						eval:
+`window.oFx1 = getFX(1)
+window.oFx2 = getFX(2)
+window.oFx3 = getFX(3)
+ePseudoHtmlElement.oFx = null`,
+						assertions:[
+							'oFx1 === Fx.Methods.concat( oFx1 )',
+							'oFx1 === Fx.Methods.concat( oFx2 )',
+							'oFx1.next === oFx2',
+							'oFx2.previous === oFx1',
+							'oFx1 === Fx.Methods.concat( oFx3 )',
+							'oFx2.next === oFx3',
+							'oFx3.previous === oFx2',
+							'ePseudoHtmlElement.oFx === oFx1'
+							],
+						},
+					{ title:".push",
+						eval:
+`window.oFx1 = getFX(1)
+window.oFx2 = getFX(2)
+window.oFx3 = getFX(3)
+ePseudoHtmlElement.oFx = oFx1
+oFx1.next = oFx2`,
+						assertions:[
+							'oFx1 === Fx.Methods.push( oFx3 )',
+							'oFx2.aAttr.toString() === "left,padding,width"',
+							'oFx2.nFrames === 7',
+							'oFx2.oFrames.left.toString() === sL2',
+							'oFx2.oFrames.padding.toString() === sP2+","+sP3',
+							'oFx2.oFrames.width.toString() === sW3',
+							'oFx2.o1.left === fFirst( sL2 )',
+							'oFx2.o1.padding === fFirst( sP2 )',
+							'oFx2.o1.width === fFirst( sW3 )',
+							'oFx2.o2.left === fLast( sL2 )',
+							'oFx2.o2.padding === fLast( sP3 )',
+							'oFx2.o2.width === fLast( sW3 )',
+							],
+						},
+					],
+				},
+			{ title:".Effects",
+				list:[
+					{ title:".linear",
 						assertions:[
 							"Fx.Effects.linear( 0, 0, 1, 1 )===0",
 							"Fx.Effects.linear( 1, 0, 1, 1 )===1",
 							]
 						},
-					{ title:"quad",
+					{ title:".quad",
 						assertions:[
 							"Fx.Effects.quad.in( 0, 0, 1, 1 )===0",
 							"Fx.Effects.quad.in( 1, 0, 1, 1 )===1",
@@ -119,7 +300,7 @@ new UnitTest( eUnitTest,[
 							"Fx.Effects.quad.inOut( 1, 0, 1, 1 )===1",
 							]
 						},
-					{ title:"quint",
+					{ title:".quint",
 						assertions:[
 							"Fx.Effects.quint.in( 0, 0, 1, 1 )===0",
 							"Fx.Effects.quint.in( 1, 0, 1, 1 )===1",
@@ -129,7 +310,7 @@ new UnitTest( eUnitTest,[
 							"Fx.Effects.quint.inOut( 1, 0, 1, 1 )===1",
 							]
 						},
-					{ title:"sine",
+					{ title:".sine",
 						assertions:[
 							"Fx.Effects.sine.in( 0, 0, 1, 1 )===0",
 							"Fx.Effects.sine.in( 1, 0, 1, 1 )===1",
@@ -139,7 +320,7 @@ new UnitTest( eUnitTest,[
 							"Fx.Effects.sine.inOut( 1, 0, 1, 1 )===1",
 							]
 						},
-					{ title:"expo",
+					{ title:".expo",
 						assertions:[
 							"Fx.Effects.expo.in( 0, 0, 1, 1 )===0",
 							"Fx.Effects.expo.in( 1, 0, 1, 1 )===1",
@@ -149,7 +330,7 @@ new UnitTest( eUnitTest,[
 							"Fx.Effects.expo.inOut( 1, 0, 1, 1 )===1",
 							]
 						},
-					{ title:"circ",
+					{ title:".circ",
 						assertions:[
 							"Fx.Effects.circ.in( 0, 0, 1, 1 )===0",
 							"Fx.Effects.circ.in( 1, 0, 1, 1 )===1",
@@ -159,7 +340,7 @@ new UnitTest( eUnitTest,[
 							"Fx.Effects.circ.inOut( 1, 0, 1, 1 )===1",
 							]
 						},
-					{ title:"elastic",
+					{ title:".elastic",
 						assertions:[
 							"Fx.Effects.elastic.in( 0, 0, 1, 1 )===0",
 							"Fx.Effects.elastic.in( 1, 0, 1, 1 )===1",
@@ -169,7 +350,7 @@ new UnitTest( eUnitTest,[
 							"Fx.Effects.elastic.inOut( 1, 0, 1, 1 )===1",
 							]
 						},
-					{ title:"back",
+					{ title:".back",
 						assertions:[
 							"Fx.Effects.back.in( 0, 0, 1, 1 )===0",
 							"Fx.Effects.back.in( 1, 0, 1, 1 )===1",
@@ -179,7 +360,7 @@ new UnitTest( eUnitTest,[
 							"Fx.Effects.back.inOut( 1, 0, 1, 1 )===1",
 							]
 						},
-					{ title:"bounce",
+					{ title:".bounce",
 						assertions:[
 							"Fx.Effects.bounce.in( 0, 0, 1, 1 )===0",
 							"Fx.Effects.bounce.in( 1, 0, 1, 1 )===1",
@@ -211,6 +392,92 @@ new UnitTest( eBenchmarking ,[
 				},
 			],
 		list:[
+			{ title:".Methods",
+				list:[
+					{ title:".merge",
+						list:[
+							{ desc:"Ajout simple",
+								eval:
+`window.reset1 = ()=>{
+	window.oFx1 = getFX(1)
+	window.oFx2 = getFX(2)
+	window.oFx3 = getFX(3)
+	ePseudoHtmlElement.oFx = null
+	}`,
+								assertions:[
+									'reset1()',
+									'reset1();Fx.Methods.merge( oFx1 );Fx.Methods.merge( oFx2 );Fx.Methods.merge( oFx3 )',
+									]},
+							{ desc:"Préservation",
+								eval:
+`window.reset2 = ()=>{
+	window.oFx1 = getFX(1)
+	window.oFx2 = getFX(2)
+	window.oFx3 = getFX(3)
+	ePseudoHtmlElement.oFx = oFx1
+	oFx1.next = oFx2
+	}`,
+								assertions:[
+									'reset2()',
+									'reset2();Fx.Methods.merge( oFx3, true )'
+									]},
+							{ desc:"Remplacement",
+								eval:
+`window.reset3 = ()=>{
+	window.oFx1 = getFX(1)
+	window.oFx2 = getFX(2)
+	window.oFx3 = getFX(3)
+	ePseudoHtmlElement.oFx = oFx1
+	oFx1.next = oFx2
+	}`,
+								assertions:[
+									'reset3()',
+									'reset3();Fx.Methods.merge( oFx3 )'
+									]},
+							{
+								eval:
+`window.reset4 = ()=>{
+	window.oFx1 = getFX(1)
+	window.oFx2 = getFX(2)
+	window.oFx3 = getFX(3)
+	ePseudoHtmlElement.oFx = oFx1
+	oFx1.next = oFx3
+	}`,
+								assertions:[
+									'reset4()',
+									'reset4();Fx.Methods.merge( oFx2 )',
+									]}
+							]
+						},
+					{ title:".concat",
+						eval:
+`window.reset5 = ()=>{
+	ePseudoHtmlElement.oFx = null
+	window.oFx1 = getFX(1)
+	window.oFx2 = getFX(2)
+	window.oFx3 = getFX(3)
+	}`,
+						assertions:[
+							'reset5()',
+							'reset5();Fx.Methods.concat( window.oFx1 );Fx.Methods.concat( window.oFx2 );Fx.Methods.concat( oFx3 )'
+							],
+						},
+					{ title:".push",
+						eval:
+`window.reset6 = ()=>{
+	window.oFx1 = getFX(1)
+	window.oFx2 = getFX(2)
+	window.oFx3 = getFX(3)
+	ePseudoHtmlElement.oFx = oFx1
+	oFx1.next = oFx2
+	}`,
+						assertions:[
+							'reset6()',
+							'reset6();Fx.Methods.push( oFx3 )',
+							],
+						}
+					],
+				},
 			{ title:"Fx.Effects",
 				list:[
 					{ title:"linear",

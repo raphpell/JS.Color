@@ -312,45 +312,49 @@ Object.assign( Fx, {
 		})(),
 	Methods:{
 		concat ( oFx ){
-			var e = oFx.e, o = Fx.Last( e )
-			if( o ){
+			let e = oFx.e, o = Fx.Last( e )
+			for(let o = e.oFx ; o && o.next ; o = o.next )
+				if( o == oFx ) throw Error ( "FX.concat: Instance already in element FX - cycling error possible." )
+			if( o && o!=oFx ){
 				o.next = oFx
 				oFx.previous = o
 				} else e.oFx = oFx
 			return e.oFx
 			},
 		merge ( oFx, bPreserve ){
-			var e = oFx.e, o = Fx.Last( e )
+			let e = oFx.e, o = Fx.Last( e )
 			if( o ){
 				for( s in oFx.oFrames )
 					if( oFx.oFrames[s].constructor == Array && ( bPreserve ? ! o.oFrames[s] : true ))
 						o.oFrames[s] = oFx.oFrames[s]
-
 				o.aAttr = [...new Set([ ...o.aAttr, ...oFx.aAttr ])]
-			//	o.aAttr = Array.unique( Array.merge( o.aAttr, oFx.aAttr ))
 				o.nFrames = o.nFrames > oFx.nFrames ? o.nFrames : oFx.nFrames
-				extend( o.o1, oFx.o1, bPreserve )
-				extend( o.o2, oFx.o2, bPreserve )
-				} else Fx.Methods.concat( oFx )
+				if( bPreserve ){
+					o.o1 = Object.assign( {}, oFx.o1, o.o1 )
+					o.o2 = Object.assign( {}, oFx.o2, o.o2 )
+					}
+				else{
+					o.o1 = Object.assign( {}, o.o1, oFx.o1 )
+					o.o2 = Object.assign( {}, o.o2, oFx.o2 )
+					}
+				} else e.oFx = oFx
 			return e.oFx
 			},
 		push ( oFx ){
-			var e = oFx.e, o = Fx.Last( e )
+			let e = oFx.e, o = Fx.Last( e )
 			if( o ){
-				var nMax = o.nFrames, nLength
+				let nMax = o.nFrames, nLength
 				for( s in oFx.oFrames )
 					if( oFx.oFrames[s].constructor == Array ){
 						o.oFrames[s] = [ ...(o.oFrames[s]||[]), ...oFx.oFrames[s]]
-					//	o.oFrames[s] = Array.merge( o.oFrames[s]||[], oFx.oFrames[s])
 						nLength = o.oFrames[s].length
 						if( nLength > nMax ) nMax = nLength
 						}
 				o.aAttr = [...new Set([ ...o.aAttr, ...oFx.aAttr ])]
-			//	o.aAttr = Array.unique( Array.merge( o.aAttr, oFx.aAttr ))
 				o.nFrames = nMax
-				extend( o.o1, oFx.o1, true )
-				Object.assign( o.o2, oFx.o2 )
-				} else Fx.Methods.concat( oFx )
+				o.o1 = Object.assign( {}, oFx.o1, o.o1 )
+				o.o2 = Object.assign( {}, o.o2, oFx.o2 )
+				} else e.oFx = oFx
 			return e.oFx
 			}
 		},
