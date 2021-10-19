@@ -324,9 +324,10 @@ Object.assign( Fx, {
 		merge ( oFx, bPreserve ){
 			let e = oFx.e, o = Fx.Last( e )
 			if( o ){
-				for( s in oFx.oFrames )
-					if( oFx.oFrames[s].constructor == Array && ( bPreserve ? ! o.oFrames[s] : true ))
+				oFx.aAttr.forEach( s =>{
+					if( bPreserve ? ! o.oFrames[s] : true )
 						o.oFrames[s] = oFx.oFrames[s]
+					})
 				o.aAttr = [...new Set([ ...o.aAttr, ...oFx.aAttr ])]
 				o.nFrames = o.nFrames > oFx.nFrames ? o.nFrames : oFx.nFrames
 				if( bPreserve ){
@@ -344,12 +345,11 @@ Object.assign( Fx, {
 			let e = oFx.e, o = Fx.Last( e )
 			if( o ){
 				let nMax = o.nFrames, nLength
-				for( s in oFx.oFrames )
-					if( oFx.oFrames[s].constructor == Array ){
-						o.oFrames[s] = [ ...(o.oFrames[s]||[]), ...oFx.oFrames[s]]
-						nLength = o.oFrames[s].length
-						if( nLength > nMax ) nMax = nLength
-						}
+				oFx.aAttr.forEach( s =>{
+					o.oFrames[s] = [ ...(o.oFrames[s]||[]), ...oFx.oFrames[s]]
+					nLength = o.oFrames[s].length
+					if( nLength > nMax ) nMax = nLength
+					})
 				o.aAttr = [...new Set([ ...o.aAttr, ...oFx.aAttr ])]
 				o.nFrames = nMax
 				o.o1 = Object.assign( {}, oFx.o1, o.o1 )
