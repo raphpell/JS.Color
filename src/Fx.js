@@ -1,4 +1,4 @@
-/*  REQUIS Les classes Color et Style....*/
+/*  REQUIS Les classes Color et Style.... each isset */
 Fx =function( e, o2, mEffect, nTime, oSettings ){
 	let o = this
 	Object.assign( o, Fx.oDefaultSettings, oSettings )
@@ -7,7 +7,7 @@ Fx =function( e, o2, mEffect, nTime, oSettings ){
 		nTime = mEffect[1]
 		mEffect = mEffect[0]
 		}
-	extend( o, {
+	Object.assign( o, {
 		aAttr:[],
 		e:e,
 		fFx:Fx.getEffect( mEffect ),
@@ -15,7 +15,7 @@ Fx =function( e, o2, mEffect, nTime, oSettings ){
 		oFrames:{},
 		time: parseInt(nTime) || Fx.time
 		})
-	extend( o, { // Rupture obligatoire
+	Object.assign( o, { // Rupture obligatoire
 		nFrameTime: parseInt( 1000/o.fps ),
 		nFrames: o.countFrames(),
 		o1: Fx.Last[ ( o.method=='merge' ? 'get_o1' : 'get_o2' )]( e ),
@@ -31,9 +31,7 @@ Fx =function( e, o2, mEffect, nTime, oSettings ){
 
 Object.assign( Fx.prototype, {
 	nId: null,
-	countFrames (){
-		return parseInt( this.fps*this.time/1000 )+1
-		},
+	countFrames (){ return parseInt( this.fps*this.time/1000 )+1 },
 	playFrame ( nId, b ){
 		var o = this
 		, e = o.e
@@ -47,7 +45,7 @@ Object.assign( Fx.prototype, {
 			o.nId = e.bDesc ? o.nFrames-1 : -1
 			if( o.onlaunch ) o.onlaunch()
 			}
-		nId = ! isset( nId ) ? ( e.bDesc ? --o.nId : ++o.nId ) : nId
+		nId = nId === undefined ? ( e.bDesc ? --o.nId : ++o.nId ) : nId
 
 		if( e.bDesc ? nId>=0 : nId<=o.nFrames ){
 			for( var j=0, nj=o.aAttr.length, sAttr; j<nj; j++ ){
@@ -135,6 +133,7 @@ Object.assign( Fx.prototype, {
 				return ( /color/i.test(s)? 'Color': 'style' )
 				}
 			, m1, sType=fCase()
+			, isset = m => m !== undefined
 			switch( sType ){
 				case 'composed': /* box-shadow ? color+position+dim */
 					break;
@@ -174,7 +173,8 @@ Object.assign( Fx.prototype, {
 			o.oChange[s].sType = sType
 			o.aAttr.push(s)
 			}
-		each( o2, fDifference, [Number,String])
+	//	each( o2, fDifference, [Number,String]) // A CONTROLER !!! pour effacement
+		o.aAttr.forEach( s => fDifference( o2[s], s ))
 		},
 
 	back ( s, n ){
@@ -198,7 +198,7 @@ Object.assign( Fx.prototype, {
 		},
 
 	blink ( n ){
-		var o = this, b = ! isset( n )
+		var o = this, b = n === undefined
 		o.onend = ()=> Fx[ b || (n-=0.5)>0 ? 'playInvert' : 'stop' ]( o.e )
 		o.onstart = ()=> Fx[ b || (n-=0.5)>0 ? 'play' : 'stop' ]( o.e )
 		},
@@ -300,12 +300,12 @@ Object.assign( Fx, {
 			}
 		f.get_o1 =function( e ){
 			var o = e.oFx, o1 = {}
-			if( o ) for(; o && o.next ; o = o.next ) extend( o1, o.o2 )
+			if( o ) for(; o && o.next ; o = o.next ) Object.assign( o1, o.o2 )
 			return o1
 			}
 		f.get_o2 =function( e ){
 			var o = e.oFx, o1 = {}
-			if( o ) for(; o ; o = o.next ) extend( o1, o.o2 )
+			if( o ) for(; o ; o = o.next ) Object.assign( o1, o.o2 )
 			return o1
 			}
 		return f

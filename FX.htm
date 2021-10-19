@@ -100,7 +100,22 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 // TESTS UNITAIRES
 new UnitTest( eUnitTest,[
 	{ desc:"...." },
-	{ title:"FX",
+	{ title:"Instance FX",
+		list:[
+			{ title:"countFrames",
+				desc:"L'unité temps est milliseconde mais bon... des secondes en choix.",
+				eval:"window.oFx = new Fx ( {}, {}, 'linear', 1000, { fps: 50 })",
+				assertions:[
+					"oFx.countFrames() === 51",
+					"oFx.time = 500",
+					"oFx.countFrames() === 26",
+					"oFx.fps = 40",
+					"oFx.countFrames() === 21",
+					]
+				}
+			]
+		},
+	{ title:"Objet FX",
 		desc:'',
 		list:[
 			{ title:".Methods",
@@ -375,7 +390,16 @@ layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 
 // BENCHMARKING
 new UnitTest( eBenchmarking ,[
-	{ title:"FX",
+	{ title:"Instance FX",
+		list:[
+			{ title:"countFrames",
+				assertions:[
+					
+					]
+				}
+			]
+		},
+	{ title:"Objet FX",
 		desc:'',
 		list:[
 			{ title:".Methods",
@@ -530,7 +554,8 @@ new UnitTest( eBenchmarking ,[
 					],
 				},
 			],
-	}],
+		}
+	],
 	{ unittest:0, benchmark: 1 }
 	)
 
