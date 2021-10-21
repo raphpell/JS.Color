@@ -80,46 +80,43 @@ Object.assign( Fx.prototype, {
 		return true
 		},
 	_createFrames: (function (){
-		let o, ni, oChange
+		let o, i, ni, oChange
 		, oFun = {
 			Frameset:s=>{
-				for(let i=0; i<ni; i++ ){
-					let a = []
-					for(let k=0, nk=oChange.length; k<nk; k++ ){
-						if( o.o1[s][k].indexOf('*')>-1 ){
-							a[k]=o.o1[s][k]
-							continue
-							}
-						a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oChange[k], o.time ) || 0 )
-						if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
+				let a = []
+				for(let k=0, nk=oChange.length; k<nk; k++ ){
+					if( o.o1[s][k].indexOf('*')>-1 ){
+						a[k]=o.o1[s][k]
+						continue
 						}
-					o.oFrames[s].push( a.join(','))
+					a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oChange[k], o.time ) || 0 )
+					if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
 					}
+				o.oFrames[s].push( a.join(','))
 				},
-			Color:s=>{
-				for(let i=0; i<ni; i++ ){
+			Color:(function(){
+				let f = ( s, s1 )=> parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oChange[s1], o.time ) || 0 )
+				return s=>{
 					let aColor =[]
-					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ ){
-						s1=o.sColorMode.charAt(k)
-						aColor.push( parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oChange[s1], o.time ) || 0 ))
-						}
+					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
+						aColor.push( f(s,o.sColorMode.charAt(k)))
 					o.oFrames[s].push( Color[ o.sColorMode.substr(0,3)].apply( null, aColor ).toHEX().toString('#'))
 					}
-				},
+				})(),
 			default:s=>{
-				for(let i=0; i<ni; i++ ){
-					let n = o.fFx( i*o.nFrameTime, o.o1[s], oChange, o.time )
-					o.oFrames[s].push( n || 0 )
-					}
+				o.oFrames[s].push( o.fFx( i*o.nFrameTime, o.o1[s], oChange, o.time ) || 0 )
 				}
 			}
 		return function(){
 			o = this
 			o._difference()
-			o.aAttr.forEach( s =>{
-				o.oFrames[ s ] = []
-				ni = o.nFrames
-				if( oChange = o.oChange[s] )( oFun[ oChange.sType ] || oFun.default )(s)
+			ni = o.nFrames
+			o.aAttr.forEach( s=>{
+				o.oFrames[s]=[]
+				i=0
+				if(oChange=o.oChange[s])
+					for(let f=oFun[oChange.sType ]||oFun.default;i<ni;i++)
+						f(s)
 				})
 			}
 		})(),
