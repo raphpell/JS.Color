@@ -7,21 +7,19 @@ Fx =function( e, o2, mEffect, nTime, oSettings ){
 		nTime = mEffect[1]
 		mEffect = mEffect[0]
 		}
+	o.time = parseInt(nTime) || Fx.time
 	Object.assign( o, {
-		aAttr:[],
+		aAttr:Object.keys(o2),
 		e:e,
+		o2:o2,
 		fFx:Fx.getEffect( mEffect ),
-		o2:o2, 
 		oFrames:{},
-		time: parseInt(nTime) || Fx.time
-		})
-	Object.assign( o, { // Rupture obligatoire
 		nFrameTime: parseInt( 1000/o.fps ),
 		nFrames: o.countFrames(),
 		o1: Fx.Last[ ( o.method=='merge' ? 'get_o1' : 'get_o2' )]( e ),
 		oChange: {}
 		})
-	o.time = (o.nFrames-1)*o.nFrameTime
+//	o.time = (o.nFrames-1)*o.nFrameTime // important ? surement
 	if( o2 ){
 		o._createFrames()
 		Fx.Methods[ o.method ]( o, o.bPreserveMergin )
@@ -50,7 +48,7 @@ Object.assign( Fx.prototype, {
 		if( e.bDesc ? nId>=0 : nId<=o.nFrames ){
 			for( var j=0, nj=o.aAttr.length, sAttr; j<nj; j++ ){
 				sAttr = o.aAttr[j]
-				if( in_array( sAttr, ['cols','rows'])){
+				if( ['cols','rows'].includes( sAttr )){
 					e[sAttr] = o.oFrames[sAttr][nId] || e[sAttr] 
 					values += ';' // ?
 					}
@@ -58,19 +56,19 @@ Object.assign( Fx.prototype, {
 					e[sAttr] = parseInt( o.oFrames[sAttr][nId]) || e[sAttr]
 					values += ';' // ?
 					}
-				else values += Style.calculate( sAttr, o.oFrames[sAttr][nId])
+				else values += Style.validate( sAttr, o.oFrames[sAttr][nId])
 				}
 			}
 		o.onframe( nId, b )
 		if( values ){
 			if( Style ) Style.set( e, values )
-			if( ! b ) Fx.Interval.push( o.fps, CallBack( o, 'playFrame' ))
+			if( ! b ) Fx.Interval.push( o.fps, ()=>o.playFrame() )
 		}else{
 			o.nId = null
 			if( ! o.oncomplete()) return false
 			if( b ) return o.next ? o.next.playFrame( nId-o.nFrames, true ) : null
 			var oNext = e.bDesc ? o.previous : o.next
-			if( oNext ) Fx.Interval.push( oNext.fps, CallBack( oNext, 'playFrame' ))
+			if( oNext ) Fx.Interval.push( oNext.fps, ()=>oNext.playFrame() )
 				else{
 					if( nId >= o.nFrames && o.onend ) return o.onend()
 					if( nId < 0 && o.onstart ) return o.onstart()
@@ -288,7 +286,9 @@ Object.assign( Fx, {
 		},
 	stop ( e ){
 		if( e.oFx ){
-			for( var o = e.oFx ; o ; o = o.next ) o.bCanceling = 1
+			for( var o = e.oFx ; o ; o = o.next ){
+				o.bCanceling = 1
+				}
 			e.bDesc = e.sPlaying = e.oFx = e.oFxPaused = e.sPausing = undefined
 			if( e.onstop ) e.onstop()
 			}

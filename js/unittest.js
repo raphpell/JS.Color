@@ -59,6 +59,7 @@ UnitTest =(function(){
 				}catch( error ){
 					this.nError++
 					ePRE.appendChild( _('DIV', error.toString(), 'error' ))
+					console.info( error )
 					// throw error
 					}
 				return  e.appendChild( ePRE )
@@ -79,6 +80,7 @@ UnitTest =(function(){
 						this.nError++
 						eDD.className ='UT_false'
 						eDD.appendChild( _('DIV', error.toString(), 'error' ))
+						console.info( error )
 						// throw error
 						}
 					eDL2.appendChild( eDD )

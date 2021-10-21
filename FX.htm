@@ -83,6 +83,7 @@
 <page id="eBenchmarking">
 	<h1>Benchmarking</h1>
 	<div id="eSummary3"></div>
+	<div id="eTest" style="background-color: #eee; padding: 5px;">#eTest</div>
 </page>
 
 <script src="src/Color.js"></script>
@@ -392,6 +393,14 @@ layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
 new UnitTest( eBenchmarking ,[
 	{ title:"Instance FX",
 		list:[
+			{ title:"new",
+				desc:'Un peu lent au premier abord...',
+				eval:'window.eTest = document.getElementById("eTest")',
+				assertions:[
+					'window.oFx11 = new Fx ( eTest, { "background-color":"#FC0", "padding":"50" }, "sin.out", 2000 )',
+					'oFx11.reverse()'
+					]
+				},
 			{ title:"countFrames",
 				assertions:[
 					
