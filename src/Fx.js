@@ -1,4 +1,7 @@
 /*  REQUIS Les classes Color et Style.... each isset */
+if( ! Color ) throw Error( "Fx :: Class Color required." )
+if( ! Style ) throw Error( "Fx :: Class Style required." )
+
 Fx =function( e, o2, mEffect, nTime, oSettings ){
 	let o = this
 	Object.assign( o, Fx.oDefaultSettings, oSettings )
@@ -9,7 +12,6 @@ Fx =function( e, o2, mEffect, nTime, oSettings ){
 		}
 	o.time = parseInt(nTime) || Fx.time
 	Object.assign( o, {
-		aAttr:Object.keys(o2),
 		e:e,
 		o2:o2,
 		fFx:Fx.getEffect( mEffect ),
@@ -77,52 +79,52 @@ Object.assign( Fx.prototype, {
 			}
 		return true
 		},
-	_createFrames (){
-		var o = this
-		o._difference()
-		for(var j=0, nj=o.aAttr.length, s; j<nj ; j++ ){
-			o.oFrames[ s=o.aAttr[j] ] = []
-			var ni = o.nFrames
-			, oChange = o.oChange[s]
-			if( oChange )
-				switch( oChange.sType ){
-					case 'Frameset':
-						for(var i=0; i<ni; i++ ){
-							var a = []
-							for(var k=0, nk=oChange.length; k<nk; k++ ){
-								if( o.o1[s][k].indexOf('*')>-1 ){
-									a[k]=o.o1[s][k]
-									continue
-									}
-								a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oChange[k], o.time ) || 0 )
-								if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
-								}
-							o.oFrames[s].push( a.join(','))
+	_createFrames: (function (){
+		let o, ni, oChange
+		, oFun = {
+			Frameset:s=>{
+				for(let i=0; i<ni; i++ ){
+					let a = []
+					for(let k=0, nk=oChange.length; k<nk; k++ ){
+						if( o.o1[s][k].indexOf('*')>-1 ){
+							a[k]=o.o1[s][k]
+							continue
 							}
-						break;
-					case 'Color':
-						if(Color) for(var i=0; i<ni; i++ ){
-							var aColor =[]
-							for(var k=0, nk=o.sColorMode.length, n; k<nk; k++ ){
-								var s1=o.sColorMode[k]
-								n = o.fFx( i*o.nFrameTime, o.o1[s][s1], oChange[s1], o.time ) || 0
-								aColor.push( parseInt(n))
-								}
-							o.oFrames[s].push( Color[ o.sColorMode.substr(0,3)].apply( null, aColor ).toHEX().toString('#'))
-							}
-						break;
-					default:
-						for(var i=0; i<ni; i++ ){
-							var n = o.fFx( i*o.nFrameTime, o.o1[s], oChange, o.time )
-							if( ! n.toFixed ) console.warn( n.constructor )
-							o.oFrames[s].push( n || 0 )
-							}
-						break;
+						a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oChange[k], o.time ) || 0 )
+						if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
+						}
+					o.oFrames[s].push( a.join(','))
 					}
+				},
+			Color:s=>{
+				for(let i=0; i<ni; i++ ){
+					let aColor =[]
+					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ ){
+						s1=o.sColorMode.charAt(k)
+						aColor.push( parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oChange[s1], o.time ) || 0 ))
+						}
+					o.oFrames[s].push( Color[ o.sColorMode.substr(0,3)].apply( null, aColor ).toHEX().toString('#'))
+					}
+				},
+			default:s=>{
+				for(let i=0; i<ni; i++ ){
+					let n = o.fFx( i*o.nFrameTime, o.o1[s], oChange, o.time )
+					o.oFrames[s].push( n || 0 )
+					}
+				}
 			}
-		},
+		return function(){
+			o = this
+			o._difference()
+			o.aAttr.forEach( s =>{
+				o.oFrames[ s ] = []
+				ni = o.nFrames
+				if( oChange = o.oChange[s] )( oFun[ oChange.sType ] || oFun.default )(s)
+				})
+			}
+		})(),
 	_difference (){
-		var o = this, o1=o.o1, o2=o.o2, sLowerColorMode = o.sColorMode.substr(0,3).toUpperCase()
+		let o = this, o1=o.o1, o2=o.o2, sMode = o.sColorMode.substr(0,3).toUpperCase()
 		, fDifference =function( m2, s ){
 			var fCase =function(){
 				if( s.indexOf(' ')==0 ) return 'composed'
@@ -138,8 +140,8 @@ Object.assign( Fx.prototype, {
 				case 'Color':
 					var oChange=o.oChange[s]={}
 					if(!isset(o1[s])) o1[s]=Style.get(o.e,s)
-					o1[s]=Color( o1[s])['to'+ sLowerColorMode ]()
-					o2[s]=Color( o2[s])['to'+ sLowerColorMode ]()
+					o1[s]=Color( o1[s])['to'+ sMode ]()
+					o2[s]=Color( o2[s])['to'+ sMode ]()
 					for(var i=0; i<3; i++ ){
 						var s1=o.sColorMode[i]
 						oChange[s1]=o2[s][s1]-o1[s][s1]
@@ -169,10 +171,8 @@ Object.assign( Fx.prototype, {
 					o.oChange[s]=m2-(o1[s]||0)
 				}
 			o.oChange[s].sType = sType
-			o.aAttr.push(s)
 			}
-	//	each( o2, fDifference, [Number,String]) // A CONTROLER !!! pour effacement
-		o.aAttr.forEach( s => fDifference( o2[s], s ))
+		;( o.aAttr = o.aAttr || Object.keys(o2) ).forEach( s => fDifference( o2[s], s ))
 		},
 
 	back ( s, n ){

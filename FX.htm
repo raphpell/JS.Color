@@ -83,7 +83,8 @@
 <page id="eBenchmarking">
 	<h1>Benchmarking</h1>
 	<div id="eSummary3"></div>
-	<div id="eTest" style="background-color: #eee; padding: 5px;">#eTest</div>
+	<span id="eTest" style="background-color: #eee; padding: 5px;">#eTest</span>
+	<span id="eTest2" style="background-color: #eee; padding: 5px;">#eTest2</span>
 </page>
 
 <script src="src/Color.js"></script>
@@ -103,6 +104,32 @@ new UnitTest( eUnitTest,[
 	{ desc:"...." },
 	{ title:"Instance FX",
 		list:[
+			{ title:"_difference",
+				eval:
+`let e = { style:{}}
+window.oFx0 = new Fx ( e, 0, 'linear', 200, 0 )
+oFx0.o1 = { color:'#A0B0CA', margin:50 }
+oFx0.o2 = { color:'#AABAC0', margin:150 }`,
+				assertions:[
+					"oFx0.o1 && oFx0.o2",
+					"! oFx0.aAttr",
+					"! oFx0.oChange.color",
+					"! oFx0.oChange.margin",
+					"oFx0._difference && ! oFx0._difference()",
+					`JSON.stringify( oFx0.oChange.color ) === '{"r":10,"g":10,"b":-10,"sType":"Color"}'`,
+					"oFx0.oChange.margin === 100",
+					"oFx0._difference",
+					"oFx0.aAttr.join( ',' ) === 'color,margin'",
+					"! oFx0.oFrames.color",
+					"! oFx0.oFrames.margin",
+					"oFx0._createFrames && ! oFx0._createFrames()",
+					"oFx0.oFrames.color.length === oFx0.nFrames",
+					"oFx0.oFrames.color.join( ',' ) === '#A0B0CA,#A1B1C9,#A2B2C8,#A3B3C7,#A4B4C6,#A5B5C5,#A6B6C4,#A7B7C3,#A8B8C2,#A9B9C1,#AABAC0'",
+					"oFx0.oFrames.margin.length === oFx0.nFrames",
+					"oFx0.oFrames.margin.join( ',' ) === '50,60,70,80,90,100,110,120,130,140,150'",
+					"oFx0._difference"
+					]
+				},
 			{ title:"countFrames",
 				desc:"L'unité temps est milliseconde mais bon... des secondes en choix.",
 				eval:"window.oFx = new Fx ( {}, {}, 'linear', 1000, { fps: 50 })",
@@ -397,8 +424,22 @@ new UnitTest( eBenchmarking ,[
 				desc:'Un peu lent au premier abord...',
 				eval:'window.eTest = document.getElementById("eTest")',
 				assertions:[
-					'window.oFx11 = new Fx ( eTest, { "background-color":"#FC0", "padding":"50" }, "sin.out", 2000 )',
+					'window.oFx11 = new Fx ( eTest, { "background-color":"#FC0", "padding":"50" }, "sin.out", 100 )',
 					'oFx11.reverse()'
+					]
+				},
+			{ title:"_difference / _createFrames",
+				eval:
+`window.init = ()=>{
+	let e = { style:{}}
+	window.oFx = new Fx ( e, 0, 'linear', 200, 0 )
+	oFx.o1 = { color:'#A0B0CA', margin:50 }
+	oFx.o2 = { color:'#AABAC0', margin:150 }
+	}`,
+				assertions:[
+					'init()',
+					'init(); oFx._difference()',
+					'init(); oFx._createFrames()'
 					]
 				},
 			{ title:"countFrames",
