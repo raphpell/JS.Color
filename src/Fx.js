@@ -19,7 +19,7 @@ Fx =function( e, o2, mEffect, nTime, oSettings ){
 		nFrameTime: parseInt( 1000/o.fps ),
 		nFrames: o.countFrames(),
 		o1: Fx.Last[ ( o.method=='merge' ? 'get_o1' : 'get_o2' )]( e ),
-		oChange: {}
+		oDeltas: new Map
 		})
 //	o.time = (o.nFrames-1)*o.nFrameTime // important ? sûrement
 	if( o2 ){
@@ -199,22 +199,22 @@ Object.assign( Fx, {
 			}
 		},
 	_createFrames: (function (){
-		let o, i, ni, oChange
+		let o, i, ni, oDelta
 		, oFun = {
 			Frameset:s=>{
 				let a = []
-				for(let k=0, nk=oChange.length; k<nk; k++ ){
+				for(let k=0, nk=oDelta.length; k<nk; k++ ){
 					if( o.o1[s][k].indexOf('*')>-1 ){
 						a[k]=o.o1[s][k]
 						continue
 						}
-					a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oChange[k], o.time ) || 0 )
+					a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oDelta[k], o.time ) || 0 )
 					if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
 					}
 				o.oFrames[s].push( a.join(','))
 				},
 			Color:(function(){
-				let f = ( s, s1 )=> parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oChange[s1], o.time ) || 0 )
+				let f = ( s, s1 )=> parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oDelta[s1], o.time ) || 0 )
 				return s=>{
 					let aColor =[]
 					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
@@ -223,7 +223,7 @@ Object.assign( Fx, {
 					}
 				})(),
 			default:s=>{
-				o.oFrames[s].push( o.fFx( i*o.nFrameTime, o.o1[s], oChange, o.time ) || 0 )
+				o.oFrames[s].push( o.fFx( i*o.nFrameTime, o.o1[s], oDelta, o.time ) || 0 )
 				}
 			}
 		return function( oFx ){
@@ -233,8 +233,8 @@ Object.assign( Fx, {
 			o.aAttr.forEach( s=>{
 				o.oFrames[s]=[]
 				i=0
-				if(oChange=o.oChange[s])
-					for(let f=oFun[oChange.sType ]||oFun.default;i<ni;i++)
+				if(oDelta=o.oDeltas.get(s))
+					for(let f=oFun[oDelta.sType ]||oFun.default;i<ni;i++)
 						f(s)
 				})
 			}
@@ -254,13 +254,13 @@ Object.assign( Fx, {
 				case 'composed': /* box-shadow ? color+position+dim */
 					break;
 				case 'Color':
-					var oChange=o.oChange[s]={}
+					var oDelta=o.oDeltas.set(s,{}).get(s)
 					if(!isset(o1[s])) o1[s]=Style.get(o.e,s)
 					o1[s]=Color( o1[s])['to'+ sMode ]()
 					o2[s]=Color( o2[s])['to'+ sMode ]()
 					for(var i=0; i<3; i++ ){
 						var s1=o.sColorMode[i]
-						oChange[s1]=o2[s][s1]-o1[s][s1]
+						oDelta[s1]=o2[s][s1]-o1[s][s1]
 						}
 					break;
 				case 'Frameset':
@@ -274,19 +274,19 @@ Object.assign( Fx, {
 						a[i] = parseInt(a2[i])-parseInt(a1[i])
 						}
 					o1[s] = a1
-					o.oChange[s]= a
+					o.oDeltas.set(s,a)
 					break;
 				case 'Scroll':
 					if(!isset(o1[s])) o1[s]=o.e[s]
-					o.oChange[s]=m2-o1[s]
+					o.oDeltas.set(s,m2-o1[s])
 					break;
 				case 'style':
 					if(!isset(o1[s])) m1=Style.get(o.e,s)
 				default:
 					if(isset(m1)) o1[s]=eval( isNaN(m1)? parseInt(m1): m1 ) || 0
-					o.oChange[s]=m2-(o1[s]||0)
+					o.oDeltas.set(s,m2-(o1[s]||0))
 				}
-			o.oChange[s].sType = sType
+			o.oDeltas.get(s).sType = sType
 			}
 		;( o.aAttr = o.aAttr || new Set( Object.keys(o2)) ).forEach( s => fDifference( o2[s], s ))
 		},
