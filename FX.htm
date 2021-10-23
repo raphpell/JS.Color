@@ -426,6 +426,16 @@ new UnitTest( eBenchmarking ,[
 					'oFx11.reverse()'
 					]
 				},
+			{ title:"countFrames",
+				assertions:[
+					
+					]
+				}
+			]
+		},
+	{ title:"Objet FX",
+		desc:'',
+		list:[
 			{ title:"_calculateDeltas / _createFrames",
 				eval:
 `window.init = ()=>{
@@ -441,16 +451,6 @@ new UnitTest( eBenchmarking ,[
 					'delete window.oFx'
 					]
 				},
-			{ title:"countFrames",
-				assertions:[
-					
-					]
-				}
-			]
-		},
-	{ title:"Objet FX",
-		desc:'',
-		list:[
 			{ title:".Methods",
 				list:[
 					{ title:".merge",
