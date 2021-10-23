@@ -15,11 +15,11 @@ Fx =function( e, o2, mEffect, nTime, oSettings ){
 		e:e,
 		o2:o2,
 		fFx:Fx.getEffect( mEffect ),
-		oFrames:{},
+		oFrames:new Map,
 		nFrameTime: parseInt( 1000/o.fps ),
 		nFrames: o.countFrames(),
 		o1: Fx.Last[ ( o.method=='merge' ? 'get_o1' : 'get_o2' )]( e ),
-		oDeltas: new Map
+		oDeltas:new Map
 		})
 //	o.time = (o.nFrames-1)*o.nFrameTime // important ? sûrement
 	if( o2 ){
@@ -51,14 +51,14 @@ Object.assign( Fx.prototype, {
 		if( e.bDesc ? nId>=0 : nId<=o.nFrames ){
 			o.aAttr.forEach( sAttr =>{
 				if( ['cols','rows'].includes( sAttr )){
-					e[sAttr] = o.oFrames[sAttr][nId] || e[sAttr] 
+					e[sAttr] = o.oFrames.get(sAttr)[nId] || e[sAttr] 
 					values += ';' // ?
 					}
 				else if( sAttr.indexOf('scroll')==0 ){
-					e[sAttr] = parseInt( o.oFrames[sAttr][nId]) || e[sAttr]
+					e[sAttr] = parseInt( o.oFrames.get(sAttr)[nId]) || e[sAttr]
 					values += ';' // ?
 					}
-				else values += Style.validate( sAttr, o.oFrames[sAttr][nId])
+				else values += Style.validate( sAttr, o.oFrames.get(sAttr)[nId])
 				})
 			}
 		o.onframe( nId, b )
@@ -82,7 +82,9 @@ Object.assign( Fx.prototype, {
 
 	back ( s, n ){
 		var o2 = {}
-		each( this.oFrames, function(a,s){o2[s]=a[0]}, [Array])
+	//	each( this.oFrames, function(a,s){o2[s]=a[0]}, [Array])
+		let o1 = this.o1
+		this.aAttr.forEach( s=>{o2[s]=o1[s]})
 		return new Fx ( this.e, o2, s||this.fFx, n||this.time, { bPlayNow: false, method:'concat' })
 		},
 	concat ( o2, s, n ){
@@ -211,7 +213,7 @@ Object.assign( Fx, {
 					a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oDelta[k], o.time ) || 0 )
 					if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
 					}
-				o.oFrames[s].push( a.join(','))
+				o.oFrames.get(s).push( a.join(','))
 				},
 			Color:(function(){
 				let f = ( s, s1 )=> parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oDelta[s1], o.time ) || 0 )
@@ -219,11 +221,11 @@ Object.assign( Fx, {
 					let aColor =[]
 					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
 						aColor.push( f(s,o.sColorMode.charAt(k)))
-					o.oFrames[s].push( Color[ o.sColorMode.substr(0,3)].apply( null, aColor ).toHEX().toString('#'))
+					o.oFrames.get(s).push( Color[ o.sColorMode.substr(0,3)].apply( null, aColor ).toHEX().toString('#'))
 					}
 				})(),
 			default:s=>{
-				o.oFrames[s].push( o.fFx( i*o.nFrameTime, o.o1[s], oDelta, o.time ) || 0 )
+				o.oFrames.get(s).push( o.fFx( i*o.nFrameTime, o.o1[s], oDelta, o.time ) || 0 )
 				}
 			}
 		return function( oFx ){
@@ -231,7 +233,7 @@ Object.assign( Fx, {
 			Fx._difference( o )
 			ni = o.nFrames
 			o.aAttr.forEach( s=>{
-				o.oFrames[s]=[]
+				o.oFrames.set(s,[])
 				i=0
 				if(oDelta=o.oDeltas.get(s))
 					for(let f=oFun[oDelta.sType ]||oFun.default;i<ni;i++)
@@ -258,10 +260,8 @@ Object.assign( Fx, {
 					if(!isset(o1[s])) o1[s]=Style.get(o.e,s)
 					o1[s]=Color( o1[s])['to'+ sMode ]()
 					o2[s]=Color( o2[s])['to'+ sMode ]()
-					for(var i=0; i<3; i++ ){
-						var s1=o.sColorMode[i]
-						oDelta[s1]=o2[s][s1]-o1[s][s1]
-						}
+					let f=s1=>oDelta[s1]=o2[s][s1]-o1[s][s1]
+					for(var i=0; i<3; i++ ) f(o.sColorMode[i])
 					break;
 				case 'Frameset':
 					if(!isset(o1[s])) o1[s]=o.e[s]
@@ -324,8 +324,8 @@ Object.assign( Fx, {
 				o.aAttr = o.aAttr || new Set
 				oFx.aAttr.forEach( s =>{
 					o.aAttr.add( s )
-					if( bPreserve ? ! o.oFrames[s] : true )
-						o.oFrames[s] = oFx.oFrames[s]
+					if( bPreserve ? ! o.oFrames.get(s) : true )
+						o.oFrames.set(s, oFx.oFrames.get(s))
 					})
 				o.nFrames = o.nFrames > oFx.nFrames ? o.nFrames : oFx.nFrames
 				if( bPreserve ){
@@ -346,8 +346,8 @@ Object.assign( Fx, {
 				o.aAttr = o.aAttr || new Set
 				oFx.aAttr.forEach( s =>{
 					o.aAttr.add( s )
-					o.oFrames[s] = [ ...(o.oFrames[s]||[]), ...oFx.oFrames[s]]
-					nLength = o.oFrames[s].length
+					o.oFrames.set(s, [ ...(o.oFrames.get(s)||[]), ...oFx.oFrames.get(s)])
+					nLength = o.oFrames.get(s).length
 					if( nLength > nMax ) nMax = nLength
 					})
 				o.nFrames = nMax
