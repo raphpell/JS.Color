@@ -104,7 +104,7 @@ new UnitTest( eUnitTest,[
 	{ desc:"...." },
 	{ title:"Instance FX",
 		list:[
-			{ title:"_difference",
+			{ title:"_calculateDeltas",
 				eval:
 `let e = { style:{}}
 window.oFx0 = new Fx ( e, 0, 'linear', 200, 0 )
@@ -115,7 +115,7 @@ oFx0.o2 = { color:'#AABAC0', margin:150 }`,
 					"! oFx0.aAttr",
 					"! oFx0.oDeltas.get('color')",
 					"! oFx0.oDeltas.get('margin')",
-					"Fx._difference && ! Fx._difference( oFx0 )",
+					"Fx._calculateDeltas && ! Fx._calculateDeltas( oFx0 )",
 					`JSON.stringify( oFx0.oDeltas.get('color') ) === '{"r":10,"g":10,"b":-10,"sType":"Color"}'`,
 					"oFx0.oDeltas.get('margin') === 100",
 					"[...oFx0.aAttr].toString() === 'color,margin'",
@@ -426,18 +426,19 @@ new UnitTest( eBenchmarking ,[
 					'oFx11.reverse()'
 					]
 				},
-			{ title:"_difference / _createFrames",
+			{ title:"_calculateDeltas / _createFrames",
 				eval:
 `window.init = ()=>{
 	let e = { style:{}}
-	window.oFx = new Fx ( e, 0, 'linear', 200, 0 )
+	window.oFx = new Fx ( e, 0, 'linear', 200, 0, { bPlayNow: false })
 	oFx.o1 = { color:'#A0B0CA', margin:50 }
 	oFx.o2 = { color:'#AABAC0', margin:150 }
 	}`,
 				assertions:[
-					'init()',
-					'init(); Fx._difference( oFx )',
-					'init(); Fx._createFrames( oFx )'
+					'init(); oFx.bPlayNow === false',
+					'init(); Fx._calculateDeltas( oFx )',
+					'init(); Fx._createFrames( oFx )',
+					'delete window.oFx'
 					]
 				},
 			{ title:"countFrames",
