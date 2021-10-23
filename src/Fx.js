@@ -21,15 +21,16 @@ Fx =function( e, o2, mEffect, nTime, oSettings ){
 		o1: Fx.Last[ ( o.method=='merge' ? 'get_o1' : 'get_o2' )]( e ),
 		oChange: {}
 		})
-//	o.time = (o.nFrames-1)*o.nFrameTime // important ? surement
+//	o.time = (o.nFrames-1)*o.nFrameTime // important ? sûrement
 	if( o2 ){
-		o._createFrames()
+		Fx._createFrames( o )
 		Fx.Methods[ o.method ]( o, o.bPreserveMergin )
 		if( o.bPlayNow ) Fx.play( e )
 		}
 	}
 
 Object.assign( Fx.prototype, {
+	aAttr: null,
 	nId: null,
 	countFrames (){ return parseInt( this.fps*this.time/1000 )+1 },
 	playFrame ( nId, b ){
@@ -48,8 +49,7 @@ Object.assign( Fx.prototype, {
 		nId = nId === undefined ? ( e.bDesc ? --o.nId : ++o.nId ) : nId
 
 		if( e.bDesc ? nId>=0 : nId<=o.nFrames ){
-			for( var j=0, nj=o.aAttr.length, sAttr; j<nj; j++ ){
-				sAttr = o.aAttr[j]
+			o.aAttr.forEach( sAttr =>{
 				if( ['cols','rows'].includes( sAttr )){
 					e[sAttr] = o.oFrames[sAttr][nId] || e[sAttr] 
 					values += ';' // ?
@@ -59,7 +59,7 @@ Object.assign( Fx.prototype, {
 					values += ';' // ?
 					}
 				else values += Style.validate( sAttr, o.oFrames[sAttr][nId])
-				}
+				})
 			}
 		o.onframe( nId, b )
 		if( values ){
@@ -78,98 +78,6 @@ Object.assign( Fx.prototype, {
 					}
 			}
 		return true
-		},
-	_createFrames: (function (){
-		let o, i, ni, oChange
-		, oFun = {
-			Frameset:s=>{
-				let a = []
-				for(let k=0, nk=oChange.length; k<nk; k++ ){
-					if( o.o1[s][k].indexOf('*')>-1 ){
-						a[k]=o.o1[s][k]
-						continue
-						}
-					a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oChange[k], o.time ) || 0 )
-					if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
-					}
-				o.oFrames[s].push( a.join(','))
-				},
-			Color:(function(){
-				let f = ( s, s1 )=> parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oChange[s1], o.time ) || 0 )
-				return s=>{
-					let aColor =[]
-					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
-						aColor.push( f(s,o.sColorMode.charAt(k)))
-					o.oFrames[s].push( Color[ o.sColorMode.substr(0,3)].apply( null, aColor ).toHEX().toString('#'))
-					}
-				})(),
-			default:s=>{
-				o.oFrames[s].push( o.fFx( i*o.nFrameTime, o.o1[s], oChange, o.time ) || 0 )
-				}
-			}
-		return function(){
-			o = this
-			o._difference()
-			ni = o.nFrames
-			o.aAttr.forEach( s=>{
-				o.oFrames[s]=[]
-				i=0
-				if(oChange=o.oChange[s])
-					for(let f=oFun[oChange.sType ]||oFun.default;i<ni;i++)
-						f(s)
-				})
-			}
-		})(),
-	_difference (){
-		let o = this, o1=o.o1, o2=o.o2, sMode = o.sColorMode.substr(0,3).toUpperCase()
-		, fDifference =function( m2, s ){
-			var fCase =function(){
-				if( s.indexOf(' ')==0 ) return 'composed'
-				if( s.indexOf('scroll')==0 ) return 'Scroll'
-				if( s.indexOf('rows')==0 || s.indexOf('cols')==0 ) return 'Frameset'
-				return ( /color/i.test(s)? 'Color': 'style' )
-				}
-			, m1, sType=fCase()
-			, isset = m => m !== undefined
-			switch( sType ){
-				case 'composed': /* box-shadow ? color+position+dim */
-					break;
-				case 'Color':
-					var oChange=o.oChange[s]={}
-					if(!isset(o1[s])) o1[s]=Style.get(o.e,s)
-					o1[s]=Color( o1[s])['to'+ sMode ]()
-					o2[s]=Color( o2[s])['to'+ sMode ]()
-					for(var i=0; i<3; i++ ){
-						var s1=o.sColorMode[i]
-						oChange[s1]=o2[s][s1]-o1[s][s1]
-						}
-					break;
-				case 'Frameset':
-					if(!isset(o1[s])) o1[s]=o.e[s]
-					var a=[], a1=o1[s].split(','), a2=m2.split(',')
-					for( var i=0, ni=a1.length, n1 ; i<ni; i++ ){
-						if( a1[i].indexOf('*')>-1){
-							a[i]=a1[i]
-							continue
-							}
-						a[i] = parseInt(a2[i])-parseInt(a1[i])
-						}
-					o1[s] = a1
-					o.oChange[s]= a
-					break;
-				case 'Scroll':
-					if(!isset(o1[s])) o1[s]=o.e[s]
-					o.oChange[s]=m2-o1[s]
-					break;
-				case 'style':
-					if(!isset(o1[s])) m1=Style.get(o.e,s)
-				default:
-					if(isset(m1)) o1[s]=eval( isNaN(m1)? parseInt(m1): m1 ) || 0
-					o.oChange[s]=m2-(o1[s]||0)
-				}
-			o.oChange[s].sType = sType
-			}
-		;( o.aAttr = o.aAttr || Object.keys(o2) ).forEach( s => fDifference( o2[s], s ))
 		},
 
 	back ( s, n ){
@@ -191,7 +99,6 @@ Object.assign( Fx.prototype, {
 		new Fx ( this.e, o2, s||this.fFx, n||this.time, Object.assign( { bPlayNow: false, method:'push' }, oSettings ))
 		return this
 		},
-
 	blink ( n ){
 		var o = this, b = n === undefined
 		o.onend = ()=> Fx[ b || (n-=0.5)>0 ? 'playInvert' : 'stop' ]( o.e )
@@ -221,16 +128,17 @@ Object.assign( Fx, {
 	time: 500,
 	custom ( e, oFrames, fps, oSettings ){
 		var oFx = new Fx ( e, 0, 0, 0, { bPlayNow: false })
-		, aAttr = []
+		, aAttr = new Set
 		, nFrames = 0
 		, o1={}, o2={}
-		each( oFrames, ( a, s )=>{
-			aAttr.push( s )
+		Object.keys(oFrames).forEach( s =>{
+			let a = oFrames[s]
+			aAttr.add( s )
 			var n = a.length
 			o1[ s ] = a[0]
 			o2[ s ] = a[n-1]
 			if( n > nFrames ) nFrames = n
-			}, [Array])
+			})
 		Object.assign( oFx, {
 			aAttr: aAttr,
 			time: parseInt( fps*nFrames ),
@@ -290,6 +198,98 @@ Object.assign( Fx, {
 			if( e.onstop ) e.onstop()
 			}
 		},
+	_createFrames: (function (){
+		let o, i, ni, oChange
+		, oFun = {
+			Frameset:s=>{
+				let a = []
+				for(let k=0, nk=oChange.length; k<nk; k++ ){
+					if( o.o1[s][k].indexOf('*')>-1 ){
+						a[k]=o.o1[s][k]
+						continue
+						}
+					a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oChange[k], o.time ) || 0 )
+					if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
+					}
+				o.oFrames[s].push( a.join(','))
+				},
+			Color:(function(){
+				let f = ( s, s1 )=> parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oChange[s1], o.time ) || 0 )
+				return s=>{
+					let aColor =[]
+					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
+						aColor.push( f(s,o.sColorMode.charAt(k)))
+					o.oFrames[s].push( Color[ o.sColorMode.substr(0,3)].apply( null, aColor ).toHEX().toString('#'))
+					}
+				})(),
+			default:s=>{
+				o.oFrames[s].push( o.fFx( i*o.nFrameTime, o.o1[s], oChange, o.time ) || 0 )
+				}
+			}
+		return function( oFx ){
+			o = oFx
+			Fx._difference( o )
+			ni = o.nFrames
+			o.aAttr.forEach( s=>{
+				o.oFrames[s]=[]
+				i=0
+				if(oChange=o.oChange[s])
+					for(let f=oFun[oChange.sType ]||oFun.default;i<ni;i++)
+						f(s)
+				})
+			}
+		})(),
+	_difference ( o ){
+		let o1=o.o1, o2=o.o2, sMode = o.sColorMode.substr(0,3).toUpperCase()
+		, fDifference =function( m2, s ){
+			var fCase =function(){
+				if( s.indexOf(' ')==0 ) return 'composed'
+				if( s.indexOf('scroll')==0 ) return 'Scroll'
+				if( s.indexOf('rows')==0 || s.indexOf('cols')==0 ) return 'Frameset'
+				return ( /color/i.test(s)? 'Color': 'style' )
+				}
+			, m1, sType=fCase()
+			, isset = m => m !== undefined
+			switch( sType ){
+				case 'composed': /* box-shadow ? color+position+dim */
+					break;
+				case 'Color':
+					var oChange=o.oChange[s]={}
+					if(!isset(o1[s])) o1[s]=Style.get(o.e,s)
+					o1[s]=Color( o1[s])['to'+ sMode ]()
+					o2[s]=Color( o2[s])['to'+ sMode ]()
+					for(var i=0; i<3; i++ ){
+						var s1=o.sColorMode[i]
+						oChange[s1]=o2[s][s1]-o1[s][s1]
+						}
+					break;
+				case 'Frameset':
+					if(!isset(o1[s])) o1[s]=o.e[s]
+					var a=[], a1=o1[s].split(','), a2=m2.split(',')
+					for( var i=0, ni=a1.length, n1 ; i<ni; i++ ){
+						if( a1[i].indexOf('*')>-1){
+							a[i]=a1[i]
+							continue
+							}
+						a[i] = parseInt(a2[i])-parseInt(a1[i])
+						}
+					o1[s] = a1
+					o.oChange[s]= a
+					break;
+				case 'Scroll':
+					if(!isset(o1[s])) o1[s]=o.e[s]
+					o.oChange[s]=m2-o1[s]
+					break;
+				case 'style':
+					if(!isset(o1[s])) m1=Style.get(o.e,s)
+				default:
+					if(isset(m1)) o1[s]=eval( isNaN(m1)? parseInt(m1): m1 ) || 0
+					o.oChange[s]=m2-(o1[s]||0)
+				}
+			o.oChange[s].sType = sType
+			}
+		;( o.aAttr = o.aAttr || new Set( Object.keys(o2)) ).forEach( s => fDifference( o2[s], s ))
+		},
 	Last:(function(){
 		var f = function( e ){
 			for( var o = e.oFx ; o && o.next ; o = o.next );
@@ -321,11 +321,12 @@ Object.assign( Fx, {
 		merge ( oFx, bPreserve ){
 			let e = oFx.e, o = Fx.Last( e )
 			if( o ){
+				o.aAttr = o.aAttr || new Set
 				oFx.aAttr.forEach( s =>{
+					o.aAttr.add( s )
 					if( bPreserve ? ! o.oFrames[s] : true )
 						o.oFrames[s] = oFx.oFrames[s]
 					})
-				o.aAttr = [...new Set([ ...o.aAttr, ...oFx.aAttr ])]
 				o.nFrames = o.nFrames > oFx.nFrames ? o.nFrames : oFx.nFrames
 				if( bPreserve ){
 					o.o1 = Object.assign( {}, oFx.o1, o.o1 )
@@ -342,12 +343,13 @@ Object.assign( Fx, {
 			let e = oFx.e, o = Fx.Last( e )
 			if( o ){
 				let nMax = o.nFrames, nLength
+				o.aAttr = o.aAttr || new Set
 				oFx.aAttr.forEach( s =>{
+					o.aAttr.add( s )
 					o.oFrames[s] = [ ...(o.oFrames[s]||[]), ...oFx.oFrames[s]]
 					nLength = o.oFrames[s].length
 					if( nLength > nMax ) nMax = nLength
 					})
-				o.aAttr = [...new Set([ ...o.aAttr, ...oFx.aAttr ])]
 				o.nFrames = nMax
 				o.o1 = Object.assign( {}, oFx.o1, o.o1 )
 				o.o2 = Object.assign( {}, o.o2, oFx.o2 )

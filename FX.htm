@@ -115,19 +115,17 @@ oFx0.o2 = { color:'#AABAC0', margin:150 }`,
 					"! oFx0.aAttr",
 					"! oFx0.oChange.color",
 					"! oFx0.oChange.margin",
-					"oFx0._difference && ! oFx0._difference()",
+					"Fx._difference && ! Fx._difference( oFx0 )",
 					`JSON.stringify( oFx0.oChange.color ) === '{"r":10,"g":10,"b":-10,"sType":"Color"}'`,
 					"oFx0.oChange.margin === 100",
-					"oFx0._difference",
-					"oFx0.aAttr.join( ',' ) === 'color,margin'",
+					"[...oFx0.aAttr].toString() === 'color,margin'",
 					"! oFx0.oFrames.color",
 					"! oFx0.oFrames.margin",
-					"oFx0._createFrames && ! oFx0._createFrames()",
+					"Fx._createFrames && ! Fx._createFrames( oFx0 )",
 					"oFx0.oFrames.color.length === oFx0.nFrames",
 					"oFx0.oFrames.color.join( ',' ) === '#A0B0CA,#A1B1C9,#A2B2C8,#A3B3C7,#A4B4C6,#A5B5C5,#A6B6C4,#A7B7C3,#A8B8C2,#A9B9C1,#AABAC0'",
 					"oFx0.oFrames.margin.length === oFx0.nFrames",
-					"oFx0.oFrames.margin.join( ',' ) === '50,60,70,80,90,100,110,120,130,140,150'",
-					"oFx0._difference"
+					"oFx0.oFrames.margin.join( ',' ) === '50,60,70,80,90,100,110,120,130,140,150'"
 					]
 				},
 			{ title:"countFrames",
@@ -163,7 +161,7 @@ window.getFX = function( n ){
 	switch( n ){
 		case 1: return {
 			e : ePseudoHtmlElement,
-			aAttr: [],
+			aAttr: new Set,
 			nFrames: 0,
 			oFrames: {},
 			o1: {},
@@ -171,7 +169,7 @@ window.getFX = function( n ){
 			}
 		case 2: return {
 			e : ePseudoHtmlElement,
-			aAttr: ['left','padding'],
+			aAttr: new Set(['left','padding']),
 			nFrames: fLength(sL2),
 			oFrames: { left:fArray(sL2), padding:fArray(sP2) },
 			o1: { left:fFirst(sL2), padding:fFirst(sP2)},
@@ -179,7 +177,7 @@ window.getFX = function( n ){
 			}
 		case 3: return {
 			e : ePseudoHtmlElement,
-			aAttr: ['padding','width'],
+			aAttr: new Set(['padding','width']),
 			nFrames: fLength(sP3),
 			oFrames: { padding:fArray(sP3), width:fArray(sW3) },
 			o1: { padding:fFirst(sP3), width:fFirst(sW3)},
@@ -219,7 +217,7 @@ oFx1.next = oFx2`,
 								assertions:[
 									'oFx1 === Fx.Methods.merge( oFx3, true )',
 									'ePseudoHtmlElement.oFx = oFx1',
-									'oFx2.aAttr.toString() === "left,padding,width"',
+									'[...oFx2.aAttr].toString() === "left,padding,width"',
 									'oFx2.nFrames === 4',
 									'oFx2.oFrames.left.toString() === sL2',
 									'oFx2.oFrames.padding.toString() === sP2',
@@ -241,7 +239,7 @@ oFx1.next = oFx2`,
 								assertions:[
 									'oFx1 === Fx.Methods.merge( oFx3 )',
 									'ePseudoHtmlElement.oFx = oFx1',
-									'oFx2.aAttr.toString() === "left,padding,width"',
+									'[...oFx2.aAttr].toString() === "left,padding,width"',
 									'oFx2.nFrames === 4',
 									'oFx2.oFrames.left.toString() === sL2',
 									'oFx2.oFrames.padding.toString() === sP3',
@@ -263,7 +261,7 @@ oFx1.next = oFx3`,
 								assertions:[
 									'oFx1 === Fx.Methods.merge( oFx2 )',
 									'ePseudoHtmlElement.oFx = oFx1',
-									'oFx3.aAttr.toString() === "padding,width,left"',
+									'[...oFx3.aAttr].toString() === "padding,width,left"',
 									'oFx3.nFrames === 4',
 									'oFx3.oFrames.left.toString() === sL2',
 									'oFx3.oFrames.padding.toString() === sP2',
@@ -303,7 +301,7 @@ ePseudoHtmlElement.oFx = oFx1
 oFx1.next = oFx2`,
 						assertions:[
 							'oFx1 === Fx.Methods.push( oFx3 )',
-							'oFx2.aAttr.toString() === "left,padding,width"',
+							'[...oFx2.aAttr].toString() === "left,padding,width"',
 							'oFx2.nFrames === 7',
 							'oFx2.oFrames.left.toString() === sL2',
 							'oFx2.oFrames.padding.toString() === sP2+","+sP3',
@@ -438,8 +436,8 @@ new UnitTest( eBenchmarking ,[
 	}`,
 				assertions:[
 					'init()',
-					'init(); oFx._difference()',
-					'init(); oFx._createFrames()'
+					'init(); Fx._difference( oFx )',
+					'init(); Fx._createFrames( oFx )'
 					]
 				},
 			{ title:"countFrames",
