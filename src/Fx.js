@@ -1,165 +1,194 @@
-/*  REQUIS Les classes Color et Style.... each isset */
-if( ! Color ) throw Error( "Fx :: Class Color required." )
-if( ! Style ) throw Error( "Fx :: Class Style required." )
+/*  REQUIS Les classes Color et Style... */
+if(!Color) throw Error("Fx :: Class Color required.")
+if(!Style) throw Error("Fx :: Class Style required.")
 
-Fx = (function(){
-	const oSet = new Set(['cols','rows'])
-	, isset = m => m !== undefined
-
-	Fx =function( e, o2, mEffect, nTime, oSettings ){
-		let o = this
-		Object.assign( o, Fx.oDefaultSettings, oSettings )
-		if( o.bPlayNow ) Fx.stop( e )
-		if( mEffect.constructor==Array ){
-			nTime = mEffect[1]
-			mEffect = mEffect[0]
+Fx=(function(){
+	const setEltAttributes=new Set(['cols','rows','scrollLeft','scrollTop'])
+	,isset=m=>m!==undefined
+	,_Animation =(function(){
+		let _oFPS=new Map
+		,_purge=nFps=>{
+			return ()=>{
+				let o=_oFPS.get(nFps),a=o.a.splice(0)
+				while(a.length)a.shift()()
+				if(o.a.length==0)_remove(nFps)
+				}
 			}
-		o.time = parseInt(nTime)
+		,_create=nFps=>{
+			let o=_oFPS.get(nFps)
+			return _oFPS.set(nFps,o?o:{
+				a:[],
+				n:setInterval(_purge(nFps),1000/nFps)
+				}).get(nFps)
+			}
+		,_remove=nFps=>{
+			let o=_oFPS.get(nFps)
+			if(!o)return false
+			clearInterval(o.n)
+			delete _oFPS.delete(nFps)
+			return true
+			}
+		return o=>{
+				let f=()=>o.playFrame()
+				return o.bAnimationFrame&&requestAnimationFrame
+					?requestAnimationFrame(f)
+					:_create(o.fps).a.push(f)
+				}
+			})()
+
+	Fx=function(e,o2,mEffect,nTime,oSettings){
+		let o=this
+		Object.assign(o,Fx.oDefaultSettings,oSettings)
+		if(o.bPlayNow)Fx.stop(e)
+		if(mEffect.constructor==Array){
+			nTime=mEffect[1]
+			mEffect=mEffect[0]
+			}
+		o.time=parseInt(nTime)
 		Object.assign(o,{
 			e:e,
 			o2:o2,
-			fFx:Fx.getEffect( mEffect ),
+			fFx:Fx.getEffect(mEffect),
 			oFrames:new Map,
-			nFrameTime: parseInt( 1000/o.fps ),
-			nFrames: o.countFrames(),
-			o1: Fx.Last[ ( o.method=='merge' ? 'get_o1' : 'get_o2' )]( e ),
+			nFrameTime:parseInt(1000/o.fps),
+			nFrames:o.countFrames(),
+			o1:Fx.Last[(o.method=='merge'?'get_o1':'get_o2')](e),
 			oDeltas:new Map
 			})
 	//	o.time = (o.nFrames-1)*o.nFrameTime // important ? sûrement
-		if( o2 ){
-			Fx._createFrames( o )
-			Fx.Methods[ o.method ]( o, o.bPreserveMergin )
-			if( o.bPlayNow ) Fx.play( e )
+		if(o2){
+			Fx._createFrames(o)
+			Fx.Methods[o.method](o,o.bPreserveMergin)
+			if(o.bPlayNow)Fx.play(e)
 			}
 		}
 
-	Object.assign( Fx.prototype, {
-		aAttr: null,
-		nId: null,
-		countFrames (){ return parseInt( this.fps*this.time/1000 )+1 },
-		playFrame:function ( nId, b ){
-			let o = this
-			, e = o.e
+	Object.assign(Fx.prototype,{
+		aAttr:null,
+		nId:null,
+		countFrames(){ return parseInt( this.fps*this.time/1000 )+1 },
+		playFrame:function(nId,b){
+			let o=this
+			, e=o.e
 			, values=''
-			if( o.bCanceling ) return o.bCanceling = undefined
-			if( ! b && ! e.sPlaying ){
-				e.oFxPaused = o
+			if(o.bCanceling) return o.bCanceling=undefined
+			if(!b&&!e.sPlaying){
+				e.oFxPaused=o
 				return false
 				}
-			if( o.nId == null ){
-				o.nId = e.bDesc ? o.nFrames-1 : -1
-				if( o.onlaunch ) o.onlaunch()
+			if(o.nId==null){
+				o.nId=e.bDesc?o.nFrames-1:-1
+				if(o.onlaunch)o.onlaunch()
 				}
-			nId = nId === undefined ? ( e.bDesc ? --o.nId : ++o.nId ) : nId
-
-			if( e.bDesc ? nId>=0 : nId<=o.nFrames ){
-				o.aAttr.forEach( sAttr =>{
-					let aFrame = o.oFrames.get(sAttr)
-					if( oSet.has( sAttr )) 
-						e[sAttr] = aFrame[nId] || e[sAttr] 
-					else if( sAttr.indexOf('scroll')==0 )
-						e[sAttr] = parseInt( aFrame[nId]) || e[sAttr]
-					else values += Style.validate( sAttr, aFrame[nId])
+			nId=nId===undefined?(e.bDesc?--o.nId:++o.nId):nId
+			if(e.bDesc?nId>=0:nId<=o.nFrames){
+				o.aAttr.forEach( sAttr=>{
+					let aFrame=o.oFrames.get(sAttr)
+					if(Fx.setEltAttributes.has(sAttr))
+						e[sAttr]=parseInt(aFrame[nId])||e[sAttr]
+					else values+=Style.validate(sAttr,aFrame[nId])
 					})
 				}
-			o.onframe( nId, b )
-			if( values ){
-				if( Style ) Style.set( e, values )
-				if( ! b ) Fx.Interval.push( o )
+			o.onframe(nId,b)
+			if(values){
+				if(Style)Style.set(e,values)
+				if(!b)_Animation(o)
 			}else{
-				o.nId = null
-				if( ! o.oncomplete()) return false
-				if( b ) return o.next ? o.next.playFrame( nId-o.nFrames, true ) : null
-				let oNext = e.bDesc ? o.previous : o.next
-				if( oNext ) Fx.Interval.push( oNext )
+				o.nId=null
+				if(!o.oncomplete())return false
+				if(b)return o.next?o.next.playFrame(nId-o.nFrames,true):null
+				let oNext=e.bDesc?o.previous:o.next
+				if(oNext)_Animation(oNext)
 					else{
-						if( o.onend && nId >= o.nFrames ) return o.onend()
-						if( o.onstart && nId < 0 ) return o.onstart()
-						Fx.stop( e )
+						if(o.onend&&nId>=o.nFrames)return o.onend()
+						if(o.onstart&&nId<0)return o.onstart()
+						Fx.stop(e)
 						}
 				}
 			return true
 			},
 
-		back ( s, n ){
+		back(s,n){
 			let o2={},o1=this.o1
 			this.aAttr.forEach(s=>{o2[s]=o1[s]})
-			return new Fx ( this.e, o2, s||this.fFx, n||this.time, {bPlayNow:false,method:'concat'})
+			return new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'concat'})
 			},
-		concat ( o2, s, n ){
-			return new Fx ( this.e, o2, s||this.fFx, n||this.time, {bPlayNow:false,method:'concat'})
+		concat(o2,s,n){
+			return new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'concat'})
 			},
-		custom ( oFrames, nFps, oSettings ){
-			return Fx.custom( this.e, oFrames, nFps||this.fps, oSettings )
+		custom(oFrames,nFps,oSettings){
+			return Fx.custom(this.e,oFrames,nFps||this.fps,oSettings )
 			},
-		merge ( o2, s, n, bPreserve ){
-			new Fx ( this.e, o2, s||this.fFx, n||this.time, {bPlayNow:false,method:'merge',bPreserveMergin:bPreserve})
+		merge(o2,s,n,bPreserve){
+			new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'merge',bPreserveMergin:bPreserve})
 			return this
 			},
-		push ( o2, s, n, oSettings ){
-			new Fx ( this.e, o2, s||this.fFx, n||this.time, Object.assign( {bPlayNow:false,method:'push'}, oSettings ))
+		push(o2,s,n,oSettings){
+			new Fx(this.e,o2,s||this.fFx,n||this.time,Object.assign({bPlayNow:false,method:'push'},oSettings))
 			return this
 			},
-		blink ( n ){
+		blink(n){
 			let o=this,b=!isset(n)
 			o.onend=()=>Fx[b||(n-=0.5)>0?'playInvert':'stop'](o.e)
 			o.onstart=()=>Fx[b||(n-=0.5)>0?'play':'stop'](o.e)
 			},
-		repeat ( n ){
+		repeat(n){
 			let o=this,b=!isset(n)
 			o.onend=()=>Fx[b||--n>0?'play':'stop'](o.e)
 			o.onstart=()=>Fx[b||--n>0?'playInvert':'stop'](o.e)
 			},
-		reverse (){
+		reverse(){
 			this.blink(1)
 			}
 		})
-	Object.assign( Fx, {
-		effect: 'bounce.out',
+	Object.assign(Fx,{
+		setEltAttributes:setEltAttributes,
+		effect:'bounce.out',
 		oDefaultSettings:{
-			bPlayNow: true,
-			bPreserveMergin: true,
-			bAnimationFrame: true, // plus performant !
-			fps: 60,
-			method: 'concat',
-			sColorMode: 'rgb',
-			time: 500,
-			oncomplete:()=> true,
-			onframe: nId =>{},
-			onlaunch: ()=>{}
+			bPlayNow:true,
+			bPreserveMergin:true,
+			bAnimationFrame:true, // plus performant !
+			fps:60,
+			method:'concat',
+			sColorMode:'rgb',
+			time:500,
+			oncomplete:()=>true,
+			onframe:nId=>{},
+			onlaunch:()=>{}
 			},
-		custom ( e, oFrames, fps, oSettings ){
-			var oFx = new Fx ( e, 0, 0, 0, { bPlayNow: false })
-			, aAttr = new Set
-			, nFrames = 0
-			, o1={}, o2={}
-			Object.keys(oFrames).forEach( s =>{
-				let a = oFrames[s]
-				aAttr.add( s )
-				var n = a.length
-				o1[ s ] = a[0]
-				o2[ s ] = a[n-1]
-				if( n > nFrames ) nFrames = n
+		animation:_Animation,
+		custom(e,oFrames,fps,oSettings){
+			var oFx=new Fx(e,0,0,0,{ bPlayNow:false})
+			,aAttr=new Set
+			,nFrames=0
+			,o1={},o2={}
+			Object.keys(oFrames).forEach(s=>{
+				let a=oFrames[s]
+				aAttr.add(s)
+				var n=a.length
+				o1[s]=a[0]
+				o2[s]=a[n-1]
+				if(n>nFrames) nFrames=n
 				})
-			Object.assign( oFx, {
-				aAttr: aAttr,
-				time: parseInt( fps*nFrames ),
-				fps: fps||oFx.fps,
-				nFrames: nFrames,
-				oFrames: oFrames,
-				o1: o1,
-				o2: o2
+			Object.assign(oFx,{
+				aAttr:aAttr,
+				time:parseInt(fps*nFrames),
+				fps:fps||oFx.fps,
+				nFrames:nFrames,
+				oFrames:oFrames,
+				o1:o1,
+				o2:o2
 				})
-			Fx.Methods.concat( oFx )
+			Fx.Methods.concat(oFx)
 			return oFx
 			},
-		getEffect ( m ){
+		getEffect(m){
 			if(!m)m=Fx.effect
 			if(m.constructor==String)for(var a=m.split('.'),m=Fx.Effects;m&&a.length;m=m[a.shift()]);
 			if(m&&m.constructor==Function&&m.length==4&&m(0,0,1,1)==0&&m(1,0,1,1)==1)return m
 			return Fx.Effects.linear
 			},
-		pause ( e ){
+		pause(e){
 			if( e.sPausing ){
 				Fx[ e.sPausing ]( e )
 				return e.sPausing = undefined
@@ -169,8 +198,8 @@ Fx = (function(){
 				e.sPlaying = undefined
 				}
 			},
-		playing: e => e.sPausing || e.sPlaying,
-		play ( e ){
+		playing:e=>e.sPausing||e.sPlaying,
+		play(e){
 			var oFx = e.oFxPaused||e.oFx
 			if( oFx ){
 				e.bDesc = 0
@@ -180,7 +209,7 @@ Fx = (function(){
 				}
 			return null
 			},
-		playInvert ( e ){
+		playInvert(e){
 			var oFx = e.oFxPaused
 			if( ! oFx ) oFx = Fx.Last( e )
 			if( oFx ){
@@ -191,7 +220,7 @@ Fx = (function(){
 				}
 			return null
 			},
-		stop ( e ){
+		stop(e){
 			if( e.oFx ){
 				for( var o = e.oFx ; o ; o = o.next ){
 					o.bCanceling = 1
@@ -435,40 +464,7 @@ Fx = (function(){
 					return Fx.Effects.bounce['out'](t*2-d,0,c,d)*.5+c*.5+b
 					}
 				}
-			},
-		Interval:(function(){
-			let _oFPS={}
-			,_create=nFps=>{
-				let o=_oFPS[nFps]
-				,f=()=>{
-					let o=_oFPS[nFps],a=o.a.splice(0)
-					while(a.length)a.shift()()
-					if(o.a.length==0)_remove(nFps)
-					}
-				return _oFPS[nFps]=o?o:{
-					a:[],
-					n:setInterval(f,1000/nFps)
-					}
-				}
-			,_remove=nFps=>{
-				let o=_oFPS[nFps]
-				if(!o)return false
-				clearInterval(o.n)
-				delete _oFPS[nFps]
-				return true
-				}
-			return {
-				oFPS:_oFPS,
-				create:_create,
-				push:o=>{
-					let f=()=>o.playFrame()
-					return o.bAnimationFrame&&requestAnimationFrame
-						?requestAnimationFrame(f)
-						:_create(o.fps).a.push(f)
-					},
-				remove:_remove
-				}})()
+			}
 		})
-		
 	return Fx
 	})()

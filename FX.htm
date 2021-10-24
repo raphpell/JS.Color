@@ -26,9 +26,9 @@
 
 	<div class="doc">
 		<section>
-			<p>.</p>
+			<p>Cet objet permet de créer des animations complexes d'un élément html.</p>
 		</section>
-		<section><h2>Méthodes objet</h2>
+		<section><h2>Instances</h2>
 			<section><h3> (<var>  </var>)</h3>
 				<p>.</p>
 				<dl>
@@ -37,42 +37,60 @@
 				<p>Retourne </p>
 			</section>
 		</section>
-		<section><h2>FX.Methods</h2>
-			<p>.</p>
-			<section><h3>concat (<var> oFx </var>)</h3>
-			</section>
-			<section><h3>merge (<var> oFx, bPreserve </var>)</h3>
-			</section>
-			<section><h3>push (<var> oFx </var>)</h3>
-			</section>
-		</section>
-		<section><h2>FX.Effects</h2>
-			<p>Objet contenant les fonctions calculant transitions. 
-			Elles ont toutes quatre arguments:</p>
-			<div class="arguments">
+		<section><h2>Fx</h2>
+			<section><h3>.animation (<var> oFx </var>)</h3>
+				<p>Ajoute une animation à jouer.</p>
 				<dl>
-					<dt><var>t</var> : <i>Number</i>. Temps en milliseconde (doit commencer par zéro).</dt>
-					<dt><var>b</var> : <i>Number</i>. Valeur au départ.</dt>
-					<dt><var>c</var> : <i>Number</i>. Différence entre la valeur finale et la valeur au départ.</dt>
-					<dt><var>d</var> : <i>Number</i>. Durée en milliseconde.</dt>
+					<dt><var>oFx</var> : <i>Fx</i>. Instance de Fx.</dt>
 				</dl>
-			</div>
-			<p>La valeur retourné par ces fonctions quand b=0, c=1 et d=1, est:</p>
-			<ul>
-				<li>si t=0, 0.</li><li>si t=1, 1.</li>
-			</ul>
-			<p>Il est possible d'en rajouter. Liste des effets disponibles.</p>
-			<ul>
-				<li>linear: seul effet sans choix <var>in, out, inOut</var>.</li>
-				<li>quad</li>
-				<li>quint</li>
-				<li>sine</li>
-				<li>expo</li>
-				<li>circ</li>
-				<li>elastic</li>
-				<li>back</li>
-				<li>bounce</li>
-			</ul>
+				<section>
+					<p>L'objet gèrant l'animation est privé.</p>
+					<p>
+						Par défaut, les objets Fx ont l'attribut <var>bAnimationFrame</var> = true et l'animation est gérer par la méthode native <var>requestAnimationFrame</var>.
+					</p>
+					<p>
+						Il est possible, en passant <var>bAnimationFrame</var> à false, de définir le nombre d'images par seconde pour chaque animation.<br>
+						Celà dit, les résultats sont instables selon le navigateur utilisé.
+					</p>
+				</section>
+			</section>
+			<section><h3>.Methods</h3>
+				<p>.</p>
+				<section><h4>.concat (<var> oFx </var>)</h4>
+				</section>
+				<section><h4>.merge (<var> oFx, bPreserve </var>)</h4>
+				</section>
+				<section><h4>.push (<var> oFx </var>)</h4>
+				</section>
+			</section>
+			<section><h3>.Effects</h3>
+				<p>Objet contenant les fonctions calculant transitions. 
+				Elles ont toutes quatre arguments:</p>
+				<div class="arguments">
+					<dl>
+						<dt><var>t</var> : <i>Number</i>. Temps en milliseconde (doit commencer par zéro).</dt>
+						<dt><var>b</var> : <i>Number</i>. Valeur au départ.</dt>
+						<dt><var>c</var> : <i>Number</i>. Différence entre la valeur finale et la valeur au départ.</dt>
+						<dt><var>d</var> : <i>Number</i>. Durée en milliseconde.</dt>
+					</dl>
+				</div>
+				<p>La valeur retourné par ces fonctions quand b=0, c=1 et d=1, est:</p>
+				<ul>
+					<li>si t=0, 0.</li><li>si t=1, 1.</li>
+				</ul>
+				<p>Il est possible d'en rajouter. Liste des effets disponibles.</p>
+				<ul>
+					<li>linear: seul effet sans choix <var>in, out, inOut</var>.</li>
+					<li>quad</li>
+					<li>quint</li>
+					<li>sine</li>
+					<li>expo</li>
+					<li>circ</li>
+					<li>elastic</li>
+					<li>back</li>
+					<li>bounce</li>
+				</ul>
+			</section>
 		</section>
 	</div>
 </page>
@@ -104,6 +122,22 @@ new UnitTest( eUnitTest,[
 	{ desc:"...." },
 	{ title:"Instance FX",
 		list:[
+			{ title:"countFrames",
+				desc:"L'unité temps est milliseconde mais bon... des secondes en choix.",
+				eval:"window.oFx = new Fx ( {}, {}, 'linear', 1000, { fps: 50 })",
+				assertions:[
+					"oFx.countFrames() === 51",
+					"oFx.time = 500",
+					"oFx.countFrames() === 26",
+					"oFx.fps = 40",
+					"oFx.countFrames() === 21",
+					]
+				}
+			]
+		},
+	{ title:"Objet FX",
+		desc:'',
+		list:[
 			{ title:"_calculateDeltas",
 				eval:
 `let e = { style:{}}
@@ -128,22 +162,6 @@ oFx0.o2 = { color:'#AABAC0', margin:150 }`,
 					"oFx0.oFrames.get('margin').join( ',' ) === '50,58,66,74,82,90,98,106,114,122,130,138,146'"
 					]
 				},
-			{ title:"countFrames",
-				desc:"L'unité temps est milliseconde mais bon... des secondes en choix.",
-				eval:"window.oFx = new Fx ( {}, {}, 'linear', 1000, { fps: 50 })",
-				assertions:[
-					"oFx.countFrames() === 51",
-					"oFx.time = 500",
-					"oFx.countFrames() === 26",
-					"oFx.fps = 40",
-					"oFx.countFrames() === 21",
-					]
-				}
-			]
-		},
-	{ title:"Objet FX",
-		desc:'',
-		list:[
 			{ title:".Methods",
 				eval:
 `window.sL2 = '0,2,6,10'
