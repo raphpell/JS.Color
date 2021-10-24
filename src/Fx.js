@@ -314,23 +314,20 @@ Fx = (function(){
 			return f
 			})(),
 		Methods:{
-			concat ( oFx ){
+			concat(oFx){
 				let e=oFx.e, o=e.oFx
 				for(;o&&o.next;o=o.next)
 					if(o==oFx) throw Error ( "FX.concat: Instance already in element FX - cycling error possible." )
-				if(o){
-					o.next=oFx
-					oFx.previous=o
-					} else e.oFx=oFx
+				o?(o.next=oFx).previous=o:e.oFx=oFx
 				return e.oFx
 				},
-			merge ( oFx, bPreserve ){
+			merge(oFx,bPreserve){
 				let e=oFx.e, o=Fx.Last(e)
 				if(o){
 					o.aAttr=o.aAttr||new Set
-					oFx.aAttr.forEach( s =>{
+					oFx.aAttr.forEach(s=>{
 						o.aAttr.add(s)
-						if( bPreserve ? !o.oFrames.get(s) : true )
+						if(bPreserve?!o.oFrames.get(s):true)
 							o.oFrames.set(s,oFx.oFrames.get(s))
 						})
 					o.nFrames=o.nFrames>oFx.nFrames?o.nFrames:oFx.nFrames
@@ -345,7 +342,7 @@ Fx = (function(){
 					} else e.oFx=oFx
 				return e.oFx
 				},
-			push ( oFx ){
+			push(oFx){
 				let e=oFx.e, o=Fx.Last(e)
 				if(o){
 					let nMax=o.nFrames, nLength
