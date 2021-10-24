@@ -61,7 +61,63 @@
 			</dl>
 		</section>
 		<section><h2>Instances</h2>
-			<section><h3> (<var>  </var>)</h3>
+			<section><h3> playFrame (<var> nId , b </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+			<section><h3> back (<var> s,n </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+			<section><h3> blink (<var> n </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+			<section><h3> concat (<var> o2,s,n </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+			<section><h3> custom (<var> oFrames,nFps,oSettings </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+			<section><h3> merge (<var> o2,s,n,bPreserve </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+			<section><h3> push (<var> o2,s,n,oSettings </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+			<section><h3> repeat (<var> n </var>)</h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i>String</i> - .</dt>
+				</dl>
+				<p>Retourne </p>
+			</section>
+			<section><h3> reverse (<var></var>)</h3>
 				<p>.</p>
 				<dl>
 					<dt><var></var> <i>String</i> - .</dt>
@@ -70,7 +126,10 @@
 			</section>
 		</section>
 		<section><h2>Fx</h2>
-			<section><h3>.animation (<var> oFx </var>)</h3>
+			<section><h3>oDefaultSettings : Object</h3>
+				<p>.</p>
+			</section>
+			<section><h3>animation (<var> oFx </var>)</h3>
 				<p>Ajoute une animation à jouer.</p>
 				<dl>
 					<dt><var>oFx</var> : <i>Fx</i>. Instance de Fx.</dt>
@@ -86,16 +145,49 @@
 					</p>
 				</section>
 			</section>
-			<section><h3>.Methods</h3>
+			<section><h3>custom (<var> e,oFrames,fps,oSettings </var>)</h3>
 				<p>.</p>
-				<section><h4>.concat (<var> oFx </var>)</h4>
+			</section>
+			<section><h3>getEffect (<var> m </var>)</h3>
+				<p>.</p>
+			</section>
+			<section><h3>pause (<var> e </var>)</h3>
+				<p>.</p>
+			</section>
+			<section><h3>playing (<var> e </var>)</h3>
+				<p>.</p>
+			</section>
+			<section><h3>play (<var> e </var>)</h3>
+				<p>.</p>
+			</section>
+			<section><h3>playInvert (<var> e </var>)</h3>
+				<p>.</p>
+			</section>
+			<section><h3>stop (<var> e </var>)</h3>
+				<p>.</p>
+			</section>
+			<section><h3>_createFrames (<var> oFx </var>)</h3>
+				<p>.</p>
+			</section>
+			<section><h3>_calculateDeltas (<var> oFx </var>)</h3>
+				<p>.</p>
+			</section>
+			<section><h3>Last (<var> e </var>)</h3>
+				<p>.</p>
+				<section><h4>get_o1 (<var> oFx </var>)</h4>
 				</section>
-				<section><h4>.merge (<var> oFx, bPreserve </var>)</h4>
-				</section>
-				<section><h4>.push (<var> oFx </var>)</h4>
+				<section><h4>get_o2 (<var> oFx </var>)</h4>
 				</section>
 			</section>
-			<section><h3>.Effects</h3>
+			<section><h3>.Methods</h3>
+				<section><h4>.concat (<var> oFx </var>)</h4>
+				</section>
+				<section><h4>merge (<var> oFx, bPreserve </var>)</h4>
+				</section>
+				<section><h4>push (<var> oFx </var>)</h4>
+				</section>
+			</section>
+			<section><h3>Effects</h3>
 				<p>Objet contenant les fonctions calculant transitions. 
 				Elles ont toutes quatre arguments:</p>
 				<div class="arguments">

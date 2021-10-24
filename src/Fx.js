@@ -62,7 +62,6 @@ Fx=(function(){
 			if(o.bPlayNow)Fx.play(e)
 			}
 		}
-
 	Object.assign(Fx.prototype,{
 		aAttr:null,
 		nId:null,
@@ -115,6 +114,11 @@ Fx=(function(){
 			this.aAttr.forEach(s=>{o2[s]=o1[s]})
 			return new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'concat'})
 			},
+		blink(n){
+			let o=this,b=notIsSet(n)
+			o.onend=()=>Fx[b||(n-=0.5)>0?'playInvert':'stop'](o.e)
+			o.onstart=()=>Fx[b||(n-=0.5)>0?'play':'stop'](o.e)
+			},
 		concat(o2,s,n){
 			return new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'concat'})
 			},
@@ -128,11 +132,6 @@ Fx=(function(){
 		push(o2,s,n,oSettings){
 			new Fx(this.e,o2,s||this.fFx,n||this.time,Object.assign({bPlayNow:false,method:'push'},oSettings))
 			return this
-			},
-		blink(n){
-			let o=this,b=notIsSet(n)
-			o.onend=()=>Fx[b||(n-=0.5)>0?'playInvert':'stop'](o.e)
-			o.onstart=()=>Fx[b||(n-=0.5)>0?'play':'stop'](o.e)
 			},
 		repeat(n){
 			let o=this,b=notIsSet(n)
