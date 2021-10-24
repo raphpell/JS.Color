@@ -27,6 +27,38 @@
 	<div class="doc">
 		<section>
 			<p>Cet objet permet de créer des animations complexes d'un élément html.</p>
+			<p>Syntaxe: <code>var oFx = new Fx ( eHtmlElement [, o2 [, mEffect [, nTime [, oSettings ]]]])</code></p>
+			<dl>
+				<dt><var>e</var> : <i>HTMLElement</i></dt>
+				<dd>Element html.</dd>
+				<dt><var>o2</var> : <i>Object</i>, <i><small>Optionnel.</small></i> </dt>
+				<dd>Styles css à atteindre. Par extension les propriétés <code>scroll</code> sont prises en charge. Exemples :
+					<ul>
+						<li><code>{ 'padding-left':12, color:'#FC0' }</code></li>
+						<li><code>{ scrollLeft:600, scrollTop:600 }</code></li>
+					</ul>
+				</dd>
+				<dt><var>mEffect</var> : <i>mixte</i>, <i><small>Optionnel.</small></i> <small>Valeur par défaut : </small><b><code>Fx.effect</code></b></dt>
+				<dd>
+					Effet utilisé. Fonction, chaîne ou tableau. Valeurs chaînes prédisponibles :
+					<i>linear | (( quad | quint| sine | expo | circ | elastic | back | bounce ).( in | out | inOut ))</i>
+					<p>Exemples :</p>
+					<ul>
+						<li><code>'linear'</code></li>
+						<li><code>'circ.inOut'</code></li>
+					</ul>
+					<p>Les fonctions créées doivent respecter les conditions citées dans <a href="#_Fx.Effects">Fx.Effects</a>.</p>
+					<p>Si cet argument est un tableau il doit contenir :</p>
+					<ul>
+						<li>Une fonction ou une chaîne contenant l'effet utilisé (cf. ci-dessus)</li>
+						<li>Le temps de l'effet. Cette valeur sera privilégiée à l'argument <var>nTime</var> (cf. ci-dessous).</li>
+					</ul>
+				</dd>
+				<dt> <var>nTime</var> : <i>Number</i>, <i><small>Optionnel.</small></i><small>Valeur par défaut : </small><code>Fx.time</code></dt>
+				<dd>Temps de l'effet en millisecondes.</dd>
+				<dt> <var>oSettings</var> : <i>Object</i>, <i><small>Optionnel.</small></i> <small>Valeur par défaut : </small><code>Fx.oDefaultSettings</code></dt>
+				<dd>Paramètres supplémentaires de l'effet (Cf. <a href="#_oDefaultSettings">Fx.oDefaultSettings</a>)</dd>
+			</dl>
 		</section>
 		<section><h2>Instances</h2>
 			<section><h3> (<var>  </var>)</h3>
@@ -156,10 +188,14 @@ oFx0.o2 = { color:'#AABAC0', margin:150 }`,
 					"! oFx0.oFrames.get('color')",
 					"! oFx0.oFrames.get('margin')",
 					"Fx._createFrames && ! Fx._createFrames( oFx0 )",
+					"oFx0.fps == 60",
+					"oFx0.time!=200 && oFx0.time==192",
+					"oFx0.oFrames.get('color')[0]===oFx0.o1.color.toHEX().toString('#')",
+					"oFx0.oFrames.get('color')[oFx0.nFrames-1]===oFx0.o2.color.toHEX().toString('#')",
 					"oFx0.oFrames.get('color').length === oFx0.nFrames",
-					"oFx0.oFrames.get('color').join( ',' ) === '#A0B0CA,#A0B0C9,#A1B1C8,#A2B2C7,#A3B3C6,#A4B4C6,#A4B4C5,#A5B5C4,#A6B6C3,#A7B7C2,#A8B8C2,#A8B8C1,#A9B9C0'",
+					"oFx0.oFrames.get('color').join( ',' ) === '#A0B0CA,#A0B0C9,#A1B1C8,#A2B2C7,#A3B3C6,#A4B4C5,#A5B5C5,#A5B5C4,#A6B6C3,#A7B7C2,#A8B8C1,#A9B9C0,#AABAC0'",
 					"oFx0.oFrames.get('margin').length === oFx0.nFrames",
-					"oFx0.oFrames.get('margin').join( ',' ) === '50,58,66,74,82,90,98,106,114,122,130,138,146'"
+					"oFx0.oFrames.get('margin').join( ',' ) === '50,58,66,75,83,91,100,108,116,125,133,141,150'"
 					]
 				},
 			{ title:".Methods",

@@ -36,7 +36,7 @@ Fx=(function(){
 				}
 			})()
 
-	Fx=function(e,o2,mEffect,nTime,oSettings){
+	,Fx=function(e,o2,mEffect=Fx.effect,nTime=200,oSettings){
 		let o=this
 		Object.assign(o,Fx.oDefaultSettings,oSettings)
 		if(o.bPlayNow)Fx.stop(e)
@@ -55,7 +55,7 @@ Fx=(function(){
 			o1:Fx.Last[(o.method=='merge'?'get_o1':'get_o2')](e),
 			oDeltas:new Map
 			})
-	//	o.time = (o.nFrames-1)*o.nFrameTime // important ? sûrement
+		o.time = (o.nFrames-1)*o.nFrameTime //!important
 		if(o2){
 			Fx._createFrames(o)
 			Fx.Methods[o.method](o,o.bPreserveMergin)
@@ -185,7 +185,6 @@ Fx=(function(){
 			return oFx
 			},
 		getEffect(m){
-			if(!m)m=Fx.effect
 			if(m.constructor==String)for(var a=m.split('.'),m=Fx.Effects;m&&a.length;m=m[a.shift()]);
 			if(m&&m.constructor==Function&&m.length==4&&m(0,0,1,1)==0&&m(1,0,1,1)==1)return m
 			return Fx.Effects.linear
