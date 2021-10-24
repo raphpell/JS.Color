@@ -315,51 +315,51 @@ Fx = (function(){
 			})(),
 		Methods:{
 			concat ( oFx ){
-				let e = oFx.e, o = e.oFx
-				for(; o && o.next ; o = o.next )
-					if( o == oFx ) throw Error ( "FX.concat: Instance already in element FX - cycling error possible." )
-				if( o ){
-					o.next = oFx
-					oFx.previous = o
-					} else e.oFx = oFx
+				let e=oFx.e, o=e.oFx
+				for(;o&&o.next;o=o.next)
+					if(o==oFx) throw Error ( "FX.concat: Instance already in element FX - cycling error possible." )
+				if(o){
+					o.next=oFx
+					oFx.previous=o
+					} else e.oFx=oFx
 				return e.oFx
 				},
 			merge ( oFx, bPreserve ){
 				let e=oFx.e, o=Fx.Last(e)
 				if(o){
-					o.aAttr = o.aAttr||new Set
+					o.aAttr=o.aAttr||new Set
 					oFx.aAttr.forEach( s =>{
 						o.aAttr.add(s)
 						if( bPreserve ? !o.oFrames.get(s) : true )
 							o.oFrames.set(s,oFx.oFrames.get(s))
 						})
-					o.nFrames = o.nFrames > oFx.nFrames ? o.nFrames : oFx.nFrames
-					if( bPreserve ){
-						o.o1 = Object.assign( {}, oFx.o1, o.o1 )
-						o.o2 = Object.assign( {}, oFx.o2, o.o2 )
+					o.nFrames=o.nFrames>oFx.nFrames?o.nFrames:oFx.nFrames
+					if(bPreserve){
+						o.o1=Object.assign({},oFx.o1,o.o1)
+						o.o2=Object.assign({},oFx.o2,o.o2)
 						}
 					else{
 						o.o1=Object.assign({},o.o1,oFx.o1)
 						o.o2=Object.assign({},o.o2,oFx.o2)
 						}
-					} else e.oFx = oFx
+					} else e.oFx=oFx
 				return e.oFx
 				},
 			push ( oFx ){
-				let e = oFx.e, o = Fx.Last( e )
-				if( o ){
-					let nMax = o.nFrames, nLength
-					o.aAttr = o.aAttr || new Set
-					oFx.aAttr.forEach( s =>{
-						o.aAttr.add( s )
-						o.oFrames.set(s, [ ...(o.oFrames.get(s)||[]), ...oFx.oFrames.get(s)])
-						nLength = o.oFrames.get(s).length
-						if( nLength > nMax ) nMax = nLength
+				let e=oFx.e, o=Fx.Last(e)
+				if(o){
+					let nMax=o.nFrames, nLength
+					o.aAttr=o.aAttr||new Set
+					oFx.aAttr.forEach(s=>{
+						o.aAttr.add(s)
+						o.oFrames.set(s,[...(o.oFrames.get(s)||[]),...oFx.oFrames.get(s)])
+						nLength=o.oFrames.get(s).length
+						if(nLength>nMax) nMax=nLength
 						})
-					o.nFrames = nMax
+					o.nFrames=nMax
 					o.o1=Object.assign({},oFx.o1,o.o1)
 					o.o2=Object.assign({},o.o2,oFx.o2)
-					} else e.oFx = oFx
+					} else e.oFx=oFx
 				return e.oFx
 				}
 			},
