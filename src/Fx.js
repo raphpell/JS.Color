@@ -4,7 +4,7 @@ if(!Style) throw Error("Fx :: Class Style required.")
 
 Fx=(function(){
 	const setEltAttributes=new Set(['cols','rows','scrollLeft','scrollTop'])
-	,isset=m=>m!==undefined
+	,notIsSet=m=>m===undefined
 	,_Animation =(function(){
 		let _oFPS=new Map
 		,_purge=nFps=>{
@@ -66,7 +66,7 @@ Fx=(function(){
 	Object.assign(Fx.prototype,{
 		aAttr:null,
 		nId:null,
-		countFrames(){ return parseInt( this.fps*this.time/1000 )+1 },
+		countFrames(){return parseInt(this.fps*this.time/1000)+1},
 		playFrame:function(nId,b){
 			let o=this
 			, e=o.e
@@ -84,8 +84,10 @@ Fx=(function(){
 			if(e.bDesc?nId>=0:nId<=o.nFrames){
 				o.aAttr.forEach( sAttr=>{
 					let aFrame=o.oFrames.get(sAttr)
-					if(Fx.setEltAttributes.has(sAttr))
-						e[sAttr]=parseInt(aFrame[nId])||e[sAttr]
+					if(Fx.setEltAttributes.has(sAttr)){
+						e[sAttr]=aFrame[nId]
+						values+=';'//passe if(values)
+						}
 					else values+=Style.validate(sAttr,aFrame[nId])
 					})
 				}
@@ -128,12 +130,12 @@ Fx=(function(){
 			return this
 			},
 		blink(n){
-			let o=this,b=!isset(n)
+			let o=this,b=notIsSet(n)
 			o.onend=()=>Fx[b||(n-=0.5)>0?'playInvert':'stop'](o.e)
 			o.onstart=()=>Fx[b||(n-=0.5)>0?'play':'stop'](o.e)
 			},
 		repeat(n){
-			let o=this,b=!isset(n)
+			let o=this,b=notIsSet(n)
 			o.onend=()=>Fx[b||--n>0?'play':'stop'](o.e)
 			o.onstart=()=>Fx[b||--n>0?'playInvert':'stop'](o.e)
 			},
@@ -233,7 +235,7 @@ Fx=(function(){
 			let o, i, ni, oDelta
 			const oFun = {
 				Color:(function(){
-					let f = ( s, s1 )=> parseInt( o.fFx( i*o.nFrameTime, o.o1[s][s1], oDelta[s1], o.time ) || 0 )
+					let f =(s,s1)=>parseInt(o.fFx(i*o.nFrameTime,o.o1[s][s1],oDelta[s1],o.time)||0)
 					return s=>{
 						let aColor =[]
 						for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
@@ -248,13 +250,13 @@ Fx=(function(){
 							a[k]=o.o1[s][k]
 							continue
 							}
-						a[k] = parseInt( o.fFx( i*o.nFrameTime, parseInt(o.o1[s][k]), oDelta[k], o.time ) || 0 )
+						a[k] = parseInt(o.fFx(i*o.nFrameTime,parseInt(o.o1[s][k]),oDelta[k],o.time)||0)
 						if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
 						}
 					o.oFrames.get(s).push( a.join(','))
 					},
 				default:s=>{
-					o.oFrames.get(s).push( o.fFx( i*o.nFrameTime, o.o1[s], oDelta, o.time ) || 0 )
+					o.oFrames.get(s).push(parseInt(o.fFx(i*o.nFrameTime,o.o1[s],oDelta,o.time))||0)
 					}
 				}
 			return oFx =>{
@@ -283,13 +285,13 @@ Fx=(function(){
 				Color:()=>{
 					let oDelta=o.oDeltas.set(s,{}).get(s)
 					, f=s1=>oDelta[s1]=o2[s][s1]-o1[s][s1]
-					if(!isset(o1[s])) o1[s]=Style.get(o.e,s)
+					if(notIsSet(o1[s])) o1[s]=Style.get(o.e,s)
 					o1[s]=Color( o1[s])['to'+ sMode ]()
 					o2[s]=Color( o2[s])['to'+ sMode ]()
 					for(let i=0; i<3; i++ ) f(o.sColorMode[i])
 					},
 				Frameset:()=>{
-					if(!isset(o1[s])) o1[s]=o.e[s]
+					if(notIsSet(o1[s])) o1[s]=o.e[s]
 					let a=[], a1=o1[s].split(','), a2=o2[s].split(',')
 					for(let i=0, ni=a1.length, n1 ; i<ni; i++ ){
 						if( a1[i].indexOf('*')>-1){
@@ -302,13 +304,13 @@ Fx=(function(){
 					o.oDeltas.set(s,a)
 					},
 				Scroll:()=>{
-					if(!isset(o1[s])) o1[s]=o.e[s]
+					if(notIsSet(o1[s])) o1[s]=o.e[s]
 					o.oDeltas.set(s,o2[s]-o1[s])
 					},
 				style:()=>{
 					let m1
-					if(!isset(o1[s])) m1=Style.get(o.e,s)
-					if(isset(m1)) o1[s]=eval( isNaN(m1)? parseInt(m1): m1 ) || 0
+					if(notIsSet(o1[s])) m1=Style.get(o.e,s)
+					if(m1) o1[s]=eval( isNaN(m1)? parseInt(m1): m1 ) || 0
 					o.oDeltas.set(s,o2[s]-(o1[s]||0))
 					}
 				}
