@@ -6,7 +6,7 @@ Fx = (function(){
 	const oSet = new Set(['cols','rows'])
 	, isset = m => m !== undefined
 
-	let Fx =function( e, o2, mEffect, nTime, oSettings ){
+	Fx =function( e, o2, mEffect, nTime, oSettings ){
 		let o = this
 		Object.assign( o, Fx.oDefaultSettings, oSettings )
 		if( o.bPlayNow ) Fx.stop( e )
@@ -37,83 +37,78 @@ Fx = (function(){
 		aAttr: null,
 		nId: null,
 		countFrames (){ return parseInt( this.fps*this.time/1000 )+1 },
-		playFrame:(function(){
-			
-			return function ( nId, b ){
-				var o = this
-				, e = o.e
-				, values=''
-				if( o.bCanceling ) return o.bCanceling = undefined
-				if( ! b && ! e.sPlaying ){
-					e.oFxPaused = o
-					return false
-					}
-				if( o.nId == null ){
-					o.nId = e.bDesc ? o.nFrames-1 : -1
-					if( o.onlaunch ) o.onlaunch()
-					}
-				nId = nId === undefined ? ( e.bDesc ? --o.nId : ++o.nId ) : nId
-
-				if( e.bDesc ? nId>=0 : nId<=o.nFrames ){
-					o.aAttr.forEach( sAttr =>{
-						let aFrame = o.oFrames.get(sAttr)
-						if( oSet.has( sAttr )) 
-							e[sAttr] = aFrame[nId] || e[sAttr] 
-						else if( sAttr.indexOf('scroll')==0 )
-							e[sAttr] = parseInt( aFrame[nId]) || e[sAttr]
-						else values += Style.validate( sAttr, aFrame[nId])
-						})
-					}
-				o.onframe( nId, b )
-				if( values ){
-					if( Style ) Style.set( e, values )
-					if( ! b ) Fx.Interval.push( o.fps, ()=>o.playFrame() )
-				}else{
-					o.nId = null
-					if( ! o.oncomplete()) return false
-					if( b ) return o.next ? o.next.playFrame( nId-o.nFrames, true ) : null
-					var oNext = e.bDesc ? o.previous : o.next
-					if( oNext ) Fx.Interval.push( oNext.fps, ()=>oNext.playFrame() )
-						else{
-							if( o.onend && nId >= o.nFrames ) return o.onend()
-							if( o.onstart && nId < 0 ) return o.onstart()
-							Fx.stop( e )
-							}
-					}
-				return true
+		playFrame:function ( nId, b ){
+			let o = this
+			, e = o.e
+			, values=''
+			if( o.bCanceling ) return o.bCanceling = undefined
+			if( ! b && ! e.sPlaying ){
+				e.oFxPaused = o
+				return false
 				}
-			})(),
+			if( o.nId == null ){
+				o.nId = e.bDesc ? o.nFrames-1 : -1
+				if( o.onlaunch ) o.onlaunch()
+				}
+			nId = nId === undefined ? ( e.bDesc ? --o.nId : ++o.nId ) : nId
+
+			if( e.bDesc ? nId>=0 : nId<=o.nFrames ){
+				o.aAttr.forEach( sAttr =>{
+					let aFrame = o.oFrames.get(sAttr)
+					if( oSet.has( sAttr )) 
+						e[sAttr] = aFrame[nId] || e[sAttr] 
+					else if( sAttr.indexOf('scroll')==0 )
+						e[sAttr] = parseInt( aFrame[nId]) || e[sAttr]
+					else values += Style.validate( sAttr, aFrame[nId])
+					})
+				}
+			o.onframe( nId, b )
+			if( values ){
+				if( Style ) Style.set( e, values )
+				if( ! b ) Fx.Interval.push( o )
+			}else{
+				o.nId = null
+				if( ! o.oncomplete()) return false
+				if( b ) return o.next ? o.next.playFrame( nId-o.nFrames, true ) : null
+				let oNext = e.bDesc ? o.previous : o.next
+				if( oNext ) Fx.Interval.push( oNext )
+					else{
+						if( o.onend && nId >= o.nFrames ) return o.onend()
+						if( o.onstart && nId < 0 ) return o.onstart()
+						Fx.stop( e )
+						}
+				}
+			return true
+			},
 
 		back ( s, n ){
-			var o2 = {}
-		//	each( this.oFrames, function(a,s){o2[s]=a[0]}, [Array])
-			let o1 = this.o1
-			this.aAttr.forEach( s=>{o2[s]=o1[s]})
-			return new Fx ( this.e, o2, s||this.fFx, n||this.time, { bPlayNow: false, method:'concat' })
+			let o2={},o1=this.o1
+			this.aAttr.forEach(s=>{o2[s]=o1[s]})
+			return new Fx ( this.e, o2, s||this.fFx, n||this.time, {bPlayNow:false,method:'concat'})
 			},
 		concat ( o2, s, n ){
-			return new Fx ( this.e, o2, s||this.fFx, n||this.time, { bPlayNow: false, method:'concat' })
+			return new Fx ( this.e, o2, s||this.fFx, n||this.time, {bPlayNow:false,method:'concat'})
 			},
 		custom ( oFrames, nFps, oSettings ){
 			return Fx.custom( this.e, oFrames, nFps||this.fps, oSettings )
 			},
 		merge ( o2, s, n, bPreserve ){
-			new Fx ( this.e, o2, s||this.fFx, n||this.time, { bPlayNow: false, method:'merge', bPreserveMergin:bPreserve })
+			new Fx ( this.e, o2, s||this.fFx, n||this.time, {bPlayNow:false,method:'merge',bPreserveMergin:bPreserve})
 			return this
 			},
 		push ( o2, s, n, oSettings ){
-			new Fx ( this.e, o2, s||this.fFx, n||this.time, Object.assign( { bPlayNow: false, method:'push' }, oSettings ))
+			new Fx ( this.e, o2, s||this.fFx, n||this.time, Object.assign( {bPlayNow:false,method:'push'}, oSettings ))
 			return this
 			},
 		blink ( n ){
-			var o = this, b = n === undefined
-			o.onend = ()=> Fx[ b || (n-=0.5)>0 ? 'playInvert' : 'stop' ]( o.e )
-			o.onstart = ()=> Fx[ b || (n-=0.5)>0 ? 'play' : 'stop' ]( o.e )
+			let o=this,b=!isset(n)
+			o.onend=()=>Fx[b||(n-=0.5)>0?'playInvert':'stop'](o.e)
+			o.onstart=()=>Fx[b||(n-=0.5)>0?'play':'stop'](o.e)
 			},
 		repeat ( n ){
-			var o = this, b = ! isset( n )
-			o.onend = ()=> Fx[ b || --n > 0 ? 'play' : 'stop' ]( o.e )
-			o.onstart = ()=> Fx[ b || --n > 0 ? 'playInvert' : 'stop' ]( o.e )
+			let o=this,b=!isset(n)
+			o.onend=()=>Fx[b||--n>0?'play':'stop'](o.e)
+			o.onstart=()=>Fx[b||--n>0?'playInvert':'stop'](o.e)
 			},
 		reverse (){
 			this.blink(1)
@@ -124,7 +119,8 @@ Fx = (function(){
 		oDefaultSettings:{
 			bPlayNow: true,
 			bPreserveMergin: true,
-			fps: 50,
+			bAnimationFrame: true, // plus performant !
+			fps: 60,
 			method: 'concat',
 			sColorMode: 'rgb',
 			time: 500,
@@ -247,13 +243,46 @@ Fx = (function(){
 			})(),
 		_calculateDeltas:(function(){
 			let o, o1, o2, sMode, s
-			const getType =function(s){
+			, getType =function(s){
 				if(s.indexOf(' ')==0) return 'composed'
 				if(s.indexOf('scroll')==0) return 'Scroll'
 				if(s.indexOf('rows')==0||s.indexOf('cols')==0) return 'Frameset'
 				return /color/i.test(s)?'Color':'style'
 				}
-
+			, oFun = {
+				composed:()=>{/* box-shadow ? color+position+dim */},
+				Color:()=>{
+					let oDelta=o.oDeltas.set(s,{}).get(s)
+					, f=s1=>oDelta[s1]=o2[s][s1]-o1[s][s1]
+					if(!isset(o1[s])) o1[s]=Style.get(o.e,s)
+					o1[s]=Color( o1[s])['to'+ sMode ]()
+					o2[s]=Color( o2[s])['to'+ sMode ]()
+					for(let i=0; i<3; i++ ) f(o.sColorMode[i])
+					},
+				Frameset:()=>{
+					if(!isset(o1[s])) o1[s]=o.e[s]
+					let a=[], a1=o1[s].split(','), a2=o2[s].split(',')
+					for(let i=0, ni=a1.length, n1 ; i<ni; i++ ){
+						if( a1[i].indexOf('*')>-1){
+							a[i]=a1[i]
+							continue
+							}
+						a[i] = parseInt(a2[i])-parseInt(a1[i])
+						}
+					o1[s] = a1
+					o.oDeltas.set(s,a)
+					},
+				Scroll:()=>{
+					if(!isset(o1[s])) o1[s]=o.e[s]
+					o.oDeltas.set(s,o2[s]-o1[s])
+					},
+				style:()=>{
+					let m1
+					if(!isset(o1[s])) m1=Style.get(o.e,s)
+					if(isset(m1)) o1[s]=eval( isNaN(m1)? parseInt(m1): m1 ) || 0
+					o.oDeltas.set(s,o2[s]-(o1[s]||0))
+					}
+				}
 			return oFx =>{
 				o=oFx
 				o1=o.o1
@@ -334,41 +363,41 @@ Fx = (function(){
 				return e.oFx
 				}
 			},
-		Effects :{
+		Effects:{
 			linear :(t,b,c,d)=> c*t/d+b,
 			quad:{
-				'in':(t,b,c,d)=> c*(t/=d)*Math.pow(t,1)+b,
-				'out':(t,b,c,d)=> -c*(t/=d)*(t-2)+b,
-				'inOut':(t,b,c,d)=> (t/=d/2)<1 ? c/2*Math.pow(t,2)+b : -c/2*((--t)*(t-2)-1)+b
+				'in':(t,b,c,d)=>c*(t/=d)*Math.pow(t,1)+b,
+				'out':(t,b,c,d)=>-c*(t/=d)*(t-2)+b,
+				'inOut':(t,b,c,d)=>(t/=d/2)<1?c/2*Math.pow(t,2)+b:-c/2*((--t)*(t-2)-1)+b
 				},
 			quint:{
-				'in':(t,b,c,d)=> c*(t/=d)*Math.pow(t,4)+b,
-				'out':(t,b,c,d)=> c*((t=t/d-1)*Math.pow(t,4)+1)+b,
-				'inOut':(t,b,c,d)=> (t/=d/2)<1 ? c/2*Math.pow(t,5)+b : c/2*((t-=2)*Math.pow(t,4)+2)+b
+				'in':(t,b,c,d)=>c*(t/=d)*Math.pow(t,4)+b,
+				'out':(t,b,c,d)=>c*((t=t/d-1)*Math.pow(t,4)+1)+b,
+				'inOut':(t,b,c,d)=>(t/=d/2)<1?c/2*Math.pow(t,5)+b:c/2*((t-=2)*Math.pow(t,4)+2)+b
 				},
 			sine:{
-				'in':(t,b,c,d)=> c*(1-Math.cos(t/d*(Math.PI/2)).toFixed(4))+b,
-				'out':(t,b,c,d)=> c*Math.sin(t/d*(Math.PI/2))+b,
-				'inOut':(t,b,c,d)=> -c/2*(Math.cos(Math.PI*t/d)-1)+b
+				'in':(t,b,c,d)=>c*(1-Math.cos(t/d*(Math.PI/2)).toFixed(4))+b,
+				'out':(t,b,c,d)=>c*Math.sin(t/d*(Math.PI/2))+b,
+				'inOut':(t,b,c,d)=>-c/2*(Math.cos(Math.PI*t/d)-1)+b
 				},
 			expo:{
-				'in':(t,b,c,d)=> t==0 ? b : c*Math.pow(2,10*(t/d-1))+b,
-				'out':(t,b,c,d)=> t==d ? b+c : c*(-Math.pow(2,-10*t/d)+1)+b,
-				'inOut':(t,b,c,d)=> t==0 ? b : ( t==d ? b+c : ( (t/=d/2)<1 ? c/2*Math.pow(2,10*(t-1))+b : c/2*(-Math.pow(2,-10*--t)+2)+b ))
+				'in':(t,b,c,d)=>t==0?b:c*Math.pow(2,10*(t/d-1))+b,
+				'out':(t,b,c,d)=>t==d?b+c:c*(-Math.pow(2,-10*t/d)+1)+b,
+				'inOut':(t,b,c,d)=>t==0?b:(t==d?b+c:((t/=d/2)<1?c/2*Math.pow(2,10*(t-1))+b:c/2*(-Math.pow(2,-10*--t)+2)+b ))
 				},
 			circ:{
-				'in':(t,b,c,d)=> -c*(Math.sqrt(1-(t/=d)*t)-1)+b,
-				'out':(t,b,c,d)=> c*Math.sqrt(1-(t=t/d-1)*t)+b,
-				'inOut':(t,b,c,d)=> (t/=d/2)<1 ? -c/2*(Math.sqrt(1-t*t)-1)+b : c/2*(Math.sqrt(1-(t-=2)*t)+1)+b
+				'in':(t,b,c,d)=>-c*(Math.sqrt(1-(t/=d)*t)-1)+b,
+				'out':(t,b,c,d)=>c*Math.sqrt(1-(t=t/d-1)*t)+b,
+				'inOut':(t,b,c,d)=>(t/=d/2)<1?-c/2*(Math.sqrt(1-t*t)-1)+b:c/2*(Math.sqrt(1-(t-=2)*t)+1)+b
 				},
 			elastic:{
 				'in':(t,b,c,d)=>{
-					var ts=(t/=d)*t, tc=ts*t
-					return b+c*(56*tc*ts + -105*ts*ts + 60*tc + -10*ts)
+					var ts=(t/=d)*t,tc=ts*t
+					return b+c*(56*tc*ts+-105*ts*ts+60*tc+-10*ts)
 					},
 				'out':(t,b,c,d)=>{
-					var ts=(t/=d)*t, tc=ts*t
-					return b+c*(56*tc*ts + -175*ts*ts + 200*tc + -100*ts + 20*t)
+					var ts=(t/=d)*t,tc=ts*t
+					return b+c*(56*tc*ts+-175*ts*ts+200*tc+-100*ts+20*t)
 					},
 				'inOut':(t,b,c,d)=>{
 					var a,p,s
@@ -383,12 +412,12 @@ Fx = (function(){
 				},
 			back:{
 				'in':(t,b,c,d)=>{
-					var ts=(t/=d)*t, tc=ts*t
-					return b+c*(4*tc + -3*ts)
+					var ts=(t/=d)*t,tc=ts*t
+					return b+c*(4*tc+-3*ts)
 					},
 				'out':(t,b,c,d)=>{
-					var ts=(t/=d)*t, tc=ts*t
-					return b+c*(4*tc + -9*ts + 6*t)
+					var ts=(t/=d)*t,tc=ts*t
+					return b+c*(4*tc+-9*ts+6*t)
 					},
 				'inOut':(t,b,c,d)=>{
 					var s=1.70
@@ -410,32 +439,37 @@ Fx = (function(){
 					}
 				}
 			},
-		Interval :(function(){
+		Interval:(function(){
 			let _oFPS={}
-			, _create = nFps =>{
+			,_create=nFps=>{
 				let o=_oFPS[nFps]
-				, f =()=>{
-					let o=_oFPS[nFps], a=o.a.splice(0)
-					while(a.length) a.shift()()
+				,f=()=>{
+					let o=_oFPS[nFps],a=o.a.splice(0)
+					while(a.length)a.shift()()
 					if(o.a.length==0)_remove(nFps)
 					}
-				return _oFPS[nFps] = o ? o : {
+				return _oFPS[nFps]=o?o:{
 					a:[],
-					n: setInterval( f, parseInt(1000/nFps))
+					n:setInterval(f,1000/nFps)
 					}
 				}
-			, _remove = nFps =>{
-					let o=_oFPS[nFps]
-					if(!o)return false
-					clearInterval(o.n)
-					delete _oFPS[nFps]
-					return true
-					}
+			,_remove=nFps=>{
+				let o=_oFPS[nFps]
+				if(!o)return false
+				clearInterval(o.n)
+				delete _oFPS[nFps]
+				return true
+				}
 			return {
-				oFPS: _oFPS,
-				create: _create,
-				push :( nFps, f )=> _create(nFps).a.push(f),
-				remove: _remove
+				oFPS:_oFPS,
+				create:_create,
+				push:o=>{
+					let f=()=>o.playFrame()
+					return o.bAnimationFrame&&requestAnimationFrame
+						?requestAnimationFrame(f)
+						:_create(o.fps).a.push(f)
+					},
+				remove:_remove
 				}})()
 		})
 		
