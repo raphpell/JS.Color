@@ -27,6 +27,7 @@
 	<div class="doc">
 		<section>
 			<p>Cet objet permet de créer des animations complexes d'un élément html.</p>
+			<p>Ces animations peuvent être concaténer, fusionner ou 'pousser à la suite'...ou_ altérer.</p>
 			<p>Syntaxe: <code>var oFx = new Fx ( eHtmlElement [, o2 [, mEffect [, nTime [, oSettings ]]]])</code></p>
 			<dl>
 				<dt><var>e</var> : <i>HTMLElement</i></dt>
@@ -61,75 +62,116 @@
 			</dl>
 		</section>
 		<section><h2>Instances</h2>
-			<section><h3> playFrame (<var> nId , b </var>)</h3>
-				<p>.</p>
+			<section style="background:red;"><h3> playFrame (<var> nId, [ bJustOne=false ]</var>)</h3>
+				<p>Joue une image de l'animation...</p>
 				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
+					<dt><var>nId</var> <i>Number</i> - Numéro de l'image.</dt>
+					<dt><var>bJustOne</var> <i>Boolean</i> - A <code>false</code> l'animation est joué.</dt>
 				</dl>
-				<p>Retourne </p>
 			</section>
-			<section><h3> back (<var> s,n </var>)</h3>
-				<p>.</p>
+			<section><h3> back (<var> [ sEffect=this.fFx, [ nTime=this.time ]] </var>)</h3>
+				<p>Ajoute une animation faisant retourner l'élément à son dernier état initial.</p>
+				<p>Préférer la méthode <code>reverse()</code> pour revenir en arrière avec l'effet précédemment utilisé.</p>
 				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
+					<dt><var>sEffect</var> <i>String</i> - Effet de retour.</dt>
+					<dt><var>nTime</var> <i>Number</i> - Temps de l'animation.</dt>
 				</dl>
-				<p>Retourne </p>
+				<p>Retourne un objet Fx.</p>
 			</section>
 			<section><h3> blink (<var> n </var>)</h3>
-				<p>.</p>
+				<p>Joue l'animation d'avant en arrière n fois.</p>
+				<p>Utiliser la méthode <code>reverse()</code> pour n=1.</p>
 				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
+					<dt><var>n</var> <i>Number</i> - Nombre de fois où l'élément 'clignote'.</dt>
 				</dl>
-				<p>Retourne </p>
 			</section>
-			<section><h3> concat (<var> o2,s,n </var>)</h3>
-				<p>.</p>
+			<section><h3> concat (<var> o2, [ sEffect=this.fFx, [ nTime=this.time ]] </var>)</h3>
+				<p>Ajoute une animation à la suite.</p>
 				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
+					<dt><var>o2</var> <i>Object</i> - Style à atteindre.</dt>
+					<dt><var>sEffect</var> <i>String</i> - Effet.</dt>
+					<dt><var>nTime</var> <i>Number</i> - Temps.</dt>
 				</dl>
-				<p>Retourne </p>
+				<p>Retourne l'animation Fx créée.</p>
 			</section>
-			<section><h3> custom (<var> oFrames,nFps,oSettings </var>)</h3>
-				<p>.</p>
+			<section><h3> custom (<var> oFrames, oSettings </var>)</h3>
+				<p>Ajoute à la suite une animation personnalisée.</p>
 				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
+					<dt><var>oFrames</var> <i>Object</i> - Objet contenant pour chaque attribut modifié de l'élément un tableau des valeurs.</dt>
+					<dt><var>oSettings</var> <i>Object</i> - Configuration de l'animation.</dt>
 				</dl>
-				<p>Retourne </p>
+				<p>Retourne l'animation Fx créée.</p>
 			</section>
-			<section><h3> merge (<var> o2,s,n,bPreserve </var>)</h3>
-				<p>.</p>
+			<section><h3> merge (<var> o2, [ sEffect=this.fFx, [ nTime=this.time, [ bPreserve=false ]]] </var>)</h3>
+				<p>Fusionne une animation avec de nouveaux états finaux.</p>
 				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
+					<dt><var>o2</var> <i>Object</i> - Style à atteindre.</dt>
+					<dt><var>sEffect</var> <i>String</i> - Effet.</dt>
+					<dt><var>nTime</var> <i>Number</i> - Temps.</dt>
+					<dt><var>bPreserve</var> <i>Booléen</i> - A <code>true</code> préserve les attributs déjà altérés de l'élément et ignore les nouvelles valeurs.</dt>
 				</dl>
-				<p>Retourne </p>
+				<p>Retourne cet objet. </p>
 			</section>
-			<section><h3> push (<var> o2,s,n,oSettings </var>)</h3>
-				<p>.</p>
+			<section><h3> push (<var> o2, [ sEffect=this.fFx, [ nTime=this.time, [ oSettings ]]] </var>)</h3>
+				<p>Pousse des 'animations' dans l'animation courante.</p>
+				<p>Aucun nouvel objet Fx est crée: le temps de l'animation est altéré pour les attributs modifiés déjà présent dans l'animation.</p>
 				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
+					<dt><var>o2</var> <i>Object</i> - Style à atteindre.</dt>
+					<dt><var>sEffect</var> <i>String</i> - Effet.</dt>
+					<dt><var>nTime</var> <i>Number</i> - Temps.</dt>
+					<dt><var>oSettings</var> <i>Object</i> - Configuration de l'animation.</dt>
 				</dl>
-				<p>Retourne </p>
+				<p>Retourne cet objet.</p>
 			</section>
 			<section><h3> repeat (<var> n </var>)</h3>
-				<p>.</p>
+				<p>Répète une animation. Si aucun nombre de répétition est défini, l'animation se répète à l'infini.</p>
 				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
+					<dt><var>n</var> <i>Number</i> - Nombre de fois où l'animation est répétée.</dt>
 				</dl>
-				<p>Retourne </p>
 			</section>
 			<section><h3> reverse (<var></var>)</h3>
-				<p>.</p>
-				<dl>
-					<dt><var></var> <i>String</i> - .</dt>
-				</dl>
-				<p>Retourne </p>
+				<p>Joue l'animation en arrière, une fois jouée.</p>
+			</section>
+		</section>
+		<section><h2>Evénements</h2>
+			<section><h3>Evénements utilisateurs</h3>
+				<p>Ces événements peuvent être définis.</p>
+				<section><h4>oncomplete</h4>
+					<p>Evénement déclenché à la fin d'une animation.</p>
+					<p>Si elle retourne :</p>
+					<dl>
+						<dt><var>true</var>: - La suite d'animation continue d'être joué.</dt>
+						<dt><var>false</var>: - La suite d'animation est stoppée.</dt>
+					</dl>
+					<p>Rappel: des animations peuvent être ajouté à la suite.</p>
+				</section>
+				<section><h4>onframe( nId, bJustOne )</h4>
+					<p>Evénement déclenché lorsqu'une image est jouée.</p>
+					<dl>
+						<dt><var>nId</var> <i>Number</i> - Numéro de l'image.</dt>
+						<dt><var>bJustOne</var> <i>Boolean</i> - Indique si seule l'image est jouée.</dt>
+					</dl>
+				</section>
+				<section><h4>onlaunch</h4>
+					<p>Evénement déclenché au début de l'animation.</p>
+				</section>
+			</section>
+			<section style="background:red;"><h3>Evénements privés</h3>
+				<p>Ces événements 'privés' sont utilisés par les méthodes <var>blink, repeat, reverse</var>.</p>
+				<p>Ils sont déclenchés uniquement si aucune animation n'a été ajouter à la suite de cette animation.</p>
+				<section><h4>onend</h4>
+					<p>Evénement déclenché quand le nombre d'image de l'animation est dépassé.</p>
+				</section>
+				<section><h4>onstart</h4>
+					<p>Evénement déclenché quand le numéro de l'image à jouer est égale à -1...</p>
+				</section>
 			</section>
 		</section>
 		<section><h2>Fx</h2>
 			<section><h3>oDefaultSettings : Object</h3>
 				<p>.</p>
 			</section>
-			<section><h3>animation (<var> oFx </var>)</h3>
+			<section style="background:red;"><h3>animation (<var> oFx </var>)</h3>
 				<p>Ajoute une animation à jouer.</p>
 				<dl>
 					<dt><var>oFx</var> : <i>Fx</i>. Instance de Fx.</dt>
@@ -152,19 +194,24 @@
 				<p>.</p>
 			</section>
 			<section><h3>pause (<var> e </var>)</h3>
-				<p>.</p>
+				<p>Pause une animation.</p>
+				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>playing (<var> e </var>)</h3>
-				<p>.</p>
+				<p>Indique si l'animation est jouée ou est en pause.</p>
+				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>play (<var> e </var>)</h3>
-				<p>.</p>
+				<p>Joue l'animation depuis son début...</p>
+				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>playInvert (<var> e </var>)</h3>
-				<p>.</p>
+				<p>Joue l'animation depuis sa fin...</p>
+				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>stop (<var> e </var>)</h3>
-				<p>.</p>
+				<p>Stoppe l'animation.</p>
+				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>_createFrames (<var> oFx </var>)</h3>
 				<p>.</p>

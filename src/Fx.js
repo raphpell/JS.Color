@@ -71,16 +71,17 @@ Fx=(function(){
 			, e=o.e
 			, values=''
 			if(o.bCanceling) return o.bCanceling=undefined
-			if(!b&&!e.sPlaying){
+			if(!e.sPlaying&&!b){
 				e.oFxPaused=o
 				return false
 				}
+			let bDesc=e.sPlaying=='playInvert'
 			if(o.nId==null){
-				o.nId=e.bDesc?o.nFrames-1:-1
+				o.nId=bDesc?o.nFrames-1:-1
 				if(o.onlaunch)o.onlaunch()
 				}
-			nId=nId===undefined?(e.bDesc?--o.nId:++o.nId):nId
-			if(e.bDesc?nId>=0:nId<=o.nFrames){
+			nId=nId===undefined?(bDesc?--o.nId:++o.nId):nId
+			if(bDesc?nId>=0:nId<=o.nFrames){
 				o.aAttr.forEach( sAttr=>{
 					let aFrame=o.oFrames.get(sAttr)
 					if(Fx.setEltAttributes.has(sAttr)){
@@ -98,7 +99,7 @@ Fx=(function(){
 				o.nId=null
 				if(!o.oncomplete())return false
 				if(b)return o.next?o.next.playFrame(nId-o.nFrames,true):null
-				let oNext=e.bDesc?o.previous:o.next
+				let oNext=bDesc?o.previous:o.next
 				if(oNext)_Animation(oNext)
 					else{
 						if(o.onend&&nId>=o.nFrames)return o.onend()
@@ -122,10 +123,10 @@ Fx=(function(){
 		concat(o2,s,n){
 			return new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'concat'})
 			},
-		custom(oFrames,nFps,oSettings){
-			return Fx.custom(this.e,oFrames,nFps||this.fps,oSettings )
+		custom(oFrames,oSettings){
+			return Fx.custom(this.e,oFrames,oSettings )
 			},
-		merge(o2,s,n,bPreserve){
+		merge(o2,s,n,bPreserve=false){
 			new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'merge',bPreserveMergin:bPreserve})
 			return this
 			},
@@ -138,9 +139,7 @@ Fx=(function(){
 			o.onend=()=>Fx[b||--n>0?'play':'stop'](o.e)
 			o.onstart=()=>Fx[b||--n>0?'playInvert':'stop'](o.e)
 			},
-		reverse(){
-			this.blink(1)
-			}
+		reverse(){ this.blink(1)}
 		})
 	Object.assign(Fx,{
 		setEltAttributes:setEltAttributes,
@@ -158,25 +157,25 @@ Fx=(function(){
 			onlaunch:()=>{}
 			},
 		animation:_Animation,
-		custom(e,oFrames,fps,oSettings){
+		custom(e,oFrames,oSettings){
 			var oFx=new Fx(e,0,0,0,{ bPlayNow:false})
 			,aAttr=new Set
 			,nFrames=0
-			,o1={},o2={}
+			,o1={},o2={},oMap=new Map
 			Object.keys(oFrames).forEach(s=>{
 				let a=oFrames[s]
 				aAttr.add(s)
 				var n=a.length
 				o1[s]=a[0]
 				o2[s]=a[n-1]
+				oMap.set(s,a)
 				if(n>nFrames) nFrames=n
 				})
-			Object.assign(oFx,{
+			Object.assign(oFx,Fx.oDefaultSettings,oSettings,{
 				aAttr:aAttr,
 				time:parseInt(fps*nFrames),
-				fps:fps||oFx.fps,
 				nFrames:nFrames,
-				oFrames:oFrames,
+				oFrames:oMap,
 				o1:o1,
 				o2:o2
 				})
@@ -189,49 +188,45 @@ Fx=(function(){
 			return Fx.Effects.linear
 			},
 		pause(e){
-			if( e.sPausing ){
-				Fx[ e.sPausing ]( e )
+			if(e.sPausing){
+				Fx[e.sPausing](e)
 				return e.sPausing = undefined
 				}
-			if( e.sPlaying ){
-				e.sPausing = e.sPlaying
-				e.sPlaying = undefined
+			if(e.sPlaying){
+				e.sPausing=e.sPlaying
+				e.sPlaying=undefined
 				}
 			},
-		playing:e=>e.sPausing||e.sPlaying,
+		playing:e=>(e.sPausing||e.sPlaying)?true:false,
 		play(e){
-			var oFx = e.oFxPaused||e.oFx
-			if( oFx ){
-				e.bDesc = 0
-				e.sPlaying = 'play'
-				e.oFxPaused = undefined
+			var oFx=e.oFxPaused||e.oFx
+			if(oFx){
+				e.sPlaying='play'
+				e.oFxPaused=undefined
 				return oFx.playFrame()
 				}
 			return null
 			},
 		playInvert(e){
-			var oFx = e.oFxPaused
-			if( ! oFx ) oFx = Fx.Last( e )
-			if( oFx ){
-				e.bDesc = 1
-				e.sPlaying = 'playInvert'
-				e.oFxPaused = undefined
+			var oFx=e.oFxPaused||Fx.Last(e)
+			if(oFx){
+				e.sPlaying='playInvert'
+				e.oFxPaused=undefined
 				return oFx.playFrame()
 				}
 			return null
 			},
 		stop(e){
-			if( e.oFx ){
-				for( var o = e.oFx ; o ; o = o.next ){
-					o.bCanceling = 1
-					}
-				e.bDesc = e.sPlaying = e.oFx = e.oFxPaused = e.sPausing = undefined
-				if( e.onstop ) e.onstop()
+			if(e.oFx){
+				for(var o=e.oFx;o;o=o.next) o.bCanceling = 1
+				let oFx = e.oFx
+				e.oFx=e.sPlaying=e.oFxPaused=e.sPausing=undefined
+				if(e.onstop) e.onstop(oFx)
 				}
 			},
 		_createFrames:(function(){
-			let o, i, ni, oDelta
-			const oFun = {
+			let o,i,ni,oDelta
+			const oFun={
 				Color:(function(){
 					let f =(s,s1)=>parseInt(o.fFx(i*o.nFrameTime,o.o1[s][s1],oDelta[s1],o.time)||0)
 					return s=>{
@@ -257,11 +252,11 @@ Fx=(function(){
 					o.oFrames.get(s).push(parseInt(o.fFx(i*o.nFrameTime,o.o1[s],oDelta,o.time))||0)
 					}
 				}
-			return oFx =>{
-				o = oFx
-				Fx._calculateDeltas( o )
-				ni = o.nFrames
-				o.aAttr.forEach( s=>{
+			return oFx=>{
+				o=oFx
+				Fx._calculateDeltas(o)
+				ni=o.nFrames
+				o.aAttr.forEach(s=>{
 					o.oFrames.set(s,[])
 					i=0
 					if(oDelta=o.oDeltas.get(s))
