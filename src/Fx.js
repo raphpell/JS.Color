@@ -189,7 +189,7 @@ Fx=(function(){
 			},
 		pause(e){
 			if(e.sPausing){
-				Fx[e.sPausing](e)
+				Fx[e.sPlaying=e.sPausing](e)
 				return e.sPausing = undefined
 				}
 			if(e.sPlaying){
@@ -218,7 +218,7 @@ Fx=(function(){
 			},
 		stop(e){
 			if(e.oFx){
-				for(var o=e.oFx;o;o=o.next) o.bCanceling = 1
+				for(var o=e.oFx;o;o=o.next) o.bCanceling=1
 				let oFx = e.oFx
 				e.oFx=e.sPlaying=e.oFxPaused=e.sPausing=undefined
 				if(e.onstop) e.onstop(oFx)
