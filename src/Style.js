@@ -33,6 +33,7 @@ Style =(()=>{
 			|| e.currentStyle && e.currentStyle[s]
 			|| window.getComputedStyle && window.getComputedStyle( e )[s]
 			if( sValue/* && sValue!='0px' */) return sValue
+			// Moz border-color -> <empty string>
 			if( window.CssRules ){
 				let f = sSelector =>{
 					let o = CssRules.get( sSelector )

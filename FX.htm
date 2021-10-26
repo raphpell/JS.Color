@@ -73,9 +73,10 @@
 			text-align: center;
 			width: 600px;
 			}
-		#eEffectTest P {
+		#eEffectTestP {
 			background: #000;
-			border: 0px solid red;
+			border: 0px solid #FC0;
+			border-color: #FC0;
 			color: #FFF;
 			filter:alpha(opacity=50);-moz-opacity:0.5;-khtml-opacity:0.5;opacity:0.5;
 			width: 200px;
@@ -401,7 +402,7 @@
 			</select>
 			<label for="eColor1">Couleur 1 : </label><input id="eColor1" type="color" value="#FF0000">
 			<label for="eColor2">Couleur 2 : </label><input id="eColor2" type="color" value="#00FFFF">
-			<div id="eEffectTest"><p> Survoler </p></div>
+			<div id="eEffectTest"><p id="eEffectTestP"> Survoler </p></div>
 		<li>
 			<label for="eTime">Temps : </label><input type="test" id="eTime">
 			<label for="eFPS">Fps : </label><input type="test" id="eFPS">
@@ -433,7 +434,9 @@
 				<li><input type="radio" name="suffix" id="eRepeated"><label for="eRepeated">Répéter : </label>
 					<input id="eRepeat" type="text" size="3">
 			</ol>
-		<li id="eFrames" style="display: ">
+		<li>
+			Images de l'animation : (Décocher la case Jouer) <button id="eBtnPlay">Jouer</button>
+			<div id="eFrames" style="display: "></div>
 	</ul>
 </page>
 
@@ -987,9 +990,10 @@ Events ={
 		return false
 		}
 	}
+
+let eCircle = e1
 Tests ={
 	init :()=>{
-		var eTest = e1
 		eNull.checked = true
 		eTime.value = Fx.oDefaultSettings.time
 		eBlink.value = ''
@@ -1011,7 +1015,7 @@ Tests ={
 	action:sAction=>{
 		switch( sAction ){
 			case 'move':
-				let TagsSet = new Set (['INPUT','SELECT','LABEL','OPTION'])
+				let TagsSet = new Set (['INPUT','SELECT','LABEL','OPTION','BUTTON','A'])
 				return evt =>{
 					var e = Events.element(evt)
 					if( ! TagsSet.has( e.nodeName )) Tests.defineFx( Mouse.position(evt), evt )
@@ -1019,19 +1023,19 @@ Tests ={
 			case 'expand':
 			case 'reduce':
 				return evt =>{
-					eTest = document.getElementById( eElement.value )
-					eTest.n = eTest.n || parseInt( Style.get( eTest, 'font-size' ))
-					let n = sAction=='expand' ? eTest.n+25 : eTest.n-25
-					eTest.n = n
+					eCircle = document.getElementById( eElement.value )
+					eCircle.n = eCircle.n || parseInt( Style.get( eCircle, 'font-size' ))
+					let n = sAction=='expand' ? eCircle.n+25 : eCircle.n-25
+					eCircle.n = n
 					Tests.defineFx( { opacity: n/500, 'font-size': n, height: n, width: n }, evt )
 					}
 			}
 		},
 	defineFx:( o2, evt )=>{
-		eTest = document.getElementById( eElement.value )
-		if( eClear.checked ) Fx.stop( eTest )
-		var b = eTest.oFx
-		var oFx = new Fx ( eTest, o2, Tests.getEffect(), eTime.value, {
+		eCircle = document.getElementById( eElement.value )
+		if( eClear.checked ) Fx.stop( eCircle )
+		var b = eCircle.oFx
+		var oFx = new Fx ( eCircle, o2, Tests.getEffect(), eTime.value, {
 			bPlayNow: false,
 			method: eMethod.value,
 			sColorMode: eColorMode.value,
@@ -1045,12 +1049,12 @@ Tests ={
 		if( eBlinked.checked ) oFx.blink( eBlink.value || undefined )
 		if( eRepeated.checked ) oFx.repeat( eRepeat.value || undefined )
 		
-		if( ! Fx.playing( eTest )) Tests[ ePlay.checked ? 'play' : 'addFrames' ]()
+		if( ! Fx.playing( eCircle )) Tests[ ePlay.checked ? 'play' : 'addFrames' ]()
 		return Events.stop( evt )
 		},
 	play:()=>{
 		eFrames.innerHTML = ''
-		Fx[ ePlayInvert.checked ? 'playInvert' : 'play' ]( eTest )
+		Fx[ ePlayInvert.checked ? 'playInvert' : 'play' ]( eCircle )
 		},
 
 	// KEYBOARD
@@ -1059,11 +1063,11 @@ Tests ={
 		switch( n ){
 			case 27:
 				eFrames.innerHTML = ''
-				Fx.stop( eTest )
+				Fx.stop( eCircle )
 				return Events.stop( evt )
 			case 32:
-				Fx.playing( eTest )
-					? Fx.pause( eTest )
+				Fx.playing( eCircle )
+					? Fx.pause( eCircle )
 					: Tests.play()
 			}
 		},
@@ -1072,7 +1076,7 @@ Tests ={
 	eCurrentFrame:null,
 	addFrames:()=>{
 		eFrames.innerHTML = ''
-		for( var nFrames=0, oFx=eTest.oFx; oFx; oFx=oFx.next )
+		for( var nFrames=0, oFx=eCircle.oFx; oFx; oFx=oFx.next )
 			nFrames += oFx.nFrames
 		for( var i=0, eA; i<nFrames; i++ ){
 			eA = document.createElement('A')
@@ -1084,11 +1088,11 @@ Tests ={
 		},
 	changeFrame:evt=>{
 		var e = Events.element(evt)
-		if( e.nodeName == 'A' && eTest.oFx ){
+		if( e.nodeName == 'A' && eCircle.oFx ){
 			if( Tests.eCurrentFrame ) Tests.eCurrentFrame.className = ''
 			Tests.eCurrentFrame = e
 			e.className = 'active'
-			eTest.oFx.playFrame( e.innerHTML-1, true )
+			eCircle.oFx.playFrame( e.innerHTML-1, true )
 			}
 		}
 	}
@@ -1109,8 +1113,8 @@ Tests.init()
 
 document.onkeydown = Tests.keyHandler
 ePlayground.onmousedown = Tests.action('move')
-eExpand.onmousedown = Tests.action( 'expand' )
-eReduce.onmousedown = Tests.action( 'reduce' )
+eExpand.onclick = Tests.action( 'expand' )
+eReduce.onclick = Tests.action( 'reduce' )
 eMethod.onchange = eMethod.onkeyup = ()=>{ ePreserveMergin.disabled = eMethod.value=='concat' }
 eRequestAnimationFrame.onchange = ()=>{
 	if( eFPS.disabled = eRequestAnimationFrame.checked )
@@ -1118,13 +1122,13 @@ eRequestAnimationFrame.onchange = ()=>{
 	}
 eEffectTest.onmouseover = ()=> eEffectTest.fx(200)
 eEffectTest.onmouseout = ()=> eEffectTest.fx(0)
-
+eBtnPlay.onclick = Tests.play
 
 /*
 Une fois le code charger, afficher de la page d'accueil !!
 ... sans setTimeout SVP !
 */
-setTimeout( ()=>goTo( eDoc ), 10 )
+setTimeout( ()=>goTo(), 10 )
 </script>
 
 </body>

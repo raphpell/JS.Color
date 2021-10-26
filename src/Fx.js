@@ -249,7 +249,8 @@ Fx=(function(){
 					o.oFrames.get(s).push( a.join(','))
 					},
 				default:s=>{
-					o.oFrames.get(s).push(o.fFx(i*o.nFrameTime,o.o1[s],oDelta,o.time)||0)
+					let n = o.fFx(i*o.nFrameTime,o.o1[s],oDelta,o.time)||0
+					o.oFrames.get(s).push( n>1 ? parseInt(n) : n )
 					}
 				}
 			return oFx=>{
