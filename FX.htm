@@ -6,6 +6,82 @@
 	<link rel="stylesheet" type="text/css" href="css/page.css">
 	<link rel="stylesheet" type="text/css" href="css/doc.css">
 	<link rel="stylesheet" type="text/css" href="css/unittest.css">
+	<style>
+		#eForm {
+			list-style-type: none;
+			margin: 1em;
+			padding: 0;
+			position: relative;
+			
+			}
+		#eForm li {
+			clear: left;
+			float: left;
+			margin-bottom: 0.5em;
+			z-index: 1000;
+			}
+
+		.square {
+			border-radius: 100%;
+			font: bold 16px verdana;
+			font-size: 50px;
+			filter:alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity:0.5; opacity:0.5; 
+			cursor: default;
+			height: 50px;
+			line-height: 50px;
+			left: -10em;
+			overflow: hidden;
+			position: absolute;
+			text-align: center;
+			top: -10em;
+			width: 50px;
+			z-index: 1;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			}
+		.red { background: #FF0000;}
+		.green { background: #00FF00; }
+		.blue { background: #0000FF; }
+
+		#eReduce , #eExpand {
+			cursor: pointer; cursor: hand;
+			}
+		#eFrames A, #eFrames A:visited {
+			background: #FFF;
+			border-right: 2px solid #000;
+			color: #000;
+			float: left;
+			height: 2em;
+			line-height: 2em;
+			padding: 0 2px;
+			text-decoration: none;
+			}
+		#eFrames A:hover {
+			background: #000;
+			color: #FFF;
+			}
+		#eFrames A.active {
+			background: blue;
+			color: yellow;
+			}
+
+		#eEffectTest {
+			background: #666;
+			clear: both;
+			margin: 1em;
+			text-align: center;
+			width: 600px;
+			}
+		#eEffectTest P {
+			background: #000;
+			border: 0px solid red;
+			color: #FFF;
+			filter:alpha(opacity=50);-moz-opacity:0.5;-khtml-opacity:0.5;opacity:0.5;
+			width: 200px;
+			margin: 0 auto;
+			}
+	</style>
 </head>
 <body>
 
@@ -14,6 +90,7 @@
 	<li onclick="goTo( eDoc )" id="eDocMenu">Documentation</li>
 	<li onclick="goTo( eUnitTest )" id="eUnitTestMenu">Testes unitaires</li>
 	<li onclick="goTo( eBenchmarking )" id="eBenchmarkingMenu">Benchmarking</li>
+	<li onclick="goTo( ePlayground )" id="ePlaygroundMenu">Playground</li>
 </ul>
 
 <page id="ePreload" class="active">
@@ -276,11 +353,96 @@
 	<span id="eTest" style="background-color: #eee; padding: 5px;">#eTest</span>
 	<span id="eTest2" style="background-color: #eee; padding: 5px;">#eTest2</span>
 </page>
+<page id="ePlayground">
+	<h1>Playground</h1>
+	<div style="float:right;">
+		<p>Touches raccourcies : </p>
+		<ul>
+			<li> <kbd>ESC</kbd> : Stoppe l'animation
+			<li> <kbd>SPACE</kbd> : Lance et pause l'animation
+		</ul>
+		<div id="e1" class="square red">1</div>
+		<div id="e2" class="square green">2</div>
+		<div id="e3" class="square blue">3</div>
+	</div>
+	<ul id="eForm">
+		<li>
+			<label for="eElement">Element : </label>
+			<select id="eElement">
+				<option value="e1">1</option>
+				<option value="e2">2</option>
+				<option value="e3" select>3</option>
+			</select>
+			<label for="eType">Effet : </label>
+			<select id="eTransition">
+				<option value="linear">linear</option>
+				<option value="quad">quad</option>
+				<option value="quint">quint</option>
+				<option value="sine">sine</option>
+				<option value="expo">expo</option>
+				<option value="circ">circ</option>
+				<option value="elastic">elastic</option>
+				<option value="back">back</option>
+				<option value="bounce" selected>bounce</option>
+				<option value="bidon">bidon</option>
+			</select>
+			<select id="eType">
+				<option value="in">in</option>
+				<option value="out" selected>out</option>
+				<option value="inOut">inOut</option>
+				<option value="off">off</option>
+			</select>
+		<li>
+			<label for="eType">Mode couleur : </label>
+			<select id="eColorMode">
+				<option value="rgb">rgb</option>
+				<option value="hsv">hsv</option>
+				<option value="hsl">hsl</option>
+			</select>
+			<label for="eColor1">Couleur 1 : </label><input id="eColor1" type="color" value="#FF0000">
+			<label for="eColor2">Couleur 2 : </label><input id="eColor2" type="color" value="#00FFFF">
+			<div id="eEffectTest"><p> Survoler </p></div>
+		<li>
+			<label for="eTime">Temps : </label><input type="test" id="eTime">
+			<label for="eFPS">Fps : </label><input type="test" id="eFPS">
+			<input type="checkbox" id="eRequestAnimationFrame" checked><label for="eRequestAnimationFrame">Utiliser <code>requestAnimationFrame</code>.</label>
+		<li>
+		<li>
+			<label for="eMethod">Méthode : </label>
+			 <select id="eMethod">
+				<option value="concat" select>concat</option>
+				<option value="merge">merge</option>
+				<option value="push">push</option>
+			 </select>
+			<input type="checkbox" id="ePreserveMergin" checked disabled><label for="ePreserveMergin">Préserver le dernier effet.</label>
+		<li>
+			<input type="checkbox" id="ePlay" checked><label for="ePlay">Jouer</label>
+			<input type="checkbox" id="ePlayInvert"><label for="ePlayInvert">Jouer en arrière.</label>
+			<input type="checkbox" id="eClear"><label for="eClear">Nettoyer avant</label>
+		<li>
+			font-size, width, height, opacity :
+			<button id="eReduce">--</button>
+			<button id="eExpand">++</button>
+		<li>
+			<input type="checkbox" id="eBack"><label for="eBack">Retour calculer.</label>
+			<ol>
+				<li><input type="radio" name="suffix" id="eNull" checked><label for="eNull">rien.</label>
+				<li><input type="radio" name="suffix" id="eReverse"><label for="eReverse">A la fin, jouer en arrière.</label>
+				<li><input type="radio" name="suffix" id="eBlinked"><label for="eBlinked">Jouer en avant et en arrière : </label>
+					<input id="eBlink" type="text" size="3">
+				<li><input type="radio" name="suffix" id="eRepeated"><label for="eRepeated">Répéter : </label>
+					<input id="eRepeat" type="text" size="3">
+			</ol>
+		<li id="eFrames" style="display: ">
+	</ul>
+</page>
 
 <script src="src/Color.js"></script>
 <script src="src/CssRules.js"></script>
 <script src="src/Style.js"></script>
 <script src="src/FX.js"></script>
+<script src="src/Keyboard.js"></script>
+<script src="src/Mouse.js"></script>
 <script src="js/page.js"></script>
 <script src="js/doc.js"></script>
 <script src="js/unittest.js"></script>
@@ -803,6 +965,160 @@ new UnitTest( eBenchmarking ,[
 	)
 
 layoutDoc( eSummary3, { numbers: false, links: true }, eBenchmarking )
+
+
+// PLAYGROUND
+Events ={
+	get:evt=>evt?evt:(window.event?window.event:null),
+	element:m=>{
+		if(!m)return null
+		if(m.nodeName)return m
+		if(m.type){
+			m=Events.get(m)
+			return m.target?(m.target.nodeType==3?m.target.parentNode:m.target):m.srcElement
+			}
+		return false
+		},
+	stop:evt=>{
+		if(evt=Events.get(evt)){
+			evt.cancelBubble=true
+			if(evt.stopPropagation)evt.stopPropagation() 
+			}
+		return false
+		}
+	}
+Tests ={
+	init :()=>{
+		var eTest = e1
+		eNull.checked = true
+		eTime.value = Fx.oDefaultSettings.time
+		eBlink.value = ''
+		eRepeat.value = ''
+		eFPS.value = Fx.oDefaultSettings.fps
+		eFPS.disabled = true
+		eRequestAnimationFrame.checked = true
+		ePreserveMergin.disabled = true
+		ePreserveMergin.checked = true
+		ePlay.checked = true
+		ePlayInvert.checked = false
+		eClear.checked = false
+		eBack.checked = false
+		eColorMode.value = 'hsv'
+		},
+
+	// FX
+	getEffect:()=> eTransition.value + ( eType.value ? '.' + eType.value : '' ),
+	action:sAction=>{
+		switch( sAction ){
+			case 'move':
+				let TagsSet = new Set (['INPUT','SELECT','LABEL','OPTION'])
+				return evt =>{
+					var e = Events.element(evt)
+					if( ! TagsSet.has( e.nodeName )) Tests.defineFx( Mouse.position(evt), evt )
+					}
+			case 'expand':
+			case 'reduce':
+				return evt =>{
+					eTest = document.getElementById( eElement.value )
+					eTest.n = eTest.n || parseInt( Style.get( eTest, 'font-size' ))
+					let n = sAction=='expand' ? eTest.n+25 : eTest.n-25
+					eTest.n = n
+					Tests.defineFx( { opacity: n/500, 'font-size': n, height: n, width: n }, evt )
+					}
+			}
+		},
+	defineFx:( o2, evt )=>{
+		eTest = document.getElementById( eElement.value )
+		if( eClear.checked ) Fx.stop( eTest )
+		var b = eTest.oFx
+		var oFx = new Fx ( eTest, o2, Tests.getEffect(), eTime.value, {
+			bPlayNow: false,
+			method: eMethod.value,
+			sColorMode: eColorMode.value,
+			bPreserveMergin: ePreserveMergin.checked,
+			bAnimationFrame: eRequestAnimationFrame.checked,
+			fps: eFPS.value
+			})
+
+		if( eBack.checked ) oFx = oFx.back()
+		if( eReverse.checked ) oFx.reverse()
+		if( eBlinked.checked ) oFx.blink( eBlink.value || undefined )
+		if( eRepeated.checked ) oFx.repeat( eRepeat.value || undefined )
+		
+		if( ! Fx.playing( eTest )) Tests[ ePlay.checked ? 'play' : 'addFrames' ]()
+		return Events.stop( evt )
+		},
+	play:()=>{
+		eFrames.innerHTML = ''
+		Fx[ ePlayInvert.checked ? 'playInvert' : 'play' ]( eTest )
+		},
+
+	// KEYBOARD
+	keyHandler : evt =>{
+		var n = Keyboard.code( evt )
+		switch( n ){
+			case 27:
+				eFrames.innerHTML = ''
+				Fx.stop( eTest )
+				return Events.stop( evt )
+			case 32:
+				Fx.playing( eTest )
+					? Fx.pause( eTest )
+					: Tests.play()
+			}
+		},
+
+	// FRAMES
+	eCurrentFrame:null,
+	addFrames:()=>{
+		eFrames.innerHTML = ''
+		for( var nFrames=0, oFx=eTest.oFx; oFx; oFx=oFx.next )
+			nFrames += oFx.nFrames
+		for( var i=0, eA; i<nFrames; i++ ){
+			eA = document.createElement('A')
+			eA.innerHTML = i+1
+			eA.href = '#'
+			eFrames.appendChild( eA )
+			eA.onmousedown = eA.onfocus = Tests.changeFrame
+			}
+		},
+	changeFrame:evt=>{
+		var e = Events.element(evt)
+		if( e.nodeName == 'A' && eTest.oFx ){
+			if( Tests.eCurrentFrame ) Tests.eCurrentFrame.className = ''
+			Tests.eCurrentFrame = e
+			e.className = 'active'
+			eTest.oFx.playFrame( e.innerHTML-1, true )
+			}
+		}
+	}
+
+for(var i=1;i<4;i++ ) ePlayground.appendChild( document.getElementById('e'+i))
+
+eEffectTest.fx = n =>{
+	new Fx ( eEffectTest.firstChild, {
+		'opacity': n == 0 ? 0.5 : 1,
+		'border-color': n == 0 ? eColor1.value : eColor2.value,
+		'border-left-width': n,
+		'border-right-width': n
+		}, Tests.getEffect(), eTime.value, { sColorMode: eColorMode.value })
+	}
+
+Tests.init()
+
+
+document.onkeydown = Tests.keyHandler
+ePlayground.onmousedown = Tests.action('move')
+eExpand.onmousedown = Tests.action( 'expand' )
+eReduce.onmousedown = Tests.action( 'reduce' )
+eMethod.onchange = eMethod.onkeyup = ()=>{ ePreserveMergin.disabled = eMethod.value=='concat' }
+eRequestAnimationFrame.onchange = ()=>{
+	if( eFPS.disabled = eRequestAnimationFrame.checked )
+		eFPS.value = Fx.oDefaultSettings.fps
+	}
+eEffectTest.onmouseover = ()=> eEffectTest.fx(200)
+eEffectTest.onmouseout = ()=> eEffectTest.fx(0)
+
 
 /*
 Une fois le code charger, afficher de la page d'accueil !!

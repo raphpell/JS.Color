@@ -32,7 +32,7 @@ Style =(()=>{
 			let sValue = e.style[s]
 			|| e.currentStyle && e.currentStyle[s]
 			|| window.getComputedStyle && window.getComputedStyle( e )[s]
-			if( sValue && sValue!='0px' ) return sValue
+			if( sValue/* && sValue!='0px' */) return sValue
 			if( window.CssRules ){
 				let f = sSelector =>{
 					let o = CssRules.get( sSelector )
