@@ -40,9 +40,9 @@
 			justify-content: center;
 			align-items: center;
 			}
-		.red { background: #FF0000;}
-		.green { background: #00FF00; }
-		.blue { background: #0000FF; }
+		.red { background: rgba(255,0,0,.5);}
+		.green { background: rgba(0,255,0,.5); }
+		.blue { background: rgba(0,0,255,.5); }
 
 		#eReduce , #eExpand {
 			cursor: pointer; cursor: hand;
@@ -104,9 +104,14 @@
 
 	<div class="doc">
 		<section>
-			<p>Cet objet permet de créer des animations complexes d'un élément html.</p>
-			<p>Ces animations peuvent être concaténer, fusionner ou 'pousser à la suite'...ou_ altérer.</p>
-			<p>Seul les attributs simples simples sont gérer avec une valeur en pixel ou une couleur rgb,rgba,... (pas de nom de couleur).</p>
+			<code>/*  REQUIS Les classes Color et Style... */</code>
+			<p>
+				Cet objet permet de créer des animations complexes d'un élément html.<br>
+				Ces animations peuvent être concaténer, fusionner ou 'pousser à la suite'...ou_ altérer. 
+			</p>
+			<p>
+				Les attributs gérés sont ceux avec une valeur en pixel ou une couleur rgb,rgba,... (pas de nom de couleur).
+			</p>
 			<p>Syntaxe: <code>var oFx = new Fx ( eHtmlElement [, o2 [, mEffect [, nTime [, oSettings ]]]])</code></p>
 			<dl>
 				<dt><var>e</var> : <i>HTMLElement</i></dt>
@@ -216,7 +221,7 @@
 			<section><h3>Evénements utilisateurs</h3>
 				<p>Ces événements peuvent être définis.</p>
 				<section><h4>oncomplete</h4>
-					<p>Evénement déclenché à la fin d'une animation.</p>
+					<p>Evénement déclenché à la fin de l'animation.</p>
 					<p>Si elle retourne :</p>
 					<dl>
 						<dt><var>true</var>: - La suite d'animation continue d'être joué.</dt>
@@ -248,7 +253,19 @@
 		</section>
 		<section><h2>Fx</h2>
 			<section><h3>oDefaultSettings : Object</h3>
-				<p>.</p>
+				<p>Paramètres par défaut des animations.</p>
+				<dl>
+					<dt><code>bPlayNow : true</code> - Animation jouée immédiatement une fois créée.</dt>
+					<dt><code>bPreserveMergin : true</code> - Si la méthode d'ajout est 'merge', protection des attributs de l'effet déjà existant.</dt>
+					<dt><code>bAnimationFrame : true</code> - Utilisation du système d'animation natif javascript.</dt>
+					<dt><code>fps : 60</code> - Si bAnimationFrame est égale à false, nombre d'images par seconde.</dt>
+					<dt><code>method : 'concat'</code> - Choix possibles: concat || merge || push.</dt>
+					<dt><code>sColorMode : 'rgb'</code> - Choix possibles: rgb || hsv || hsl.</dt>
+					<dt><code>time : 500</code>- Temps des animations par défaut.</dt>
+					<dt><code>oncomplete : ()=>true</code>- Méthode lancé à la fin d'une animation. Si elle retourne false, la suite d'animations est stoppée.</dt>
+					<dt><code>onframe : nId=>{}</code>- Méthode lancé à chaque image d'une animation.</dt>
+					<dt><code>onlaunch : ()=>{}</code>- Méthode lancé au lancement d'une animation.</dt>
+				</dl>
 			</section>
 			<section style="background:#eee;"><h3>animation (<var> oFx </var>)</h3>
 				<p>Ajoute une animation à jouer... cette fonction privée est visible pour le benchmarking.</p>
@@ -293,17 +310,22 @@
 				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 				<p>L'animation est détruite mais récupérable avec l'événement e.onstop( oFx ).</p>
 			</section>
-			<section style="background:#eee;"><h3>_createFrames (<var> oFx </var>)</h3>
+			<section style="background:#eee;"><h3>createFrames (<var> oFx </var>)</h3>
 				<p>Créé les images de l'animation... cette fonction privée est visible pour le benchmarking.</p>
 			</section>
-			<section style="background:#eee;"><h3>_calculateDeltas (<var> oFx </var>)</h3>
+			<section style="background:#eee;"><h3>calculateDeltas (<var> oFx </var>)</h3>
 				<p>Calcul la différence entre l'état final et l'état initial... cette fonction privée est visible pour le benchmarking.</p>
 			</section>
 			<section><h3>Last (<var> e </var>)</h3>
-				<p>.</p>
-				<section><h4>get_o1 (<var> oFx </var>)</h4>
+				<p>Retourne la dernière animation de l'élément e.</p>
+				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
+				<section><h4>get_o1 (<var> e </var>)</h4>
+					<p>Calcul l'état initial de la dernière animation.</p>
+					<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 				</section>
-				<section><h4>get_o2 (<var> oFx </var>)</h4>
+				<section><h4>get_o2 (<var> e </var>)</h4>
+					<p>Calcul l'état final de la dernière animation.</p>
+					<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 				</section>
 			</section>
 			<section><h3>.Methods</h3>
@@ -402,8 +424,12 @@
 			<label for="eType">Mode couleur : </label>
 			<select id="eColorMode">
 				<option value="rgb">rgb</option>
+				<option value="rgb">rgba</option>
 				<option value="hsv">hsv</option>
+				<option value="hsv">hsva</option>
 				<option value="hsl">hsl</option>
+				<option value="hsl">hsla</option>
+				<option value="cmyk">cmyk</option>
 			</select>
 			<label for="eColor1">Couleur 1 : </label><input id="eColor1" type="color" value="#FF0000">
 			<label for="eColor2">Couleur 2 : </label><input id="eColor2" type="color" value="#00FFFF">
@@ -429,6 +455,10 @@
 			font-size, width, height, opacity :
 			<button id="eReduce">--</button>
 			<button id="eExpand">++</button>
+		<li>
+			rgba opacity :
+			<button id="eRGBAMinus">--</button>
+			<button id="eRGBAPlus">++</button>
 		<li>
 			<input type="checkbox" id="eBack"><label for="eBack">Retour calculer.</label>
 			<ol>
@@ -480,7 +510,7 @@ new UnitTest( eUnitTest,[
 	{ title:"Objet FX",
 		desc:'',
 		list:[
-			{ title:"_calculateDeltas",
+			{ title:"calculateDeltas",
 				eval:
 `let e = { style:{}}
 window.oFx0 = new Fx ( e, 0, 'linear', 200, 0 )
@@ -491,13 +521,13 @@ oFx0.o2 = { color:'#AABAC0', margin:150 }`,
 					"! oFx0.aAttr",
 					"! oFx0.oDeltas.get('color')",
 					"! oFx0.oDeltas.get('margin')",
-					"Fx._calculateDeltas && ! Fx._calculateDeltas( oFx0 )",
+					"Fx.calculateDeltas && ! Fx.calculateDeltas( oFx0 )",
 					`JSON.stringify( oFx0.oDeltas.get('color') ) === '{"r":10,"g":10,"b":-10,"sType":"Color"}'`,
 					"oFx0.oDeltas.get('margin') === 100",
 					"[...oFx0.aAttr].toString() === 'color,margin'",
 					"! oFx0.oFrames.get('color')",
 					"! oFx0.oFrames.get('margin')",
-					"Fx._createFrames && ! Fx._createFrames( oFx0 )",
+					"Fx.createFrames && ! Fx.createFrames( oFx0 )",
 					"oFx0.fps == 60",
 					"oFx0.time!=200 && oFx0.time==192",
 					"oFx0.oFrames.get('color')[0]===oFx0.o1.color.toHEX().toString('#')",
@@ -800,7 +830,7 @@ new UnitTest( eBenchmarking ,[
 	{ title:"Objet FX",
 		desc:'',
 		list:[
-			{ title:"_calculateDeltas / _createFrames",
+			{ title:"calculateDeltas / createFrames",
 				eval:
 `window.init = ()=>{
 	let e = { style:{}}
@@ -810,8 +840,8 @@ new UnitTest( eBenchmarking ,[
 	}`,
 				assertions:[
 					'init(); oFx.bPlayNow === false',
-					'init(); Fx._calculateDeltas( oFx )',
-					'init(); Fx._createFrames( oFx )',
+					'init(); Fx.calculateDeltas( oFx )',
+					'init(); Fx.createFrames( oFx )',
 					'delete window.oFx'
 					]
 				},
@@ -1034,6 +1064,15 @@ Tests ={
 					eCircle.n = n
 					Tests.defineFx( { opacity: n/500, 'font-size': n, height: n, width: n }, evt )
 					}
+			case 'rgbaPlus':
+			case 'rgbaMinus':
+				return evt =>{
+					eCircle = document.getElementById( eElement.value )
+					let o = Style.get( eCircle, 'backgroundColor' )
+					o.a = sAction=='rgbaPlus' ? o.a+.1 : o.a-.1
+					console.info( eCircle.style.backgroundColor )
+					Tests.defineFx( { 'background-color': o.toString() }, evt )
+					}
 			}
 		},
 	defineFx:( o2, evt )=>{
@@ -1120,6 +1159,8 @@ document.onkeydown = Tests.keyHandler
 ePlayground.onmousedown = Tests.action('move')
 eExpand.onclick = Tests.action( 'expand' )
 eReduce.onclick = Tests.action( 'reduce' )
+eRGBAMinus.onclick = Tests.action( 'rgbaMinus' )
+eRGBAPlus.onclick = Tests.action( 'rgbaPlus' )
 eMethod.onchange = eMethod.onkeyup = ()=>{ ePreserveMergin.disabled = eMethod.value=='concat' }
 eRequestAnimationFrame.onchange = ()=>{
 	if( eFPS.disabled = eRequestAnimationFrame.checked )

@@ -2,7 +2,7 @@
 if(!Color) throw Error("Fx :: Class Color required.")
 if(!Style) throw Error("Fx :: Class Style required.")
 
-Fx=(function(){
+Fx=(function( bDev ){
 	const setEltAttributes=new Set(['cols','rows','scrollLeft','scrollTop'])
 	,notIsSet=m=>m===undefined
 	,_Animation =(function(){
@@ -35,6 +35,104 @@ Fx=(function(){
 					:_create(o.fps).a.push(f)
 				}
 			})()
+	_createFrames=(function(){
+		let o,i,ni,oDelta
+		const oFun={
+			Color:(function(){
+				let f =(s,s1)=>parseInt(o.fFx(i*o.nFrameTime,o.o1[s][s1],oDelta[s1],o.time)||0)
+				return s=>{
+					let aColor =[]
+					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
+						aColor.push( f(s,o.sColorMode.charAt(k)))
+					let sColorMode = o.sColorMode.charAt(3)=='a'? o.sColorMode.substr(0,3) : o.sColorMode
+					o.oFrames.get(s).push( Color[sColorMode].apply( null, aColor ).toHEX().toString('#'))
+					}
+				})(),
+			Frameset:s=>{
+				let a = []
+				for(let k=0, nk=oDelta.length; k<nk; k++ ){
+					if( o.o1[s][k].indexOf('*')>-1 ){
+						a[k]=o.o1[s][k]
+						continue
+						}
+					a[k] = parseInt(o.fFx(i*o.nFrameTime,parseInt(o.o1[s][k]),oDelta[k],o.time)||0)
+					if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
+					}
+				o.oFrames.get(s).push( a.join(','))
+				},
+			default:s=>{
+				let n = o.fFx(i*o.nFrameTime,o.o1[s],oDelta,o.time)||0
+				o.oFrames.get(s).push( n>1 ? parseInt(n) : n )
+				}
+			}
+		return oFx=>{
+			o=oFx
+			_calculateDeltas(o)
+			ni=o.nFrames
+			o.aAttr.forEach(s=>{
+				o.oFrames.set(s,[])
+				i=0
+				if(oDelta=o.oDeltas.get(s))
+					for(let f=oFun[oDelta.sType]||oFun.default;i<ni;i++)
+						f(s)
+				})
+			}
+		})(),
+	_calculateDeltas=(function(){
+		let o, o1, o2, sMode, s
+		, getType =function(s){
+			if(s.indexOf(' ')==0) return 'composed'
+			if(s.indexOf('scroll')==0) return 'Scroll'
+			if(s.indexOf('rows')==0||s.indexOf('cols')==0) return 'Frameset'
+			return /color/i.test(s)?'Color':'style'
+			}
+		, oFun = {
+			composed:()=>{/* box-shadow ? color+position+dim */},
+			Color:()=>{
+				let oDelta=o.oDeltas.set(s,{}).get(s)
+				, f=s1=>oDelta[s1]=o2[s][s1]-o1[s][s1]
+				if(notIsSet(o1[s])) o1[s]=Style.get(o.e,s)
+				var sColorMode = sMode.charAt(3)=='A'?sMode.substr(0,3):sMode
+				o1[s]=Color( o1[s])['to'+ sColorMode ]()
+				o2[s]=Color( o2[s])['to'+ sColorMode ]()
+				for(let i=0,ni=o.sColorMode.length; i<ni; i++ ) f(o.sColorMode[i])
+				},
+			Frameset:()=>{
+				if(notIsSet(o1[s])) o1[s]=o.e[s]
+				let a=[], a1=o1[s].split(','), a2=o2[s].split(',')
+				for(let i=0, ni=a1.length, n1 ; i<ni; i++ ){
+					if( a1[i].indexOf('*')>-1){
+						a[i]=a1[i]
+						continue
+						}
+					a[i] = parseInt(a2[i])-parseInt(a1[i])
+					}
+				o1[s] = a1
+				o.oDeltas.set(s,a)
+				},
+			Scroll:()=>{
+				if(notIsSet(o1[s])) o1[s]=o.e[s]
+				o.oDeltas.set(s,o2[s]-o1[s])
+				},
+			style:()=>{
+				let m1
+				if(notIsSet(o1[s])) m1=Style.get(o.e,s)
+				if(m1) o1[s]=eval( isNaN(m1)? parseInt(m1): m1 ) || 0
+				o.oDeltas.set(s,o2[s]-(o1[s]||0))
+				}
+			}
+		return oFx =>{
+			o=oFx
+			o1=o.o1
+			o2=o.o2
+			sMode = o.sColorMode.toUpperCase()
+			;( o.aAttr = o.aAttr || new Set( Object.keys(o2)) ).forEach( sAttr=>{
+				let sType=getType( s=sAttr )
+				oFun[sType]()
+				o.oDeltas.get(s).sType = sType
+				})
+			}
+		})()
 
 	,Fx=function(e,o2,mEffect=Fx.effect,nTime=200,oSettings){
 		let o=this
@@ -57,7 +155,7 @@ Fx=(function(){
 			})
 		o.time = (o.nFrames-1)*o.nFrameTime //!important
 		if(o2){
-			Fx._createFrames(o)
+			_createFrames(o)
 			Fx.Methods[o.method](o,o.bPreserveMergin)
 			if(o.bPlayNow)Fx.play(e)
 			}
@@ -168,7 +266,6 @@ Fx=(function(){
 			onframe:nId=>{},
 			onlaunch:()=>{}
 			},
-		animation:_Animation,
 		custom(e,oFrames,oSettings){
 			var oFx=new Fx(e,0,0,0,{ bPlayNow:false})
 			,aAttr=new Set
@@ -236,102 +333,7 @@ Fx=(function(){
 				if(e.onstop) e.onstop(oFx)
 				}
 			},
-		_createFrames:(function(){
-			let o,i,ni,oDelta
-			const oFun={
-				Color:(function(){
-					let f =(s,s1)=>parseInt(o.fFx(i*o.nFrameTime,o.o1[s][s1],oDelta[s1],o.time)||0)
-					return s=>{
-						let aColor =[]
-						for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
-							aColor.push( f(s,o.sColorMode.charAt(k)))
-						o.oFrames.get(s).push( Color[ o.sColorMode.substr(0,3)].apply( null, aColor ).toHEX().toString('#'))
-						}
-					})(),
-				Frameset:s=>{
-					let a = []
-					for(let k=0, nk=oDelta.length; k<nk; k++ ){
-						if( o.o1[s][k].indexOf('*')>-1 ){
-							a[k]=o.o1[s][k]
-							continue
-							}
-						a[k] = parseInt(o.fFx(i*o.nFrameTime,parseInt(o.o1[s][k]),oDelta[k],o.time)||0)
-						if( o.o1[s][k].indexOf('%')>-1 ) a[k]+= '%'
-						}
-					o.oFrames.get(s).push( a.join(','))
-					},
-				default:s=>{
-					let n = o.fFx(i*o.nFrameTime,o.o1[s],oDelta,o.time)||0
-					o.oFrames.get(s).push( n>1 ? parseInt(n) : n )
-					}
-				}
-			return oFx=>{
-				o=oFx
-				Fx._calculateDeltas(o)
-				ni=o.nFrames
-				o.aAttr.forEach(s=>{
-					o.oFrames.set(s,[])
-					i=0
-					if(oDelta=o.oDeltas.get(s))
-						for(let f=oFun[oDelta.sType]||oFun.default;i<ni;i++)
-							f(s)
-					})
-				}
-			})(),
-		_calculateDeltas:(function(){
-			let o, o1, o2, sMode, s
-			, getType =function(s){
-				if(s.indexOf(' ')==0) return 'composed'
-				if(s.indexOf('scroll')==0) return 'Scroll'
-				if(s.indexOf('rows')==0||s.indexOf('cols')==0) return 'Frameset'
-				return /color/i.test(s)?'Color':'style'
-				}
-			, oFun = {
-				composed:()=>{/* box-shadow ? color+position+dim */},
-				Color:()=>{
-					let oDelta=o.oDeltas.set(s,{}).get(s)
-					, f=s1=>oDelta[s1]=o2[s][s1]-o1[s][s1]
-					if(notIsSet(o1[s])) o1[s]=Style.get(o.e,s)
-					o1[s]=Color( o1[s])['to'+ sMode ]()
-					o2[s]=Color( o2[s])['to'+ sMode ]()
-					for(let i=0; i<3; i++ ) f(o.sColorMode[i])
-					},
-				Frameset:()=>{
-					if(notIsSet(o1[s])) o1[s]=o.e[s]
-					let a=[], a1=o1[s].split(','), a2=o2[s].split(',')
-					for(let i=0, ni=a1.length, n1 ; i<ni; i++ ){
-						if( a1[i].indexOf('*')>-1){
-							a[i]=a1[i]
-							continue
-							}
-						a[i] = parseInt(a2[i])-parseInt(a1[i])
-						}
-					o1[s] = a1
-					o.oDeltas.set(s,a)
-					},
-				Scroll:()=>{
-					if(notIsSet(o1[s])) o1[s]=o.e[s]
-					o.oDeltas.set(s,o2[s]-o1[s])
-					},
-				style:()=>{
-					let m1
-					if(notIsSet(o1[s])) m1=Style.get(o.e,s)
-					if(m1) o1[s]=eval( isNaN(m1)? parseInt(m1): m1 ) || 0
-					o.oDeltas.set(s,o2[s]-(o1[s]||0))
-					}
-				}
-			return oFx =>{
-				o=oFx
-				o1=o.o1
-				o2=o.o2
-				sMode = o.sColorMode.substr(0,3).toUpperCase()
-				;( o.aAttr = o.aAttr || new Set( Object.keys(o2)) ).forEach( sAttr=>{
-					let sType=getType( s=sAttr )
-					oFun[sType]()
-					o.oDeltas.get(s).sType = sType
-					})
-				}
-			})(),
+
 		Last:(function(){
 			let f=e=>{
 				let o=e.oFx
@@ -474,5 +476,13 @@ Fx=(function(){
 				}
 			}
 		})
+	if( bDev ){
+		Object.assign(Fx,{
+			animation:_Animation,
+			createFrames:_createFrames,
+			calculateDeltas:_calculateDeltas,
+			})
+		}
+	
 	return Fx
-	})()
+	})(1)
