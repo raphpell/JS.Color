@@ -70,38 +70,50 @@ Fx=(function(){
 			let o=this
 			, e=o.e
 			, values=''
+			// animation stoppée
 			if(o.bCanceling) return o.bCanceling=undefined
+			// animation pausée
 			if(!e.sPlaying&&!b){
 				e.oFxPaused=o
 				return false
 				}
+			// animation jouée en arrière
 			let bDesc=e.sPlaying=='playInvert'
-			if(o.nId==null){
+			// première image jouée de l'animation
+			if(o.nId===null){
 				o.nId=bDesc?o.nFrames-1:-1
 				if(o.onlaunch)o.onlaunch()
 				}
+			// récupération id image : animation ou image seule
 			nId=nId===undefined?(bDesc?--o.nId:++o.nId):nId
+			// récupération des valeurs des attributs modifiés
 			if(bDesc?nId>=0:nId<=o.nFrames){
 				o.aAttr.forEach( sAttr=>{
 					let aFrame=o.oFrames.get(sAttr)
 					if(Fx.setEltAttributes.has(sAttr)){
 						e[sAttr]=aFrame[nId]
-						values+=';'//passe if(values)
+						values+=';'// nécessaire if(values)
 						}
 					else values+=Style.validate(sAttr,aFrame[nId])
 					})
 				}
 			o.onframe(nId,b)
 			if(values){
+				// met à jour les valeurs de l'élément animé
 				if(Style)Style.set(e,values)
 				if(!b)_Animation(o)
 			}else{
+				// Dernière animation ou animation suivante
 				o.nId=null
 				if(!o.oncomplete())return false
+				// cas image seule affiché
 				if(b)return o.next?o.next.playFrame(nId-o.nFrames,true):null
+				// cas animation suivante
 				let oNext=bDesc?o.previous:o.next
 				if(oNext)_Animation(oNext)
 					else{
+						// Cas dernière animation
+						// Evénements internes : voir blink entre autre.
 						if(o.onend&&nId>=o.nFrames)return o.onend()
 						if(o.onstart&&nId<0)return o.onstart()
 						Fx.stop(e)
@@ -218,7 +230,7 @@ Fx=(function(){
 			},
 		stop(e){
 			if(e.oFx){
-				for(var o=e.oFx;o;o=o.next) o.bCanceling=1
+				for(var o=e.oFx;o;o=o.next)o.bCanceling=1
 				let oFx = e.oFx
 				e.oFx=e.sPlaying=e.oFxPaused=e.sPausing=undefined
 				if(e.onstop) e.onstop(oFx)

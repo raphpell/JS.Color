@@ -106,6 +106,7 @@
 		<section>
 			<p>Cet objet permet de créer des animations complexes d'un élément html.</p>
 			<p>Ces animations peuvent être concaténer, fusionner ou 'pousser à la suite'...ou_ altérer.</p>
+			<p>Seul les attributs simples simples sont gérer avec une valeur en pixel ou une couleur rgb,rgba,... (pas de nom de couleur).</p>
 			<p>Syntaxe: <code>var oFx = new Fx ( eHtmlElement [, o2 [, mEffect [, nTime [, oSettings ]]]])</code></p>
 			<dl>
 				<dt><var>e</var> : <i>HTMLElement</i></dt>
@@ -140,7 +141,7 @@
 			</dl>
 		</section>
 		<section><h2>Instances</h2>
-			<section style="background:red;"><h3> playFrame (<var> nId, [ bJustOne=false ]</var>)</h3>
+			<section><h3> playFrame (<var> nId, [ bJustOne=false ]</var>)</h3>
 				<p>Joue une image de l'animation...</p>
 				<dl>
 					<dt><var>nId</var> <i>Number</i> - Numéro de l'image.</dt>
@@ -234,14 +235,14 @@
 					<p>Evénement déclenché au début de l'animation.</p>
 				</section>
 			</section>
-			<section style="background:red;"><h3>Evénements privés</h3>
+			<section style="background:#eee;"><h3>Evénements privés</h3>
+				<p>Ils sont déclenchés à la fin d'une suite d'animations.</p>
 				<p>Ces événements 'privés' sont utilisés par les méthodes <var>blink, repeat, reverse</var>.</p>
-				<p>Ils sont déclenchés uniquement si aucune animation n'a été ajouter à la suite de cette animation.</p>
 				<section><h4>onend</h4>
-					<p>Evénement déclenché quand le nombre d'image de l'animation est dépassé.</p>
+					<p>Evénement déclenché à la fin d'une suite d'animations <b>jouée à l'endroit</b>.</p>
 				</section>
 				<section><h4>onstart</h4>
-					<p>Evénement déclenché quand le numéro de l'image à jouer est égale à -1...</p>
+					<p>Evénement déclenché à la fin d'une suite d'animations <b>jouée à l'envers</b>.</p>
 				</section>
 			</section>
 		</section>
@@ -249,8 +250,8 @@
 			<section><h3>oDefaultSettings : Object</h3>
 				<p>.</p>
 			</section>
-			<section style="background:red;"><h3>animation (<var> oFx </var>)</h3>
-				<p>Ajoute une animation à jouer.</p>
+			<section style="background:#eee;"><h3>animation (<var> oFx </var>)</h3>
+				<p>Ajoute une animation à jouer... cette fonction privée est visible pour le benchmarking.</p>
 				<dl>
 					<dt><var>oFx</var> : <i>Fx</i>. Instance de Fx.</dt>
 				</dl>
@@ -272,31 +273,31 @@
 				<p>.</p>
 			</section>
 			<section><h3>pause (<var> e </var>)</h3>
-				<p>Pause une animation.</p>
+				<p>Pause la suite d'animations d'un élment HTML.</p>
 				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>playing (<var> e </var>)</h3>
-				<p>Indique si l'animation est jouée ou est en pause.</p>
+				<p>Indique si l'animation d'un élément est jouée ou est en pause.</p>
 				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>play (<var> e </var>)</h3>
-				<p>Joue l'animation depuis son début...</p>
+				<p>Joue la suite d'animations d'un élément depuis son début...</p>
 				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>playInvert (<var> e </var>)</h3>
-				<p>Joue l'animation depuis sa fin...</p>
+				<p>Joue la suite d'animations d'un élément depuis sa fin...</p>
 				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 			</section>
 			<section><h3>stop (<var> e </var>)</h3>
-				<p>Stoppe l'animation.</p>
+				<p>Stoppe l'animation d'un élément.</p>
 				<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
 				<p>L'animation est détruite mais récupérable avec l'événement e.onstop( oFx ).</p>
 			</section>
-			<section><h3>_createFrames (<var> oFx </var>)</h3>
-				<p>.</p>
+			<section style="background:#eee;"><h3>_createFrames (<var> oFx </var>)</h3>
+				<p>Créé les images de l'animation... cette fonction privée est visible pour le benchmarking.</p>
 			</section>
-			<section><h3>_calculateDeltas (<var> oFx </var>)</h3>
-				<p>.</p>
+			<section style="background:#eee;"><h3>_calculateDeltas (<var> oFx </var>)</h3>
+				<p>Calcul la différence entre l'état final et l'état initial... cette fonction privée est visible pour le benchmarking.</p>
 			</section>
 			<section><h3>Last (<var> e </var>)</h3>
 				<p>.</p>
@@ -306,11 +307,14 @@
 				</section>
 			</section>
 			<section><h3>.Methods</h3>
-				<section><h4>.concat (<var> oFx </var>)</h4>
+				<section><h4>concat (<var> oFx </var>)</h4>
+					<p>Ajoute l'animation à la suite d'animations de l'élément <var>oFx.e</var>.</p>
 				</section>
 				<section><h4>merge (<var> oFx, bPreserve </var>)</h4>
+					<p>Fusionne l'animation à la dernière animation de la suite de'animations de l'élément <var>oFx.e</var>.</p>
 				</section>
 				<section><h4>push (<var> oFx </var>)</h4>
+					<p>Pousse les images de l'animation derrière la dernière animation de la suite d'animations de l'élément <var>oFx.e</var>.</p>
 				</section>
 			</section>
 			<section><h3>Effects</h3>
@@ -374,7 +378,8 @@
 				<option value="e2">2</option>
 				<option value="e3" select>3</option>
 			</select>
-			<label for="eType">Effet : </label>
+			Cliquer pour déplacement l'élément
+		<li><label for="eType">Effet : </label>
 			<select id="eTransition">
 				<option value="linear">linear</option>
 				<option value="quad">quad</option>
