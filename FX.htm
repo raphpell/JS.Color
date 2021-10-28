@@ -40,9 +40,9 @@
 			justify-content: center;
 			align-items: center;
 			}
-		.red { background: rgba(255,0,0,.5);}
-		.green { background: rgba(0,255,0,.5); }
-		.blue { background: rgba(0,0,255,.5); }
+		.red { background-color: rgba(255,0,0,1);}
+		.green { background-color: rgba(0,255,0,1); }
+		.blue { background-color: rgba(0,0,255,1); }
 
 		#eReduce , #eExpand {
 			cursor: pointer; cursor: hand;
@@ -260,7 +260,7 @@
 					<dt><code>bAnimationFrame : true</code> - Utilisation du système d'animation natif javascript.</dt>
 					<dt><code>fps : 60</code> - Si bAnimationFrame est égale à false, nombre d'images par seconde.</dt>
 					<dt><code>method : 'concat'</code> - Choix possibles: concat || merge || push.</dt>
-					<dt><code>sColorMode : 'rgb'</code> - Choix possibles: rgb || hsv || hsl.</dt>
+					<dt><code>sColorMode : 'rgb'</code> - Choix possibles: rgb || hsv || hsl || rgba || hsva || hsla || cmyk.</dt>
 					<dt><code>time : 500</code>- Temps des animations par défaut.</dt>
 					<dt><code>oncomplete : ()=>true</code>- Méthode lancé à la fin d'une animation. Si elle retourne false, la suite d'animations est stoppée.</dt>
 					<dt><code>onframe : nId=>{}</code>- Méthode lancé à chaque image d'une animation.</dt>
@@ -424,11 +424,11 @@
 			<label for="eType">Mode couleur : </label>
 			<select id="eColorMode">
 				<option value="rgb">rgb</option>
-				<option value="rgb">rgba</option>
+				<option value="rgba"selected>rgba</option>
 				<option value="hsv">hsv</option>
-				<option value="hsv">hsva</option>
+				<option value="hsva">hsva</option>
 				<option value="hsl">hsl</option>
-				<option value="hsl">hsla</option>
+				<option value="hsla">hsla</option>
 				<option value="cmyk">cmyk</option>
 			</select>
 			<label for="eColor1">Couleur 1 : </label><input id="eColor1" type="color" value="#FF0000">
@@ -456,9 +456,10 @@
 			<button id="eReduce">--</button>
 			<button id="eExpand">++</button>
 		<li>
-			rgba opacity :
+			Opacité couleur : 
 			<button id="eRGBAMinus">--</button>
 			<button id="eRGBAPlus">++</button>
+			( Mode couleur avec opacité nécessaire: rgba, hsva ou hsla )
 		<li>
 			<input type="checkbox" id="eBack"><label for="eBack">Retour calculer.</label>
 			<ol>
@@ -513,7 +514,7 @@ new UnitTest( eUnitTest,[
 			{ title:"calculateDeltas",
 				eval:
 `let e = { style:{}}
-window.oFx0 = new Fx ( e, 0, 'linear', 200, 0 )
+window.oFx0 = new Fx ( e, null, 'linear', 200, { bColorRGBA:false })
 oFx0.o1 = { color:'#A0B0CA', margin:50 }
 oFx0.o2 = { color:'#AABAC0', margin:150 }`,
 				assertions:[
@@ -1042,7 +1043,7 @@ Tests ={
 		ePlayInvert.checked = false
 		eClear.checked = false
 		eBack.checked = false
-		eColorMode.value = 'hsv'
+		eColorMode.value = 'hsva'
 		},
 
 	// FX
@@ -1068,9 +1069,12 @@ Tests ={
 			case 'rgbaMinus':
 				return evt =>{
 					eCircle = document.getElementById( eElement.value )
-					let o = Style.get( eCircle, 'backgroundColor' )
-					o.a = sAction=='rgbaPlus' ? o.a+.1 : o.a-.1
-					console.info( eCircle.style.backgroundColor )
+					let o = Color( Style.get( eCircle, 'background-color' ))
+					o.a = ! o.a && o.a!==0 ? 1 : o.a
+					o.mode = 'rgba'
+					o.a = sAction=='rgbaPlus'
+						? (o.a<0.8?o.a+0.2:1)
+						: (o.a>0.2?o.a-0.2:0)
 					Tests.defineFx( { 'background-color': o.toString() }, evt )
 					}
 			}
@@ -1087,12 +1091,11 @@ Tests ={
 			bAnimationFrame: eRequestAnimationFrame.checked,
 			fps: eFPS.value
 			})
-
+	//	console.info( oFx )
 		if( eBack.checked ) oFx = oFx.back()
 		if( eReverse.checked ) oFx.reverse()
 		if( eBlinked.checked ) oFx.blink( eBlink.value || undefined )
 		if( eRepeated.checked ) oFx.repeat( eRepeat.value || undefined )
-		
 		if( ! Fx.playing( eCircle )) Tests[ ePlay.checked ? 'play' : 'addFrames' ]()
 		return Events.stop( evt )
 		},

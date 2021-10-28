@@ -39,13 +39,19 @@ Fx=(function( bDev ){
 		let o,i,ni,oDelta
 		const oFun={
 			Color:(function(){
-				let f =(s,s1)=>parseInt(o.fFx(i*o.nFrameTime,o.o1[s][s1],oDelta[s1],o.time)||0)
+				let f =(s,s1)=>{
+					let n = o.fFx(i*o.nFrameTime,o.o1[s][s1],oDelta[s1],o.time)||0
+					return n>1?parseInt(n):n.toFixed(2)
+					}
 				return s=>{
 					let aColor =[]
 					for(let k=0, nk=o.sColorMode.length, s1; k<nk; k++ )
 						aColor.push( f(s,o.sColorMode.charAt(k)))
 					let sColorMode = o.sColorMode.charAt(3)=='a'? o.sColorMode.substr(0,3) : o.sColorMode
-					o.oFrames.get(s).push( Color[sColorMode].apply( null, aColor ).toHEX().toString('#'))
+					o.oFrames.get(s).push( o.bColorRGBA
+						? Color[sColorMode].apply( null, aColor ).toRGB().toString()
+						: Color[sColorMode].apply( null, aColor ).toHEX().toString('#')
+						)
 					}
 				})(),
 			Frameset:s=>{
@@ -95,6 +101,10 @@ Fx=(function( bDev ){
 				var sColorMode = sMode.charAt(3)=='A'?sMode.substr(0,3):sMode
 				o1[s]=Color( o1[s])['to'+ sColorMode ]()
 				o2[s]=Color( o2[s])['to'+ sColorMode ]()
+				if( o.bColorRGBA ){
+					if( o1[s].a===null) o1[s].a = 1
+					if( o2[s].a===null) o2[s].a = 1
+					}
 				for(let i=0,ni=o.sColorMode.length; i<ni; i++ ) f(o.sColorMode[i])
 				},
 			Frameset:()=>{
@@ -223,7 +233,7 @@ Fx=(function( bDev ){
 		back(s,n){
 			let o2={},o1=this.o1
 			this.aAttr.forEach(s=>{o2[s]=o1[s]})
-			return new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'concat'})
+			return new Fx(this.e,o2,s||this.fFx,n||this.time,{bPlayNow:false,method:'concat',sColorMode:this.sColorMode})
 			},
 		blink(n){
 			let o=this,b=notIsSet(n)
@@ -261,6 +271,7 @@ Fx=(function( bDev ){
 			fps:60,
 			method:'concat',
 			sColorMode:'rgb',
+			bColorRGBA:true,
 			time:500,
 			oncomplete:()=>true,
 			onframe:nId=>{},
