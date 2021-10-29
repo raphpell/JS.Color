@@ -255,6 +255,7 @@
 			<section><h3>oDefaultSettings : Object</h3>
 				<p>Paramètres par défaut des animations.</p>
 				<dl>
+					<dt><code>bColorRGBA : true</code> - Stockage des couleurs en rgba ou hexadécimal (sans opacité) à false.</dt>
 					<dt><code>bPlayNow : true</code> - Animation jouée immédiatement une fois créée.</dt>
 					<dt><code>bPreserveMergin : true</code> - Si la méthode d'ajout est 'merge', protection des attributs de l'effet déjà existant.</dt>
 					<dt><code>bAnimationFrame : true</code> - Utilisation du système d'animation natif javascript.</dt>
@@ -283,11 +284,19 @@
 					</p>
 				</section>
 			</section>
-			<section><h3>custom (<var> e,oFrames,fps,oSettings </var>)</h3>
-				<p>.</p>
+			<section><h3>custom (<var> e,oFrames,oSettings </var>)</h3>
+				<p>Ajoute à la suite d'animations de l'élément e, une animation personnalisée.</p>
+				<dl>
+					<dl><dt><var>e</var> : <i>HTMLElement</i></dt></dl>
+					<dt><var>oFrames</var> <i>Object</i> - Objet contenant pour chaque attribut modifié de l'élément un tableau des valeurs.</dt>
+					<dt><var>oSettings</var> <i>Object</i> - Configuration de l'animation.</dt>
+				</dl>
+				<p>Retourne l'animation Fx créée.</p>
 			</section>
 			<section><h3>getEffect (<var> m </var>)</h3>
-				<p>.</p>
+				<p>Cherche la fonction dans Fx.Effects à utiliser pour calculer une transition d'un effet. </p>
+				<dl><dt><var>m</var> : <i>String ou Function</i> Nom d'un effet (exemples: "linear" ou "expo.out"), ou une fonction répondant au critère des effets.</dt></dl>
+				<p>Par défaut elle retourne la fonction <var>Fx.Effects.linear</var>. </p>
 			</section>
 			<section><h3>pause (<var> e </var>)</h3>
 				<p>Pause la suite d'animations d'un élment HTML.</p>

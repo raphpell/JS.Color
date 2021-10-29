@@ -144,7 +144,7 @@ Fx=(function( bDev ){
 			}
 		})()
 
-	,Fx=function(e,o2,mEffect=Fx.effect,nTime=200,oSettings){
+	,Fx=function(e,o2,mEffect=Fx.effect,nTime=200,oSettings={}){
 		let o=this
 		Object.assign(o,Fx.oDefaultSettings,oSettings)
 		if(o.bPlayNow)Fx.stop(e)
@@ -265,13 +265,13 @@ Fx=(function( bDev ){
 		setEltAttributes:setEltAttributes,
 		effect:'bounce.out',
 		oDefaultSettings:{
+			bColorRGBA:true,
 			bPlayNow:true,
 			bPreserveMergin:true,
 			bAnimationFrame:true, // plus performant !
 			fps:60,
 			method:'concat',
 			sColorMode:'rgb',
-			bColorRGBA:true,
 			time:500,
 			oncomplete:()=>true,
 			onframe:nId=>{},
