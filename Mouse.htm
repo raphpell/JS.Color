@@ -68,7 +68,7 @@
 				<dl>
 					<dt><var>evt</var> <i>MouseEvent</i> - Idéalement <code>mousedown</code>.</dt>
 				</dl>
-				<p>Retourne 'left','middle','right','back' ou 'forward'.</p>
+				<p>Retourne 'mouseLeft','mouseMiddle','mouseRight','mouseBack' ou 'mouseForward'.</p>
 			</section>
 			<section><h3>buttons ( evt )</h3>
 				<p>Récupére la liste des boutons souris pressés.</p>
@@ -76,7 +76,7 @@
 					<dt><var>evt</var> <i>MouseEvent</i> - Idéalement <code>mousedown</code> ou <code>mouseup</code>.</dt>
 				</dl>
 				<p>
-					Retourne une chaîne de la forme <var>'forward+back+middle+right+left'</var>.
+					Retourne une chaîne de la forme <var>'mouseForward+mouseBack+mouseMiddle+mouseRight+mouseLeft'</var>.
 				</p>
 				<ul>
 					<li>Certaines combinaisons sont impossibles, dont celle en exemple.</li>
@@ -116,10 +116,10 @@
 				<dl>
 					<dt><var>evt</var> <i>MouseEvent</i> - Idéalement <code>wheel</code>.</dt>
 				</dl>
-				<p>Retourne <var>'down'</var> ou <var>'up'</var>.</p>
+				<p>Retourne <var>'mouseDown'</var> ou <var>'mouseUp'</var>.</p>
 			</section>
 		</section>
-		<section><h2>Variables privées</h2>
+		<section><h2>Attributs privées</h2>
 			<p>Quelques détails techniques.</p>
 			<section><h3>getEvent ( evt )</h3>
 				<p>Pour une raison historique j'ai gardé cette fonction récupérant un événement...</p>
