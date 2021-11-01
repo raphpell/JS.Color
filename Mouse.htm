@@ -83,6 +83,27 @@
 					<li>L'ordre d'apparition des touches correspond à l'exemple.</li>
 				</ul>
 			</section>
+			<section><h3>keys ( evt )</h3>
+				<p>Récupére la liste des touches du clavier spéciales pressées.</p>
+				<dl>
+					<dt><var>evt</var> <i>MouseEvent</i>.</dt>
+				</dl>
+				<p>
+					Retourne une chaîne de la forme <var>'CTRL+ALT+SHIFT+META'</var>.
+				</p>
+				<ul>
+					<li>L'ordre d'apparition des touches correspond à l'exemple.</li>
+				</ul>
+			</section>
+			<section><h3>shortcut ( evt )</h3>
+				<p>Récupére le nom du raccourcie.</p>
+				<dl>
+					<dt><var>evt</var> <i>MouseEvent</i>.</dt>
+				</dl>
+				<p>
+					Retourne une chaîne de la forme <var>Mouse.keys+Mouse.buttons+Mouse.wheel</var>.
+				</p>
+			</section>
 			<section><h3>position ( evt )</h3>
 				<p>Récupère la position de la souris.</p>
 				<dl>
@@ -105,6 +126,9 @@
 				<dl>
 					<dt><var>evt</var> <i>MouseEvent</i></dt>
 				</dl>
+			</section>
+			<section><h3>- : String</h3>
+				<p>Préfixe des noms de boutons. Par défaut <code>'mouse'</code>.</p>
 			</section>
 			<section><h3>a : Array</h3>
 				<p>Tableau contenant les noms des touches, la clé étant leur identifiant <code>MouseEvent.button</code>.</p>
@@ -161,27 +185,25 @@ layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
 // PLAYGROUND
 Object.assign( Mouse, {
 	showButtons :e=>{
-		let f =( e, s )=>{
-			if( s ) e.className = 'mouse'+s.charAt(0).toUpperCase()+s.substr(1) 
-			}
+		let f =(e,s)=>{ if(s) e.className=s }
+		, s
 		if( eButtons.checked ){
-			let s = Mouse.buttons(e)
-			eMouseInfo.innerHTML = s
+			s = Mouse.buttons(e)
 			let a = s.split('+')
 			for(let i=0,ni=a.length;i<ni;i++)
 				f( document.getElementById( 'eMouseLayer'+i ), a[i])
 		}else{
-			let s = Mouse.button(e)
-			eMouseInfo.innerHTML = s
+			s = Mouse.button(e)
 			f( eMouseLayer0, s )
 			}
+		eMouseInfo.innerHTML = Mouse.shortcut(e)
 		},
 	showWheel :(function(){
 		let nTimeOut1
 		return e=>{
-			let s = Mouse.wheel( e )
-			eMouseInfo.innerHTML = s
-			eMouseLayer5.className = 'mouse'+s.charAt(0).toUpperCase()+s.substr(1) 
+			let s = Mouse.wheel(e)
+			eMouseInfo.innerHTML = Mouse.shortcut(e)
+			eMouseLayer5.className = s
 			if( nTimeOut1 ) clearTimeout( nTimeOut1 )
 			nTimeOut1 = setTimeout( ()=>eMouseLayer5.className = '', 100 )
 			}
