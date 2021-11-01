@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Clavier.js</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/page.css">
+	<link rel="stylesheet" type="text/css" href="css/doc.css">
+	<link rel="stylesheet" type="text/css" href="css/unittest.css">
+	<style>
+		.red {
+			background: red;
+			color: #FFF;
+			}
+		.green {
+			background: lime;
+			}
+	</style>
+</head>
+<body>
+
+<ul class="pageMenu">
+	<li><a href="index.htm">JS.Objects</a></li>
+	<li onclick="goTo( eDoc )" id="eDocMenu">Documentation</li>
+	<li onclick="goTo( ePlayground )" id="ePlaygroundMenu">Playground</li>
+</ul>
+
+<page id="ePreload" class="active">
+	chargement...
+</page>
+<page id="eDoc">
+	<h1>Objet Clavier</h1>
+	<div id="eSummary1"></div>
+
+	<div class="doc">
+		<section><h2></h2>
+			<p>.</p>
+			<section><h3></h3>
+				<p>.</p>
+				<dl>
+					<dt><var></var> <i></i> - .</dt>
+				</dl>
+				<p></code></p>
+			</section>
+		</section>
+	</div>
+</page>
+<page id="ePlayground">
+	<h1>Playground</h1>
+	
+	<table border="2" cellpadding="5" cellspacing="5">
+		<caption><a href="http://www.w3.org/2002/09/tests/keys.html">W3C - Key and Character Codes vs. Event Types</a></caption>
+		<tr><th id="eEventType"></th><th class="green">keydown</th><th class="green">keyup</th></tr>
+		<tr>
+			<td>
+				nCode<br>
+				String.fromCharCode(nCode)<br>
+				Clavier.alt<br>
+				Clavier.ctrl<br>
+				Clavier.meta<br>
+				Clavier.shift<br>
+				Clavier.key
+			</td>
+			<td id="keydown"></td>
+			<td id="keyup"></td>
+		</tr>
+	</table>
+	<p><code>nCode = Clavier.code(evt)</code></p>
+	<p>Raccourcie <code id="eShortCut"></code></p>
+</page>
+
+<script src="src/Clavier.js"></script>
+<script src="js/page.js"></script>
+<script src="js/doc.js"></script>
+<script>
+/*
+La page est en chargement
+Insérer le code à charger ci-dessous
+*/
+
+// DOCUMENTATION
+layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
+
+// PLAYGROUND
+var fTest = function(evt){
+	var e = document.getElementById( evt.type )
+	, nCode = Clavier.code(evt)
+	e.innerHTML = nCode + "<br>"
+		+ String.fromCharCode( nCode )  + "<br>"
+		+ Clavier.alt + "<br>"
+		+ Clavier.ctrl + "<br>"
+		+ Clavier.meta + "<br>"
+		+ Clavier.shift + "<br>"
+		+ Clavier.key + "<br>"
+	eEventType.innerHTML = evt.type
+	eShortCut.innerHTML = Clavier.shortcut(evt)
+	}
+document.onkeydown =
+document.onkeyup = fTest
+
+/*
+Une fois le code charger, afficher de la page d'accueil !!
+*/
+goTo()
+</script>
+
+</body>
+</html>
