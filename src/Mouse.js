@@ -1,43 +1,28 @@
 Mouse =(function(){
-	const ButtonSet = new Set (['mousedown','mouseup'])
-	, WheelSet = new Set (['mousewheel','DOMMouseScroll'])
-	, getEvent = evt=>evt?evt:(window.event?window.event:null)
+	const EventsSet=new Set(['mousedown','mouseup','mousemove','wheel'])
+	, getEvent=evt=>evt?evt:(window.event?window.event:null)
+	, a=['left','middle','right','back','forward']
+	, o={1:a[0],2:a[2],4:a[1],8:a[3],16:a[4]}
 	return {
-		button :function( evt ){
-			evt = getEvent( evt )
-			if( ButtonSet.has( evt.type )){
-				var n = evt.which
-				if( n ) switch( n ){
-					case 1 : return 'left'
-				//	case 2 : return "middle"
-					case 3 : return 'right'
-					default: return n
-					}
-				n = evt.button
-				if( n ) switch( n ){
-					case 1 : return 'left'
-					case 2 : return 'right'
-				//	case 4 : return "middle"
-					default: return n
-					}
-				}
-			return ''
+		button:function(evt){
+			return a[getEvent(evt).button]
 			},
-		position :function( evt ){
-			evt = getEvent( evt )
-			var o = { 
-				left: evt.pageX ? evt.pageX : evt.clientX || 0 , 
-				top: evt.pageY ? evt.pageY : evt.clientY || 0
-				}
-			return o
+		buttons:function(evt){
+			let n=getEvent(evt).buttons||0
+			,a=[]
+			,f=(nId)=>{if(n>=nId){a.push(o[nId]);n-=nId}}
+			f(16);f(8);f(4);f(2);f(1)
+			return a.join('+')
 			},
-		wheel :function(evt){
-			evt = getEvent( evt )
-			if( WheelSet.has( evt.type )){
-				var n = evt.wheelDelta ? evt.wheelDelta / 120 : -( evt.detail || 0 ) / 3
-				return n < 0 ? 'down' : 'up'
+		position:function(evt){
+			evt=getEvent(evt)
+			return{ 
+				left:evt.pageX||evt.clientX||0,
+				top:evt.pageY||evt.clientY||0
 				}
-			return ''
+			},
+		wheel:function(evt){
+			return getEvent(evt).deltaY>0?'down':'up'
 			}
 		}
 	})()

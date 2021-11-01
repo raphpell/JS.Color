@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Mouse.js</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/page.css">
+	<link rel="stylesheet" type="text/css" href="css/doc.css">
+	<style>
+		#eMouse {
+			position: relative;
+			}
+		#eMouse,
+		#eMouse * {
+			width: 120px;
+			height: 150px;
+			}
+		#eMouse * {
+			position: absolute;
+			}
+		.mouse {
+			background: url(img/Mouse.png) 0 0 ;
+			}
+		.mouseLeft {
+			background: url(img/Mouse.png) -120px 0;
+			}
+		.mouseRight {
+			background: url(img/Mouse.png) -240px 0;
+			}
+		.mouseMiddle {
+			background: url(img/Mouse.png) -360px 0;
+			}
+		.mouseUp {
+			background: url(img/Mouse.png) -480px 0;
+			}
+		.mouseDown {
+			background: url(img/Mouse.png) -600px 0;
+			}
+		.mouseMove {
+			background: url(img/Mouse.png) -720px 0;
+			}
+		.mouseForward {
+			background: url(img/Mouse.png) -840px 0;
+			}
+		.mouseBack {
+			background: url(img/Mouse.png) -960px 0;
+			}
+	</style>
+</head>
+<body>
+
+<ul class="pageMenu">
+	<li><a href="index.htm">JS.Objects</a></li>
+	<li onclick="goTo( eDoc )" id="eDocMenu">Documentation</li>
+	<li onclick="goTo( ePlayground )" id="ePlaygroundMenu">Playground</li>
+</ul>
+
+<page id="ePreload" class="active">
+	chargement...
+</page>
+<page id="eDoc">
+	<h1>Objet Mouse</h1>
+	<div id="eSummary1"></div>
+
+	<div class="doc">
+		<section><h2>Méthodes objet</h2>
+			<section><h3>button ( evt )</h3>
+				<p>Récupére le bouton souris pressé.</p>
+				<dl>
+					<dt><var>evt</var> <i>MouseEvent</i> - Idéalement <code>mousedown</code>.</dt>
+				</dl>
+				<p>Retourne 'left','middle','right','back' ou 'forward'.</p>
+			</section>
+			<section><h3>buttons ( evt )</h3>
+				<p>Récupére la liste des boutons souris pressés.</p>
+				<dl>
+					<dt><var>evt</var> <i>MouseEvent</i> - Idéalement <code>mousedown</code> ou <code>mouseup</code>.</dt>
+				</dl>
+				<p>
+					Retourne une chaîne de la forme <var>'forward+back+middle+right+left'</var>.
+				</p>
+				<ul>
+					<li>Certaines combinaisons sont impossibles, dont celle en exemple.</li>
+					<li>L'ordre d'apparition des touches correspond à l'exemple.</li>
+				</ul>
+			</section>
+			<section><h3>position ( evt )</h3>
+				<p>Récupère la position de la souris.</p>
+				<dl>
+					<dt><var>evt</var> <i>MouseEvent</i>.</dt>
+				</dl>
+				<p>Retourne un objet avec les attributs <var>left</var> et <var>top</var>.</p>
+			</section>
+			<section><h3>wheel ( evt )</h3>
+				<p>Retourne la direction dans laquelle est tournée la molette.</p>
+				<dl>
+					<dt><var>evt</var> <i>MouseEvent</i> - Idéalement <code>wheel</code>.</dt>
+				</dl>
+				<p>Retourne <var>'down'</var> ou <var>'up'</var>.</p>
+			</section>
+		</section>
+		<section><h2>Variables privées</h2>
+			<p>Quelques détails techniques.</p>
+			<section><h3>getEvent ( evt )</h3>
+				<p>Pour une raison historique j'ai gardé cette fonction récupérant un événement...</p>
+				<dl>
+					<dt><var>evt</var> <i>MouseEvent</i></dt>
+				</dl>
+			</section>
+			<section><h3>a : Array</h3>
+				<p>Tableau contenant les noms des touches, la clé étant leur identifiant <code>MouseEvent.button</code>.</p>
+				<ul>
+					<li><var>0</var> <i>left</i>.</li>
+					<li><var>1</var> <i>middle</i>.</li>
+					<li><var>2</var> <i>right</i>.</li>
+					<li><var>3</var> <i>back</i>.</li>
+					<li><var>4</var> <i>forward</i>.</li>
+				</ul>
+			</section>
+			<section><h3>o : Object</h3>
+				<p>Objet contenant les pairs identifiant <code>MouseEvent.buttons</code>/nom de touche.</p>
+				<dl>
+				<ul>
+					<li><var>1</var> <i>left</i>.</li>
+					<li><var>2</var> <i>right</i>.</li>
+					<li><var>4</var> <i>middle</i>.</li>
+					<li><var>8</var> <i>back</i>.</li>
+					<li><var>16</var> <i>forward</i>.</li>
+				</ul>
+				</dl>
+			</section>
+		</section>
+	</div>
+</page>
+<page id="ePlayground">
+	<h1>Playground</h1>
+	<input type="checkbox" id="eButtons" checked><label for="eButtons">Détecter plusieurs boutons.</label>
+	<div id="eMouse" class="mouse">
+		<div id="eMouseLayer0"></div>
+		<div id="eMouseLayer1"></div>
+		<div id="eMouseLayer2"></div>
+		<div id="eMouseLayer3"></div>
+		<div id="eMouseLayer4"></div>
+		<div id="eMouseLayer5"></div>
+		<div id="eMouseLayer6"></div>
+	</div>
+	<div id="eMouseInfo"></div>
+</page>
+
+<script src="js/page.js"></script>
+<script src="js/doc.js"></script>
+<script src="src/Mouse.js"></script>
+<script>
+/*
+La page est en chargement
+Insérer le code à charger ci-dessous
+*/
+
+// DOCUMENTATION
+layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
+
+// PLAYGROUND
+Object.assign( Mouse, {
+	showButtons :e=>{
+		let f =( e, s )=>{
+			if( s ) e.className = 'mouse'+s.charAt(0).toUpperCase()+s.substr(1) 
+			}
+		if( eButtons.checked ){
+			let s = Mouse.buttons(e)
+			eMouseInfo.innerHTML = s
+			let a = s.split('+')
+			for(let i=0,ni=a.length;i<ni;i++)
+				f( document.getElementById( 'eMouseLayer'+i ), a[i])
+		}else{
+			let s = Mouse.button(e)
+			eMouseInfo.innerHTML = s
+			f( eMouseLayer0, s )
+			}
+		},
+	showWheel :(function(){
+		let nTimeOut1
+		return e=>{
+			let s = Mouse.wheel( e )
+			eMouseInfo.innerHTML = s
+			eMouseLayer5.className = 'mouse'+s.charAt(0).toUpperCase()+s.substr(1) 
+			if( nTimeOut1 ) clearTimeout( nTimeOut1 )
+			nTimeOut1 = setTimeout( ()=>eMouseLayer5.className = '', 100 )
+			}
+		})(),
+	showMove :(function(){
+		let nTimeOut2
+		return e=>{
+			eMouseLayer6.className = 'mouseMove'
+			eMouseInfo.innerHTML = JSON.stringify( Mouse.position(e))
+			if( nTimeOut2 ) clearTimeout( nTimeOut2 )
+			nTimeOut2 = setTimeout( ()=>eMouseLayer6.className = '', 100 )
+			}
+		})(),
+	reset :e=>{
+		eMouse.className = 'mouse'
+		for(let e=eMouse.firstChild;e;e=e.nextSibling ) e.className = ""
+		if( eButtons.checked ) Mouse.showButtons(e)
+		},
+	})
+
+ePlayground.onmousedown = Mouse.showButtons
+ePlayground.onmouseup = Mouse.reset
+ePlayground.onwheel = Mouse.showWheel
+ePlayground.onmousemove = Mouse.showMove
+
+
+/*
+Une fois le code charger, afficher de la page d'accueil !!
+... sans setTimeout SVP !
+*/
+setTimeout( ()=>goTo(), 10 )
+</script>
+
+</body>
+</html>
