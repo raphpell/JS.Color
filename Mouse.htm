@@ -8,6 +8,7 @@
 	<style>
 		#eMouse {
 			position: relative;
+			display: inline-block;
 			}
 		#eMouse,
 		#eMouse * {
@@ -157,17 +158,19 @@
 </page>
 <page id="ePlayground">
 	<h1>Playground</h1>
-	<input type="checkbox" id="eButtons" checked><label for="eButtons">Détecter plusieurs boutons.</label>
-	<div id="eMouse" class="mouse">
-		<div id="eMouseLayer0"></div>
-		<div id="eMouseLayer1"></div>
-		<div id="eMouseLayer2"></div>
-		<div id="eMouseLayer3"></div>
-		<div id="eMouseLayer4"></div>
-		<div id="eMouseLayer5"></div>
-		<div id="eMouseLayer6"></div>
+	<div style="text-align:center;">
+		<div><input type="checkbox" id="eButtons" checked><label for="eButtons">Détecter plusieurs boutons.</label></div>
+		<div id="eMouse" class="mouse">
+			<div id="eMouseLayer0"></div>
+			<div id="eMouseLayer1"></div>
+			<div id="eMouseLayer2"></div>
+			<div id="eMouseLayer3"></div>
+			<div id="eMouseLayer4"></div>
+			<div id="eMouseLayer5"></div>
+			<div id="eMouseLayer6"></div>
+		</div>
+		<div id="eMouseInfo"></div>
 	</div>
-	<div id="eMouseInfo"></div>
 </page>
 
 <script src="js/page.js"></script>
