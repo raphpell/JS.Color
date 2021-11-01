@@ -7,13 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="css/doc.css">
 	<link rel="stylesheet" type="text/css" href="css/unittest.css">
 	<style>
-		.red {
-			background: red;
-			color: #FFF;
-			}
-		.green {
-			background: lime;
-			}
+
 	</style>
 </head>
 <body>
@@ -32,31 +26,71 @@
 	<div id="eSummary1"></div>
 
 	<div class="doc">
-		<section><h2></h2>
-			<p>.</p>
-			<section><h3></h3>
-				<p>.</p>
+		<section>
+			<p>Gestion des touches clavier.</p>
+		</section>
+		<section><h2>Méthodes objets</h2>
+			<section><h3>code (evt)</h3>
+				<p>Retourne le code de la touche pressée.</p>
+				<p>Elle détermine aussi si les touches CTRL, ALT, SHIFT ou META sont pressées, et le caractère pressé si c'est la cas.</p>
 				<dl>
-					<dt><var></var> <i></i> - .</dt>
+					<dt><var>evt</var> <i>KeyboardEvent</i> - Idéalement <code>keydown</code> ou  <code>keyup</code>.</dt>
 				</dl>
-				<p></code></p>
+			</section>
+			<section><h3>shortcut (evt)</h3>
+				<p>Détermine les touches d'un raccourcie.</p>
+				<dl>
+					<dt><var>evt</var> <i>KeyboardEvent</i> - Idéalement <code>keydown</code> ou  <code>keyup</code>.</dt>
+				</dl>
+				<p>Retourne un chaîne de la forme <code>CTRL+ALT+SHIFT+META+...</code>.</p>
+			</section>
+			<section><h3>Alt (evt)</h3>
+				<p>Détermine si la touche ALT est pressée.</p>
+				<dl>
+					<dt><var>evt</var> <i>KeyboardEvent</i> - Idéalement <code>keydown</code> ou  <code>keyup</code>.</dt>
+				</dl>
+			</section>
+			<section><h3>Ctrl (evt)</h3>
+				<p>Détermine si la touche CTRL est pressée.</p>
+				<dl>
+					<dt><var>evt</var> <i>KeyboardEvent</i> - Idéalement <code>keydown</code> ou  <code>keyup</code>.</dt>
+				</dl>
+			</section>
+			<section><h3>Meta (evt)</h3>
+				<p>Détermine si la touche META est pressée.</p>
+				<dl>
+					<dt><var>evt</var> <i>KeyboardEvent</i> - Idéalement <code>keydown</code> ou  <code>keyup</code>.</dt>
+				</dl>
+			</section>
+			<section><h3>Shift (evt)</h3>
+				<p>Détermine si la touche SHIFT est pressée.</p>
+				<dl>
+					<dt><var>evt</var> <i>KeyboardEvent</i> - Idéalement <code>keydown</code> ou  <code>keyup</code>.</dt>
+				</dl>
+			</section>
+		</section>
+		<section><h2>Attributs privés</h2>
+			<p>Détails techniques.</p>
+			<section><h3>special</h3>
+				<p>Objet Set contenant les identifiants des touches spéciales CTRL, ALT, SHIFT et META.</p>
+			</section>
+			<section><h3>o</h3>
+				<p>Objet contenant les paires code/valeur des touches.</p>
 			</section>
 		</section>
 	</div>
 </page>
 <page id="ePlayground">
 	<h1>Playground</h1>
-	
 	<table border="2" cellpadding="5" cellspacing="5">
-		<caption><a href="http://www.w3.org/2002/09/tests/keys.html">W3C - Key and Character Codes vs. Event Types</a></caption>
-		<tr><th id="eEventType"></th><th class="green">keydown</th><th class="green">keyup</th></tr>
+		<tr><th id="eEventType"></th><th>keydown</th><th>keyup</th></tr>
 		<tr>
 			<td>
 				nCode<br>
 				String.fromCharCode(nCode)<br>
 				Clavier.alt<br>
 				Clavier.ctrl<br>
-				Clavier.meta<br>
+				<span style="color:red;">Clavier.meta</span><br>
 				Clavier.shift<br>
 				Clavier.key
 			</td>
