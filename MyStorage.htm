@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>MyStorage.js</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/page.css">
+	<link rel="stylesheet" type="text/css" href="css/doc.css">
+	<link rel="stylesheet" type="text/css" href="css/unittest.css">
+</head>
+<body>
+
+<ul class="pageMenu">
+	<li><a href="index.htm">JS.Objects</a></li>
+	<li onclick="goTo( eDoc )" id="eDocMenu">Documentation</li>
+	<li onclick="goTo( eUnitTest )" id="eUnitTestMenu">Testes unitaires</li>
+	<li onclick="goTo( eBenchmarking )" id="eBenchmarkingMenu">Benchmarking</li>
+	<li onclick="goTo( ePlayground )" id="ePlaygroundMenu">Playground</li>
+</ul>
+
+<page id="ePreload" class="active">
+	chargement...
+</page>
+<page id="eDoc">
+	<h1>Objet MyStorage</h1>
+	<div id="eSummary1"></div>
+	<div class="doc">
+		<section><h2>MyStorage</h2>
+			<p>MyStorage est une fonction créant un objet permettant de manipuler des objets JSON stockés dans le LocalStorage.</p>
+			
+			<p>Syntaxe: <code>var o = MyStorage( "Chemin/vers/la/cible" )</code></p>
+
+			<p>Par défaut, un chemin effacé avec la méthode <code>clear</code> est conservé en interne et est remplacé par un objet vide. Il réapparait lorsque le localStorage est mise à jour.</p>
+		</section>
+
+		<section><h2>Méthodes objet</h2>
+			<section><h3>get ( sName )</h3>
+				<p>Retourne la valeur d'un attribut du chemin.</p>
+				<dl>
+					<dt><var>sName</var> <i>String</i> - nom attribut ou chemin.</dt>
+				</dl>
+			</section>
+			<section><h3>set ( sName, mValue )</h3>
+				<p>Défini la valeur d'un attribut du chemin.</p>
+				<dl>
+					<dt><var>sName</var> <i>String</i> - nom attribut ou chemin.</dt>
+					<dt><var>mValue</var> <i>...</i> - valeur.</dt>
+				</dl>
+				<p>Si la valeur ne change pas, retourne false, sinon true et met à jour le localStorage.</p>
+			</section>
+			<section><h3>remove ( sName )</h3>
+				<p>Efface un attribut du localStorage.</p>
+				<dl>
+					<dt><var>sName</var> <i>String</i> - nom attribut ou chemin.</dt>
+				</dl>
+			</section>
+			<section><h3>get value ( )</h3>
+				<p>Retourne la valeur du chemin.</p>
+			</section>
+			<section><h3>set value ( oNewValue )</h3>
+				<p>Défini la valeur du chemin.</p>
+				<dl>
+					<dt><var>oNewValue</var> <i>...</i> - valeur.</dt>
+				</dl>
+				<p>Le localStorage est mise à jour.</p>
+			</section>
+			<section><h3>write ( )</h3>
+				<p>Met à jour le localStorage.</p>
+			</section>
+			<section><h3>clear ( )</h3>
+				<p>Efface les données du chemin du localStorage.</p>
+			</section>
+		</section>
+	</div>
+</page>
+<page id="eUnitTest">
+	<h1>Testes unitaires</h1>
+	<div id="eSummary2"></div>
+</page>
+<page id="eBenchmarking">
+	<h1>Benchmarking</h1>
+	<div id="eSummary3"></div>
+</page>
+<page id="ePlayground">
+	
+</page>
+
+
+<script src="js/page.js"></script>
+<script src="js/doc.js"></script>
+<script src="js/unittest.js"></script>
+<script src="js/benchmark.js"></script>
+<script src="src/MyStorage.js"></script>
+<script>
+/*
+La page est en chargement
+Insérer le code à charger ci-dessous
+*/
+
+// DOCUMENTATION
+layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
+
+// TESTS UNITAIRES
+new UnitTest( eUnitTest,[
+	{ title:"Méthodes objet",
+		desc:"",
+		eval:
+`window.ROOT = MyStorage('ROOT');
+window.StorageEqualTo = (sValue)=>localStorage.getItem('ROOT')===sValue
+`,
+		list:[
+			{ title:"set",
+				assertions:[
+					`StorageEqualTo( null )`,
+					`ROOT.set('version', 1)===true`,
+					`StorageEqualTo('{"version":1}')`,
+					`ROOT.set('version', 1)===false`,
+					`StorageEqualTo('{"version":1}')`,
+					`ROOT.set('version', 2)===true`,
+					`StorageEqualTo('{"version":2}')`,
+					]},
+			{ title:"get",
+				assertions:[
+					`StorageEqualTo('{"version":2}')`,
+					`ROOT.get('version')===2`,
+					]},
+			{ title:"setter value",
+				assertions:[
+					`window.NEW_VALUE={ version:3, color:'red' }`,
+					`StorageEqualTo('{"version":2}')`,
+					`ROOT.value = NEW_VALUE`,
+					`StorageEqualTo('{"version":3,"color":"red"}')`,
+					`ROOT.get('version')===3`,
+					`ROOT.get('color')==='red'`
+					]},
+			{ title:"getter value",
+				assertions:[
+					`ROOT.value === NEW_VALUE`,
+					`ROOT.value.version===3`,
+					`ROOT.value.color==='red'`
+					]},
+			{ title:"ATTENTION",
+				desc:'Utiliser la méthode set pour changer la valeur ou utiliser la méthode write !',
+				assertions:[
+					`StorageEqualTo('{"version":3,"color":"red"}')`,
+					`ROOT.value.version = 4`,
+					`NEW_VALUE.version === 4`,
+					`StorageEqualTo('{"version":3,"color":"red"}')`,
+					`ROOT.set('version', 4)===false`,
+					`StorageEqualTo('{"version":3,"color":"red"}')`,
+					`ROOT.write()===undefined`,
+					`StorageEqualTo('{"version":4,"color":"red"}')`,
+					]},
+			{ title:"remove",
+				assertions:[
+					`StorageEqualTo('{"version":4,"color":"red"}')`,
+					`ROOT.get('color')==="red"`,
+					`ROOT.remove('color')===undefined`,
+					`ROOT.get('color')===undefined`,
+					`StorageEqualTo('{"version":4}')`,
+					]},
+			{ title:"clear",
+				assertions:[
+					`StorageEqualTo('{"version":4}')`,
+					`ROOT.clear()===undefined`,
+					`StorageEqualTo( null )`,
+					`ROOT.write()===undefined`,
+					`StorageEqualTo( '{}' )`,
+					]},
+			]},
+	{ title:"Cheminement",
+		desc:"",
+		list:[
+			{ title:"niveau 2 ",
+				list:[
+				{ title:"création niveau 2",
+					assertions:[
+						`ROOT.get('niv2')===undefined`,
+						`window.niv2 = MyStorage('ROOT/niv2')`,
+						`StorageEqualTo('{"niv2":{}}')`,
+						]},
+				{ title:"niveau 2 get set",
+					assertions:[
+						`ROOT.get('niv2').myattr ===undefined`,
+						`StorageEqualTo('{"niv2":{}}')`,
+						`niv2.set('myattr', 1)`,
+						`niv2.get('myattr')===1`,
+						`StorageEqualTo('{"niv2":{"myattr":1}}')`,
+						`ROOT.get('niv2').myattr===1`,
+						]},
+				{ title:"niveau 2 getter setter",
+					assertions:[
+						`window.NEW_VALUE={color:'red',background:'blue'}`,
+						`StorageEqualTo('{"niv2":{"myattr":1}}')`,
+						`niv2.get('myattr')===1`,
+						`niv2.value=NEW_VALUE`,
+						`niv2.get('myattr')===undefined`,
+						`niv2.get('color')==='red'`,
+						`niv2.get('background')==='blue'`,
+						`StorageEqualTo('{"niv2":{"color":"red","background":"blue"}}')`,
+						`ROOT.get('niv2').myattr===undefined`,
+						`ROOT.get('niv2').color ==='red'`,
+						]},
+				{ title:"niveau 2 remove",
+					assertions:[
+						`ROOT.get('niv2').background==="blue"`,
+						`StorageEqualTo('{"niv2":{"color":"red","background":"blue"}}')`,
+						`niv2.get('background')==='blue'`,
+						`niv2.remove('background')===undefined`,
+						`niv2.get('background')===undefined`,
+						`StorageEqualTo('{"niv2":{"color":"red"}}')`,
+						`ROOT.get('niv2').background===undefined`,
+						]},
+				{ title:"niveau 2 clear",
+					assertions:[
+						`StorageEqualTo('{"niv2":{"color":"red"}}')`,
+						`ROOT.set('version', 5 )`,
+						`StorageEqualTo('{"niv2":{"color":"red"},"version":5}')`,
+						`niv2.clear()===undefined`,
+						`StorageEqualTo('{"version":5}')`,
+						`JSON.stringify( ROOT.get('niv2') )==='{}'`,
+						`ROOT.write()===undefined`,
+						`StorageEqualTo('{"version":5,"niv2":{}}')`,
+						]},
+				]},
+			{ title:"niveau 3",
+				list:[
+				{ title:"création niveau 3",
+					assertions:[
+						`niv2.set('color','red')===true`,
+						`window.niv3 = MyStorage('ROOT/niv2/niv3')`,
+						`niv3.set('myattr', 2)`,
+						`ROOT.get('niv2').niv3.myattr===2`,
+						`niv2.get('color')==='red'`,
+						`niv2.get('niv3').myattr===2`,
+						`niv3.get('myattr')===2`,
+						]},
+				]},
+			]},
+
+	{ title:"Cheminement clés ",
+		desc:"",
+		list:[
+			{ title:"niveau 4 ",
+				assertions:[
+					`ROOT.set('niv2/niv3/niv4/color','green')===true`,
+					`ROOT.get('niv2/niv3/niv4/color')==='green'`,
+					`niv2.get('niv3/niv4/color')==='green'`,
+					`niv2.get('color')==='red'`,
+					`niv3.get('niv4/color')==='green'`,
+					`niv3.get('myattr')===2`,
+				]},
+			{ title:"niveau 4 ",
+				assertions:[
+					`ROOT.get('niv2/niv3')`,
+					`ROOT.remove('niv2/niv3')===undefined`,
+					`ROOT.get('niv2/niv3')===undefined`,
+					`ROOT.get('niv2/niv3/niv4')===undefined`,
+					`ROOT.get('niv2/niv3')===undefined`,
+					`ROOT.remove('niv2/niv3')===undefined`,
+				]},
+			]},
+	{ title:"Suppression du LocalStorage",
+		assertions:[
+			`window.ROOT.clear()===undefined`
+			]}
+
+	],
+	{ unittest:1, benchmark: 0 }
+	)
+
+layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
+
+// BENCHMARKING
+new UnitTest( eBenchmarking ,[
+	{ desc:"" },
+	{ title:"",
+	list:[
+		{ title:"",
+			assertions:[
+				``,
+				]},
+		]},
+	],
+	{ unittest:0, benchmark: 1 }
+	)
+
+layoutDoc( eSummary3, { numbers: false, links: true }, eBenchmarking )
+
+/*
+Une fois le code charger, afficher de la page d'accueil !!
+... sans setTimeout SVP !
+*/
+setTimeout( ()=>goTo(), 10 )
+</script>
+
+</body>
+</html>

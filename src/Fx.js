@@ -29,11 +29,20 @@ Fx=(function( bDev ){
 			return true
 			}
 		return o=>{
-				let f=()=>o.playFrame()
-				return o.bAnimationFrame&&requestAnimationFrame
-					?requestAnimationFrame(f)
-					:_create(o.fps).a.push(f)
+			let f = ()=>o.playFrame()
+			if( o.bAnimationFrame && requestAnimationFrame ){
+				if( o.fps==60 ) return requestAnimationFrame(f)
+				let counter = Math.ceil( 60/o.fps )
+				let f2 = ()=>{
+					if( counter==1 ) return requestAnimationFrame(f)
+					counter--
+					requestAnimationFrame(f2)
+					}
+				return requestAnimationFrame(f2)
+			}else{
+				return _create(o.fps).a.push(f)
 				}
+			}
 			})()
 	_createFrames=(function(){
 		let o,i,ni,oDelta

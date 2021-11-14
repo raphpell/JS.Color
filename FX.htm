@@ -259,7 +259,7 @@
 					<dt><code>bPlayNow : true</code> - Animation jouée immédiatement une fois créée.</dt>
 					<dt><code>bPreserveMergin : true</code> - Si la méthode d'ajout est 'merge', protection des attributs de l'effet déjà existant.</dt>
 					<dt><code>bAnimationFrame : true</code> - Utilisation du système d'animation natif javascript.</dt>
-					<dt><code>fps : 60</code> - Si bAnimationFrame est égale à false, nombre d'images par seconde.</dt>
+					<dt><code>fps : 60</code> - Nombre d'images par seconde. Si bAnimationFrame est égale à true, seules valeurs possibles 60, 30, 20, 15, 12, 10 et 5.</dt>
 					<dt><code>method : 'concat'</code> - Choix possibles: concat || merge || push.</dt>
 					<dt><code>sColorMode : 'rgb'</code> - Choix possibles: rgb || hsv || hsl || rgba || hsva || hsla || cmyk.</dt>
 					<dt><code>time : 500</code>- Temps des animations par défaut.</dt>
@@ -279,8 +279,11 @@
 						Par défaut, les objets Fx ont l'attribut <var>bAnimationFrame</var> = true et l'animation est gérer par la méthode native <var>requestAnimationFrame</var>.
 					</p>
 					<p>
-						Il est possible, en passant <var>bAnimationFrame</var> à false, de définir le nombre d'images par seconde pour chaque animation.<br>
+						Il est possible, en passant <var>bAnimationFrame</var> à false, de définir un nombre d'images précis par seconde pour chaque animation.<br>
 						Celà dit, les résultats sont instables selon le navigateur utilisé.
+					</p>
+					<p>
+						A <var>bAnimationFrame</var> à true, le fps à pour valeurs possibles 60, 30, 20, 15, 12, 10 et 5.
 					</p>
 				</section>
 			</section>
