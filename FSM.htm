@@ -110,13 +110,21 @@
 
 	<div class="doc">
 		<section>
-			<p>Ces objets ont pour objectif de définir et rendre fonctionnel un automate pour jeu vidéo.</p>
+			<p>Ces objets ont pour objectif de définir et rendre fonctionnel un automate pour "jeu vidéo".</p>
 		</section>
 		<section><h2>Fonction FSMBridge</h2>
 			<p>L'objectif de cette fonction est de réaliser un pont entre la forme stockée et la forme éxecutable d'un automate.</p>
 			<p>Il est possible de faire des remplacements de texte avant de créer les fonctions JS depuis l'attribut <code>sReplacements</code>.</p>
 			
-			<pre>FSMBridge.call( this, oMachine )</pre>
+			<p>Exemple d'utilisation :</p>
+			<pre>FSMBridge.call( that, oMachine )</pre>
+			<p>A l'objet <code>that</code> est ajouté les attributs:</p>
+			<ul>
+				<li><code>transitions</code>  <i>Object</i> - clé:(identifiant origine) valeur:(Tableau contenant des tableaux de la forme [ identifiant destination, fonction condition, fonction OnTransition ] )</li>
+				<li><code>statesId</code>  <i>Object</i> - clé:(label état) valeur:(identifiant état) </li>
+				<li><code>statesName</code>  <i>Object</i> - clé:(identifiant état) valeur:(label état) </li>
+				<li><code>events</code>  <i>Object</i> - clé:(Nom événement) valeur:(Instance FSM.Events) </li>
+			</ul>
 			<p>Argument:</p>
 			<dl>
 				<dt><var>oMachine</var> <i>Object</i> - Objet ayant comme attributs edges et nodes :
@@ -136,8 +144,10 @@
 			{ id:103, label:'true', OnTransition:"/**/", from:3, to:0 }
 			]
 		}
-				</pre></dt>
+				</pre>
+				</dt>
 			</dl>
+			<p><i>Attention l'objet <var>oMachine</var> sera altéré : toutes les chaines de texte sont transformées en fonction javascript ormis les labels des états.</i></p>
 		</section>
 		<section><h2>Instance(s) FSM</h2>
 			<p>FSM = Finite State Machine.</p>
