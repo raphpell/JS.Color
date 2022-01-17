@@ -6,15 +6,27 @@ MyStorage =(function(){
 		const sBase = PATH.shift()
 		if(!LS[sBase]) LS[sBase] = JSON.parse( localStorage.getItem( sBase ))||{}
 		let ROOT = LS[sBase] // Objet au début du chemin
-		let o = ROOT // Objet à la fin du chemin
 		let bNewPath = false
-		PATH.forEach( sKey=>{
-			if(o[sKey]===undefined){
-				o[sKey] = {}
-				bNewPath = true
-				}
-			o = o[sKey]
+		let o
+		let init = ()=>{
+			let tmp = ROOT 
+			PATH.forEach( sKey=>{
+				if(tmp[sKey]===undefined){
+					tmp[sKey] = {}
+					bNewPath = true
+					}
+				tmp = tmp[sKey]
+				})
+			o = tmp
+			}
+		init()
+		
+		window.addEventListener('storage', ()=>{
+			LS[sBase] = JSON.parse( localStorage.getItem( sBase ))||{}
+			ROOT = LS[sBase]
+			init()
 			})
+
 		let write = ()=>localStorage.setItem(sBase,JSON.stringify(ROOT))
 		let MyStorage ={
 			clear (){

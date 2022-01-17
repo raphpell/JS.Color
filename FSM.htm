@@ -1,0 +1,710 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>FSM.js</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="css/page.css">
+	<link rel="stylesheet" type="text/css" href="css/doc.css">
+	<link rel="stylesheet" type="text/css" href="css/unittest.css">
+	<style type="text/css">
+		#ePlayground {
+			display: grid;
+			justify-items: center;
+			}
+		.automataDESC {
+			padding-top: 2em;
+			}
+		.automata {
+			padding-top: 2em;
+			min-width: 250px;
+			max-width: 390px;
+			}
+			.nodes {
+				display: grid;
+				grid-template-columns: 50px auto 50px auto 50px;
+				grid-template-rows: 50px 50px 50px 50px 50px;
+				align-items: center;
+				justify-items: center;
+				}
+				.node {
+					height: 50px;
+					width: 50px;
+					background: #eee;
+					border: 1px solid #333;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					}
+				#eIdle	{ grid-column: 3/span 1; grid-row: 3/span 1; }
+				#eUp	{ grid-column: 3/span 1; grid-row: 1/span 1; }
+				#eDown	{ grid-column: 3/span 1; grid-row: 5/span 1; }
+				#eLeft	{ grid-column: 1/span 1; grid-row: 3/span 1; }
+				#eRight	{ grid-column: 5/span 1; grid-row: 3/span 1; }
+				.ur { grid-column: 4/span 1; grid-row: 2/span 1; }
+				.ul { grid-column: 2/span 1; grid-row: 2/span 1; }
+				.br { grid-column: 4/span 1; grid-row: 4/span 1; }
+				.bl { grid-column: 2/span 1; grid-row: 4/span 1; }
+				.ir { grid-column: 4/span 1; grid-row: 3/span 1; }
+				.il { grid-column: 2/span 1; grid-row: 3/span 1; }
+				.it { grid-column: 3/span 1; grid-row: 2/span 1; }
+				.ib { grid-column: 3/span 1; grid-row: 4/span 1; }
+			.edges {
+				
+				}
+				/* left->right */
+				.arrow {
+					display: grid;
+					grid-template-columns: auto 10px;
+					width: 90%;
+					transform-origin: 50% 0;
+					}
+				.line {
+					position: relative;
+					margin-left: 5px;
+					background: #333;
+					height: 1px;
+					margin-top: -1px;
+					top: 50%;
+					}
+				.point {
+					width: 0;
+					height: 0;
+					border: 2px solid transparent;
+					border-left: 3px solid #333;
+					border-right: 0px ;
+					}
+				/*  */
+				.r45 { transform: rotate(45deg); }
+				.r90 { transform: rotate(90deg); }
+				.r135 { transform: rotate(135deg); }
+				.r180 { transform: rotate(180deg); }
+				.r225 { transform: rotate(225deg); }
+				.r270 { transform: rotate(270deg); }
+				.r315 { transform: rotate(315deg); }
+
+		.OnEnter { color: #FFF; border-color: #FFF; }
+		.OnStay { animation: stay 3s linear infinite; }
+		@keyframes stay { 50% { background: green; }}
+		.OnExit { animation: exit 1s linear 1; }
+		@keyframes exit { 50% { background: blue; }}
+		.OnTransition { animation: edge 1s linear 1; }
+		@keyframes edge { 50% { background: red; }}
+	</style>
+</head>
+<body>
+
+<ul class="pageMenu">
+	<li><a href="index.htm">JS.Objects</a></li>
+	<li onclick="goTo( eDoc )" id="eDocMenu">Documentation</li>
+	<li onclick="goTo( eUnitTest )" id="eUnitTestMenu">Testes unitaires</li>
+	<li onclick="goTo( eBenchmarking )" id="eBenchmarkingMenu">Benchmarking</li>
+	<li onclick="goTo( ePlayground )" id="ePlaygroundMenu">Playground</li>
+</ul>
+
+<page id="ePreload" class="active">
+	chargement...
+</page>
+<page id="eDoc">
+	<h1>Objet FSM</h1>
+	<div id="eSummary1"></div>
+
+	<div class="doc">
+		<section>
+			<p>Ces objets ont pour objectif de définir et rendre fonctionnel un automate pour jeu vidéo.</p>
+		</section>
+		<section><h2>Fonction FSMBridge</h2>
+			<p>L'objectif de cette fonction est de réaliser un pont entre la forme stockée et la forme éxecutable d'un automate.</p>
+			<p>Il est possible de faire des remplacements de texte avant de créer les fonctions JS depuis l'attribut <code>sReplacements</code>.</p>
+			
+			<pre>FSMBridge.call( this, oMachine )</pre>
+			<p>Argument:</p>
+			<dl>
+				<dt><var>oMachine</var> <i>Object</i> - Objet ayant comme attributs edges et nodes :
+				<pre>
+	let oMachine = {
+		sReplacements: '[/required/gm, "o.required"],[/On(Ground|Animation)/gm, "o.On$1"]',
+		nodes:[
+			{ id:0, label:'Node0', OnEnter:"/**/" },
+			{ id:1, label:'Node1', OnStay:"/**/" },
+			{ id:2, label:'Node2', OnExit:"/**/" },
+			{ id:3, label:'Node3', OnEnter:"/**/", OnStay:"/**/", OnExit:"/**/" }
+			],
+		edges:[
+			{ id:100, label:'true', OnTransition:"/**/", from:0, to:1 },
+			{ id:101, label:'true', OnTransition:"/**/", from:1, to:2 },
+			{ id:102, label:'true', OnTransition:"/**/", from:2, to:3 },
+			{ id:103, label:'true', OnTransition:"/**/", from:3, to:0 }
+			]
+		}
+				</pre></dt>
+			</dl>
+		</section>
+		<section><h2>Instance(s) FSM</h2>
+			<p>FSM = Finite State Machine.</p>
+			<section><h3>constructor</h3>
+				<p>Contruit un objet FSM.</p>
+				<dl>
+					<dt><var>oActor</var> <i>Object</i> - Objet associé à <code>this</code> dans chacunes des fonctions événementielles.</dt>
+					<dt><var>sInitialState</var> <i>String</i> - Nom de l'état initial.</dt>
+					<dt><var>oMachine</var> <i>Object</i> - Objet ayant comme attributs edges et nodes (voir la structure ci-dessus)</dt>
+				</dl>
+				<p>Si l'événement onenter est défini pour l'état sInitialState, il est déclenché.</p>
+				<p><i>Attention l'objet <var>oMachine</var> est altéré : les chaines de texte sont transformées en fonction javascript.</i></p>
+			</section>
+			<section><h3>init</h3>
+				<p>Remet la machine à zéro...</p>
+				<dl>
+					<dt><var>sInitialState</var> <i>String</i> - Etat initial.</dt>
+				</dl>
+				<p>Si l'événement onenter est défini pour l'état sInitialState, il est déclenché.</p>
+			</section>
+			<section><h3>throwEvent</h3>
+				<p>Déclenche un événement.</p>
+				<dl>
+					<dt><var>sEvent</var> <i>String</i> - Nom événement: <code>OnEnter, OnStay ou OnExit</code>.</dt>
+					<dt><var>nState</var> <i>Number</i> - Numéro d'un état.</dt>
+				</dl>
+			</section>
+			<section><h3>setState</h3>
+				<p>Défini l'état courant de la machine: fonction utilisée par la méthode checkState.</p>
+				<dl>
+					<dt><var>nState</var> <i>Number</i> - Numéro d'un état.</dt>
+					<dt><var>fOnTransition</var> <i>Function</i> <code>Optionnel</code> - Fonction événementielle ontransition.</dt>
+				</dl>
+			</section>
+			<section><h3>checkState</h3>
+				<p>Vérifie si une transition est possible et l'effectue.</p>
+				<p>Retourne <code>true</code> si une transition est réalisée, <code>false</code> si la machine reste sur le même état.</p>
+			</section>
+			<section><h3>onchange</h3>
+				<p>Fonction évémentielle déclenché lors d'un changement d'état.</p>
+				<dl>
+					<dt><var>nLastState</var> <i></i> - Etat précédant l'état courant.</dt>
+					<dt><var>nCurrentState</var> <i></i> - Etat courant.</dt>
+				</dl>
+				<p>Fonction vide à définir si besoin.</p>
+			</section>
+		</section>
+		<section><h2>Instance(s) FSM.Events</h2>
+			<p>Stocke les fonctions relatives à un seul type d'événement et un identifiant.</p>
+			<section><h3>constructor</h3>
+				<p>Initialisation de l'objet...</p>
+				<dl>
+					<dt><var>oFSM</var> <i>FSM</i> - Objet FSM.</dt>
+				</dl>
+				<p>Seul l'attribut oFSM.oActor est utilisé.</p>
+			</section>
+			<section><h3>add</h3>
+				<p>Ajoute une fonction à un identifiant.</p>
+				<dl>
+					<dt><var>nState</var> <i>Number</i> - Identifiant d'un état.</dt>
+					<dt><var>f</var> <i>Function</i> - Fonction ajouté à l'événement de l'état.</dt>
+				</dl>
+			</section>
+			<section><h3>get</h3>
+				<p>Retourne un tableau contenant les fonctions associées à un identifiant.</p>
+				<dl>
+					<dt><var>nState</var> <i>Number</i> - Identifiant d'un état.</dt>
+				</dl>
+			</section>
+			<section><h3>exec</h3>
+				<p>Exécute les fonctions associées à un identifiant.</p>
+				<dl>
+					<dt><var>nState</var> <i>Number</i> -  Identifiant d'un état.</dt>
+				</dl>
+			</section>
+		</section>
+	</div>
+</page>
+<page id="eUnitTest"><h1>Testes unitaires</h1><div id="eSummary2"></div></page>
+<page id="eBenchmarking"><h1>Benchmarking</h1><div id="eSummary3"></div></page>
+<page id="ePlayground">
+	<div class="automata">
+		<div class="nodes">
+			<div class="node" id="eIdle">Idle</div>
+			<div class="node" id="eUp">Up</div>
+			<div class="node" id="eDown">Down</div>
+			<div class="node" id="eLeft">Left</div>
+			<div class="node" id="eRight">Right</div>
+			<div id="eUR" class="arrow r45 ur"><div class="line"></div><div class="point"></div></div>
+			<div id="eRU" class="arrow r225 ur"><div class="line"></div><div class="point"></div></div>
+			<div id="eLD" class="arrow r45 bl"><div class="line"></div><div class="point"></div></div>
+			<div id="eDL" class="arrow r225 bl"><div class="line"></div><div class="point"></div></div>
+			<div id="eUL" class="arrow r135 ul"><div class="line"></div><div class="point"></div></div>
+			<div id="eLU" class="arrow r315 ul"><div class="line"></div><div class="point"></div></div>
+			<div id="eRD" class="arrow r135 br"><div class="line"></div><div class="point"></div></div>
+			<div id="eDR" class="arrow r315 br"><div class="line"></div><div class="point"></div></div>
+			<div id="eLI" class="arrow il"><div class="line"></div><div class="point"></div></div>
+			<div id="eIL" class="arrow il r180"><div class="line"></div><div class="point"></div></div>
+			<div id="eUI" class="arrow it r90"><div class="line"></div><div class="point"></div></div>
+			<div id="eIU" class="arrow it r270"><div class="line"></div><div class="point"></div></div>
+			<div id="eIR" class="arrow ir"><div class="line"></div><div class="point"></div></div>
+			<div id="eRI" class="arrow ir r180"><div class="line"></div><div class="point"></div></div>
+			<div id="eID" class="arrow ib r90"><div class="line"></div><div class="point"></div></div>
+			<div id="eDI" class="arrow ib r270"><div class="line"></div><div class="point"></div></div>
+		</div>
+	</div>
+	<div class="automataDESC">
+		<p>Utiliser les touches fléchées &larr; &rarr; &uarr; &darr; pour changer d'état.</p>
+		<ul>
+			<li>onenter: Texte en blanc.</li>
+			<li>onstay: Arrière plan en vert clignotant.</li>
+			<li>onexit: Arrière plan en bleu.</li>
+			<li>ontransition: surbrillance rouge.</li>
+		</ul>
+		<p>Code source :</p>
+	</div>
+	<pre id="eCodeSource"></pre>
+</page>
+
+<script src="src/FSM.js"></script>
+<script src="js/page.js"></script>
+<script src="js/doc.js"></script>
+<script src="js/unittest.js"></script>
+<script src="js/benchmark.js"></script>
+<script></script>
+
+<script>
+/*
+La page est en chargement
+Insérer le code à charger ci-dessous
+*/
+
+// DOCUMENTATION
+layoutDoc( eSummary1, { numbers: false, links: true }, eDoc )
+
+// TESTS UNITAIRES
+new UnitTest( eUnitTest,[
+	{ title:"FSMBridge",
+		desc:"",
+		eval:
+`
+window.oMachine = {
+	sReplacements: '[/required/gm, "o.required"],[/On(Ground|Animation)/gm, "o.On$1"]',
+	nodes:[
+		{ id:10, label:'Node10', OnEnter:"/**/" },
+		{ id:11, label:'Node11', OnStay:"/**/" },
+		{ id:12, label:'Node12', OnExit:"/**/" },
+		{ id:13, label:'Node13', OnEnter:"/*B*/", OnStay:"/**/", OnExit:"/**/" }
+		],
+	edges:[
+		{ id:100, label:'required', OnTransition:"/*A*/", from:10, to:11 },
+		{ id:101, label:'OnGround', OnTransition:"/**/", from:11, to:12 },
+		{ id:102, label:'true', OnTransition:"/**/", from:12, to:13 },
+		{ id:103, label:'true', OnTransition:"/**/", from:13, to:10 }
+		]
+	}
+window.oTest = { id:'test' }
+FSMBridge.call( oTest, oMachine )
+`,
+		list:[
+			{ title:"Structure",
+				assertions:[
+					'oTest.id == "test"',
+					'oTest.statesId',
+					'oTest.statesId.Node10 === 10',
+					'oTest.statesName',
+					'oTest.statesName[10] === "Node10"',
+					'oTest.transitions[10]',
+					'oTest.transitions[10].constructor===Array',
+					'oTest.transitions[10].length == 1',
+					'oTest.transitions[10][0][0]==11',
+					"oTest.transitions[10][0][1].toString()=='function anonymous(o\\n) {\\nreturn o.required\\n}'",
+					"oTest.transitions[10][0][2].toString()=='function anonymous(o\\n) {\\n/*A*/\\n}'",
+					'oTest.transitions[11][0][0]==12',
+					'oTest.transitions[12][0][0]==13',
+					'oTest.transitions[13][0][0]==10',
+					'oTest.events.OnEnter.o[10]',
+					'oTest.events.OnEnter.o[13]',
+					'oTest.events.OnEnter.o[13].constructor===Array',
+					'oTest.events.OnEnter.o[13].length == 1',
+					'oTest.events.OnEnter.o[13][0].toString()=="function anonymous(o\\n) {\\n/*B*/\\n}"',
+					'oTest.events.OnExit.o[12]',
+					'oTest.events.OnExit.o[13]',
+					'oTest.events.OnStay.o[11]',
+					'oTest.events.OnStay.o[13]',
+					'oMachine.compiled'
+					]},
+			{ title:"Text replacement",
+				assertions:[
+					"oTest.transitions[11][0][1].toString()=='function anonymous(o\\n) {\\nreturn o.OnGround\\n}'",
+					]},
+			{ title:"Function Caching",
+				assertions:[
+					'oTest.events.OnStay.o[13][0]===oTest.events.OnStay.o[11][0]',
+					]},
+			{ title:"One compilation",
+		eval:`
+window.oMachine = {
+	sReplacements: '[/required/gm, "o.required"],[/On(Ground|Animation)/gm, "o.On$1"]',
+	nodes:[
+		{ id:10, label:'Node10', OnEnter:"/**/" },
+		{ id:11, label:'Node11', OnStay:"/**/" },
+		{ id:12, label:'Node12', OnExit:"/**/" },
+		{ id:13, label:'Node13', OnEnter:"/*B*/", OnStay:"/**/", OnExit:"/**/" }
+		],
+	edges:[
+		{ id:100, label:'required', OnTransition:"/*A*/", from:10, to:11 },
+		{ id:101, label:'OnGround', OnTransition:"/**/", from:11, to:12 },
+		{ id:102, label:'true', OnTransition:"/**/", from:12, to:13 },
+		{ id:103, label:'true', OnTransition:"/**/", from:13, to:10 }
+		]
+	}
+window.oTest = { id:'test2' }
+FSMBridge.call( oTest, oMachine )
+`,
+				assertions:[
+					'oTest.id == "test2"',
+					'oTest.statesId',
+					'oTest.statesName',
+					'oTest.transitions[10][0][0]==11',
+					'oTest.transitions[11][0][0]==12',
+					'oTest.transitions[12][0][0]==13',
+					'oTest.transitions[13][0][0]==10',
+					'oTest.events.OnEnter.o[10]',
+					'oTest.events.OnEnter.o[13]',
+					'oTest.events.OnExit.o[12]',
+					'oTest.events.OnExit.o[13]',
+					'oTest.events.OnStay.o[11]',
+					'oTest.events.OnStay.o[13]'
+					]},
+			],
+		},
+	{ title:"Instances(s) FSM",
+		desc:"",
+		eval:`
+window.oTest = { bASC:true, bDESC:false, nEnter:0, nStay:0, nExit:0, nTransition:0 }
+window.oMachine2 = {
+	nodes:[
+		{ id:20, label:'Node20', OnExit:"this.nExit++", OnEnter:"this.nEnter++" },
+		{ id:21, label:'Node21', OnStay:"this.nStay++" },
+		{ id:22, label:'Node22', OnEnter:"this.nEnter++" },
+		],
+	edges:[
+		{ id:200, label:'this.bASC', OnTransition:"this.nTransition++", from:20, to:21 },
+		{ id:201, label:'this.bASC', OnTransition:"this.nTransition++", from:21, to:22 },
+		{ id:202, label:'this.bDESC', OnTransition:"this.nTransition++", from:22, to:21 },
+		{ id:203, label:'this.bDESC', OnTransition:"this.nTransition++", from:21, to:20 },
+		]
+	}
+window.oFSM = new FSM ( oTest, 'Node21', oMachine2 )
+`,
+		list:[
+			{ title:"constructor",
+				assertions:[
+					'oFSM.oActor === oTest',
+					'oFSM.nCurrentState === 21',
+					'oFSM.nLastState === null',
+					'oFSM.statesId',
+					'oFSM.statesName',
+					'oFSM.transitions',
+					'oFSM.events',
+					]},
+			{ title:"init",
+				eval:'oFSM.init( "Node20" )',
+				assertions:[
+					'oFSM.nCurrentState === 20',
+					'oFSM.nLastState === null',
+					'oTest.nEnter === 1',
+					]},
+			{ title:"throwEvent",
+				eval:'',
+				assertions:[
+					'oTest.nEnter === 1 && !oFSM.throwEvent( "OnEnter", 20 ) && oTest.nEnter === 2',
+					'oTest.nStay === 0 && !oFSM.throwEvent( "OnStay", 21 ) && oTest.nStay === 1',
+					'oTest.nExit === 0 && !oFSM.throwEvent( "OnExit", 20 ) && oTest.nExit === 1',
+					]},
+			{ title:"setState",
+				eval:'oFSM.setState( 20 )',
+				assertions:[
+					'oFSM.nCurrentState === 20',
+					'oFSM.nLastState === 20',
+					'oTest.nEnter === 2',
+					]},
+			{ title:"checkState",
+			
+				list:[
+					{ title:"edges 200",
+						assertions:[
+							'oTest.bASC',
+							'oFSM.nCurrentState === 20',
+							'oTest.nExit === 1',
+							'oTest.nTransition === 0',
+							'oFSM.checkState()',
+							'oFSM.nCurrentState === 21',
+							'oFSM.nLastState === 20',
+							'oTest.nExit === 2',
+							'oTest.nTransition === 1',
+							]},
+					{ title:"stay on node 21",
+						eval:'oTest.bASC = false',
+						assertions:[
+							'oFSM.nCurrentState === 21',
+							'oTest.nStay === 1',
+							'! oFSM.checkState()',
+							'oFSM.nLastState === 21',
+							'oFSM.nCurrentState === 21',
+							'oTest.nStay === 2',
+							]},
+					]
+				},
+			{ title:"onchange",
+				eval:`oTest.bASC = true
+oFSM.onchange = function( nLastState, nCurrentState ){
+	this.tmp = [nLastState,nCurrentState].join("|")
+	}
+`,
+				assertions:[
+					'oFSM.tmp === undefined',
+					'oFSM.checkState()',
+					'oFSM.tmp === "21|22"',
+					]},
+			{ title:"getStateName",
+				assertions:[
+					'oFSM.getStateName( 20 ) === "Node20"',
+					'oFSM.getStateName( 21 ) === "Node21"',
+					'oFSM.getStateName( 22 ) === "Node22"',
+					]},
+			{ title:"getStateId",
+				assertions:[
+					'oFSM.getStateId( "Node20" ) === 20',
+					'oFSM.getStateId( "Node21" ) === 21',
+					'oFSM.getStateId( "Node22" ) === 22',
+					]},
+			]
+		},
+	{ title:"Instances(s) FSM.Events",
+		desc:"",
+		eval:
+`
+window.oFSMTest = { oActor:{n:1000} }
+window.oEvent = new FSM.Events ( oFSMTest )
+window.fTest = function(){ this.n++ }
+`,
+		list:[
+			{ title:"new",
+				assertions:[
+					'oEvent.FSM.oActor.n === 1000',
+					'oEvent.o',
+					]},
+			{ title:"add",
+				assertions:[
+					'! oEvent.add( 10, fTest )',
+					'oEvent.o[10].length === 1',
+					'oEvent.o[10][0] === fTest',
+					'! oEvent.add( 10, fTest )',
+					'oEvent.o[10].length === 2',
+					'oEvent.o[10][1] === fTest',
+					]},
+			{ title:"get",
+				assertions:[
+					'oEvent.get( 10 ) === oEvent.o[10]',
+					]},
+			{ title:"exec",
+				assertions:[
+					'! oEvent.exec( 10 )',
+					'oFSMTest.oActor.n === 1002',
+					]},
+			]
+		}
+	],
+	{ unittest:1, benchmark: 0 }
+	)
+
+layoutDoc( eSummary2, { numbers: false, links: true }, eUnitTest )
+
+// BENCHMARKING
+new UnitTest( eBenchmarking ,[
+	{ desc:"" },
+	{ title:"FSMBridge",
+		eval:`
+window.oMachine = {
+	sReplacements: '[/required/gm, "o.required"],[/On(Ground|Animation)/gm, "o.On$1"]',
+	nodes:[
+		{ id:10, label:'Node10', OnEnter:"/**/" },
+		{ id:11, label:'Node11', OnStay:"/**/" },
+		{ id:12, label:'Node12', OnExit:"/**/" },
+		{ id:13, label:'Node13', OnEnter:"/*B*/", OnStay:"/**/", OnExit:"/**/" }
+		],
+	edges:[
+		{ id:100, label:'required', OnTransition:"/*A*/", from:10, to:11 },
+		{ id:101, label:'OnGround', OnTransition:"/**/", from:11, to:12 },
+		{ id:102, label:'true', OnTransition:"/**/", from:12, to:13 },
+		{ id:103, label:'true', OnTransition:"/**/", from:13, to:10 }
+		]
+	}
+window.oTest = { id:'test' }
+`,
+		assertions:[
+			`! FSMBridge.call( oTest, oMachine )`,
+			]
+		},
+	{ title:"Instances(s) FSM",
+		desc:"",
+		eval:`
+window.oTest = { bASC:true, bDESC:false, nEnter:0, nStay:0, nExit:0, nTransition:0 }
+window.oMachine2 = {
+	nodes:[
+		{ id:20, label:'Node20', OnExit:"this.nExit++", OnEnter:"this.nEnter++" },
+		{ id:21, label:'Node21', OnStay:"this.nStay++" },
+		{ id:22, label:'Node22', OnEnter:"this.nEnter++" },
+		],
+	edges:[
+		{ id:200, label:'this.bASC', OnTransition:"this.nTransition++", from:20, to:21 },
+		{ id:201, label:'this.bASC', OnTransition:"this.nTransition++", from:21, to:22 },
+		{ id:202, label:'this.bDESC', OnTransition:"this.nTransition++", from:22, to:21 },
+		{ id:203, label:'this.bDESC', OnTransition:"this.nTransition++", from:21, to:20 },
+		]
+	}
+
+`,
+		list:[
+			{ title:"constructor",
+				assertions:[
+					"window.oFSM = new FSM ( oTest, 'Node21', oMachine2 )",
+					]},
+			{ title:"init",
+				assertions:[
+					'!oFSM.init( "Node20" )',
+					]},
+			{ title:"throwEvent",
+				assertions:[
+					'!oFSM.throwEvent( "OnEnter", 20 )',
+					'!oFSM.throwEvent( "OnStay", 21 )',
+					'!oFSM.throwEvent( "OnExit", 20 )',
+					]},
+			{ title:"setState",
+				assertions:[
+					'! oFSM.setState( 20 )',
+					]},
+			{ title:"checkState",
+			
+				list:[
+					{ title:"edges 200",
+						assertions:[
+							'oFSM.checkState()',
+							]},
+					{ title:"stay on node 21",
+						eval:'oTest.bASC = false',
+						assertions:[
+							'!oFSM.checkState()',
+							]},
+					]
+				},
+			]
+		},
+	{ title:"Instances(s) FSM.Events",
+		eval:
+`
+window.oFSMTest = { oActor:{n:1000} }
+window.oEvent = new FSM.Events ( oFSMTest )
+window.fTest = function(){ this.n++ }
+`,
+		list:[
+			{ title:"new",
+				assertions:[
+					'oEvent.FSM.oActor.n === 1000',
+					'oEvent.o',
+					]},
+			{ title:"add",
+				assertions:[
+					'! oEvent.add( 10, fTest )',
+					'oEvent.o[10].length === 1',
+					'oEvent.o[10][0] === fTest',
+					'! oEvent.add( 10, fTest )',
+					'oEvent.o[10].length === 2',
+					'oEvent.o[10][1] === fTest',
+					]},
+			{ title:"get",
+				assertions:[
+					'oEvent.get( 10 ) === oEvent.o[10]',
+					]},
+			{ title:"exec",
+				assertions:[
+					'! oEvent.exec( 10 )',
+					'oFSMTest.oActor.n === 1002',
+					]},
+			]
+		}
+	],
+	{ unittest:0, benchmark: 1 }
+	)
+
+layoutDoc( eSummary3, { numbers: false, links: true }, eBenchmarking )
+
+/*
+Une fois le code charger, afficher de la page d'accueil !!
+... sans setTimeout SVP !
+*/
+setTimeout( ()=>goTo(), 10 )
+</script>
+
+<!-- Playground code -->
+<script id="eSRC">
+keys = {}
+document.body.addEventListener("keydown", e => keys[e.keyCode] = true )
+document.body.addEventListener("keyup", e => keys[e.keyCode] = false )
+
+let highlight = ( e, s )=>{
+	let o = e.classList
+	switch( s ){
+		case 'OnTransition':
+			o.remove('OnTransition')
+			setTimeout( ()=>o.add(s), 25 )
+			return;
+		case 'OnEnter':
+			o.remove('OnExit')
+		case 'OnStay':
+			o.add(s)
+			break;
+		case 'OnExit':
+			o.remove('OnEnter')
+			o.remove('OnStay')
+			o.add(s)
+			break;
+		}
+	}
+let oMyFSM = {
+	sReplacements: '[/keyL/gm, "keys[37]"]'
+		+',[/keyU/gm, "keys[38]"]'
+		+',[/keyR/gm, "keys[39]"]'
+		+',[/keyD/gm, "keys[40]"]',
+	nodes:[
+		{ id:10, label:'Idle', OnEnter:"highlight(eIdle,'OnEnter')", OnStay:"highlight(eIdle,'OnStay')", OnExit:"highlight(eIdle,'OnExit')" },
+		{ id:11, label:'Up', OnEnter:"highlight(eUp,'OnEnter')", OnStay:"highlight(eUp,'OnStay')", OnExit:"highlight(eUp,'OnExit')" },
+		{ id:12, label:'Down', OnEnter:"highlight(eDown,'OnEnter')", OnStay:"highlight(eDown,'OnStay')", OnExit:"highlight(eDown,'OnExit')" },
+		{ id:13, label:'Left', OnEnter:"highlight(eLeft,'OnEnter')", OnStay:"highlight(eLeft,'OnStay')", OnExit:"highlight(eLeft,'OnExit')" },
+		{ id:14, label:'Right', OnEnter:"highlight(eRight,'OnEnter')", OnStay:"highlight(eRight,'OnStay')", OnExit:"highlight(eRight,'OnExit')" },
+		],
+	edges:[
+		{ id:100, label:'keyR && !keyU', OnTransition:"highlight(eUR,'OnTransition')", from:11, to:14 },
+		{ id:101, label:'keyU && !keyR', OnTransition:"highlight(eRU,'OnTransition')", from:14, to:11 },
+		{ id:102, label:'keyD && !keyL', OnTransition:"highlight(eLD,'OnTransition')", from:13, to:12 },
+		{ id:103, label:'keyL && !keyD', OnTransition:"highlight(eDL,'OnTransition')", from:12, to:13 },
+		{ id:104, label:'keyL && !keyU', OnTransition:"highlight(eUL,'OnTransition')", from:11, to:13 },
+		{ id:105, label:'keyU && !keyL', OnTransition:"highlight(eLU,'OnTransition')", from:13, to:11 },
+		{ id:106, label:'keyD && !keyR', OnTransition:"highlight(eRD,'OnTransition')", from:14, to:12 },
+		{ id:107, label:'keyR && !keyD', OnTransition:"highlight(eDR,'OnTransition')", from:12, to:14 },
+		{ id:108, label:'!keyL && !keyD && !keyU', OnTransition:"highlight(eLI,'OnTransition')", from:13, to:10 },
+		{ id:109, label:'keyL', OnTransition:"highlight(eIL,'OnTransition')", from:10, to:13 },
+		{ id:110, label:'!keyU && !keyL && !keyR', OnTransition:"highlight(eUI,'OnTransition')", from:11, to:10 },
+		{ id:111, label:'keyU', OnTransition:"highlight(eIU,'OnTransition')", from:10, to:11 },
+		{ id:112, label:'keyR', OnTransition:"highlight(eIR,'OnTransition')", from:10, to:14 },
+		{ id:113, label:'!keyR && !keyD && !keyU', OnTransition:"highlight(eRI,'OnTransition')", from:14, to:10 },
+		{ id:114, label:'keyD', OnTransition:"highlight(eID,'OnTransition')", from:10, to:12 },
+		{ id:115, label:'!keyD && !keyL && !keyR', OnTransition:"highlight(eDI,'OnTransition')", from:12, to:10 },
+		]
+	}
+MyFSM = new FSM ( {}, 'Idle', oMyFSM )
+
+let play = function(){
+	MyFSM.checkState() 
+	window.requestAnimationFrame( play )
+	}
+
+play()
+</script>
+<script> eCodeSource.innerHTML = eSRC.innerHTML </script>
+
+</body>
+</html>
