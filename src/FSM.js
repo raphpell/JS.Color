@@ -11,9 +11,14 @@ FSMBridge =(function(){
 	return function( oMachine ){
 		if( ! oMachine.compiled ){
 			let a = eval( '['+ (oMachine.sReplacements||'') +']' )
-			let f1 = ( o, s, b )=>{ if(o[s]) return o[s]=MakeFunction(o[s], a, b ) }
+			let f1 = ( o, s, b )=>{
+				if(o[s]){
+					o[s] = new String(o[s])
+					o[s].fun = MakeFunction(o[s], a, b )
+					}
+				}
 			oMachine.edges.forEach( o=>{
-				o.label = f1(o,'label',true)
+				f1(o,'label',true)
 				f1(o,'OnTransition')
 				})
 			oMachine.nodes.forEach( o=>{
@@ -25,7 +30,7 @@ FSMBridge =(function(){
 		this.transitions = {}
 		oMachine.edges.forEach( o=>{
 			let a = this.transitions[o.from] || (this.transitions[o.from]=[])
-			a.push([ o.to, o.label , o.OnTransition ])
+			a.push([ o.to, o.label.fun , o.OnTransition.fun ])
 			})
 		this.statesId = {}
 		this.statesName = {}
@@ -35,7 +40,7 @@ FSMBridge =(function(){
 			OnExit: new FSM.Events(this)
 			}
 		let f2 = ( sEvent, o )=>{
-			if( o[ sEvent ]) this.events[ sEvent ].add( o.id, o[ sEvent ])
+			if( o[ sEvent ]) this.events[ sEvent ].add( o.id, o[ sEvent ].fun )
 			}
 		oMachine.nodes.forEach( o=>{
 			this.statesId[o.label] = o.id
